@@ -52,7 +52,7 @@ function Lightbox({ items, i, go, onClose, lang }: { items: Media[]; i: number; 
 }
 
 /** Spotlight gallery: one large image, thumbnails below. Clicking a thumbnail promotes it; it rotates by itself until the reader takes over. */
-export function Gallery({ items, lang }: { items: Media[]; lang: 'en' | 'ja' }) {
+export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 'en' | 'ja'; morph?: boolean }) {
   const [i, setI] = useState(0)
   const swipe = useRef<{ x: number; y: number } | null>(null)
   const [zoom, setZoom] = useState(false)
@@ -77,7 +77,7 @@ export function Gallery({ items, lang }: { items: Media[]; lang: 'en' | 'ja' }) 
           onPointerCancel={() => { swipe.current = null }}>
           <button className="spot-open" onClick={() => setZoom(true)} aria-label={`${lang === 'en' ? 'Enlarge image' : '画像を拡大'}: ${t(m.alt)}`}>
             <img key={m.src} src={src(m, 0)} srcSet={w.map((x) => `${mediaBase()}${m.src}-${x}.webp ${x}w`).join(', ')} sizes="(max-width: 900px) 100vw, 640px"
-          width={m.w} height={m.h} style={m.w >= m.h ? { width: '100%', height: 'auto' } : { height: 'min(62vh, 560px)', width: 'auto', maxWidth: '100%' }} alt={t(m.alt)} loading="lazy" decoding="async" />
+          width={m.w} height={m.h} style={{ ...(m.w >= m.h ? { width: '100%', height: 'auto' } : { height: 'min(62vh, 560px)', width: 'auto', maxWidth: '100%' }), ...(morph && i === 0 ? { viewTransitionName: 'proj' } : {}) }} alt={t(m.alt)} loading="lazy" decoding="async" />
           </button>
           {n > 1 && (
             <>

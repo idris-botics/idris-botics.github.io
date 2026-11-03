@@ -3,6 +3,7 @@ import { ExternalLink, Mail, Pause, Play, X } from 'lucide-react'
 import { useStore } from './store'
 import { useReducedMotion } from './lib/hooks'
 import PointField from './PointField'
+import ScanField from './ScanField'
 import ChaosGate from './ChaosGate'
 import ChaosGuard from './chaos/ChaosGuard'
 import { Documents } from './Extras'
@@ -102,7 +103,7 @@ const ui = {
   facts: {
     study: { en: 'Final-year B.E. EEE, SRM Easwari', ja: '電気電子工学科 学部4年（SRM Easwari）' },
     abb: { en: 'Research intern, ABB Global CoE', ja: '研究インターン（ABB Global CoE）' },
-    jp: { en: 'JLPT N5 passed', ja: 'JLPT N5合格' },
+    jp: { en: 'JLPT N5 and NAT-TEST 4Q passed', ja: 'JLPT N5・NAT-TEST 4Q合格' },
   },
 }
 
@@ -169,8 +170,9 @@ export default function App() {
 
       {project && <main id="main"><ProjectPage project={project} /></main>}
       {!project && <main id="main">
+        <div className="scan-zone">
+        {mode === 'calm' && <ScanField />}
         <section className="hero">
-          {mode === 'calm' && <PointField variant="calm" />}
           <div className="wrap hero-grid">
             <div className="hero-text">
               <Name />
@@ -198,10 +200,12 @@ export default function App() {
           </div>
         </section>
 
+        </div>
+
         <Work />
 
         <section id="path" className="sec has-field" aria-labelledby="pt">
-          {mode === 'calm' && <PointField variant="calm" faint />}
+          {mode === 'calm' && <ScanField faint />}
           <div className="wrap">
             <h2 id="pt">{t(ui.path)}</h2>
             <ol className="path">
@@ -244,7 +248,7 @@ export default function App() {
         </section>
 
         <section id="contact" className="sec contact has-field" aria-labelledby="ct">
-          {mode === 'calm' && <PointField variant="calm" faint />}
+          {mode === 'calm' && <ScanField faint />}
           <div className="wrap">
             <h2 id="ct">{t(ui.contact)}</h2>
             <p className="contact-body">{t(ui.contactBody)}</p>

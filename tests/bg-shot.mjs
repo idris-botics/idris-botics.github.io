@@ -1,0 +1,16 @@
+import { chromium } from '@playwright/test'
+const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
+const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+const errs = []; p.on('pageerror', (e) => errs.push(String(e)))
+await p.goto('http://localhost:4173/', { waitUntil: 'networkidle' })
+await p.mouse.move(520, 380)
+await p.waitForTimeout(3500)
+await p.locator('.scan-zone').screenshot({ path: 'tests/out/bg-d.png' })
+await p.mouse.move(900, 300); await p.waitForTimeout(2600)
+await p.locator('.scan-zone').screenshot({ path: 'tests/out/bg-d2.png' })
+for (const s of ['robodog', 'net', 'abb']) { await p.goto('http://localhost:4173/#work/' + s, { waitUntil: 'networkidle' }); await p.waitForTimeout(500); await p.screenshot({ path: `tests/out/pg-${s}.png` }) }
+const m = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+await m.goto('http://localhost:4173/', { waitUntil: 'networkidle' }); await m.waitForTimeout(3500)
+await m.locator('.scan-zone').screenshot({ path: 'tests/out/bg-m.png' })
+console.log(errs)
+await b.close()

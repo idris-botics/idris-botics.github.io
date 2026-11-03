@@ -11,7 +11,7 @@ for (const [name, url] of [['dev', 'http://localhost:4173/'], ['prod', 'http://l
   const hits = gone.filter((re) => re.test(text)).map(String)
   const opens = await p.locator('.open').allInnerTexts()
   const contactOpen = await p.locator('#contact .open').allInnerTexts()
-  const hasJp = lang === 'en' ? /JLPT N5 passed/.test(text) : /JLPT N5合格/.test(text)
+  const hasJp = lang === 'en' ? /JLPT N5 and NAT-TEST 4Q passed/.test(text) : /JLPT N5・NAT-TEST 4Q合格/.test(text)
   const ok = !hits.length && hasJp && (name === 'dev' || opens.length === 0) && contactOpen.every((t) => /CV PDF \(English\)/.test(t))
   if (!ok) bad++
   console.log(ok ? 'ok  ' : 'FAIL', name, lang, JSON.stringify({ hits, hasJp, opens: opens.length, contactOpen }))

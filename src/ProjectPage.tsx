@@ -178,6 +178,7 @@ export default function ProjectPage({ project }: { project: Project }) {
 
   const rows = (['objective', 'method', 'status'] as const).filter((k) => project.summary[k])
   const leadVideo = project.leadVideo && project.videos?.length
+  const hasMedia = !!leadVideo || !!project.media?.length
   const Fig = FIGURES[project.slug]
   const S = project.sim ? SimView[project.sim] : null
 
@@ -186,13 +187,30 @@ export default function ProjectPage({ project }: { project: Project }) {
       <div className="wrap page-wrap">
         <a className="back" href="#work" onClick={(e) => { if (e.button !== 0 || e.metaKey || e.ctrlKey) return; e.preventDefault(); backToWork() }}><ArrowLeft size={16} aria-hidden="true" /> {t(ui.back)}</a>
 
-        <p className="pw-status">{statusLabel[project.status][lang]}</p>
-        <h1 id="pg-h" className="page-title">{t(project.title)}</h1>
-        <p className="pw-lead">{info?.line ? t(info.line) : t(project.blurb)}</p>
-
-        {leadVideo && <Videos project={{ ...project, videos: project.videos!.slice(0, 1) }} lang={lang} />}
-
-        {project.media && project.media.length > 0 && <div className="page-gallery"><Gallery key={project.slug} items={project.media} lang={lang} /></div>}
+        <div className={`page-top${hasMedia ? ' has-media' : ''}`}>
+          {hasMedia && (
+            <div className="page-media">
+              {leadVideo && <Videos project={{ ...project, videos: project.videos!.slice(0, 1) }} lang={lang} />}
+              {project.media && project.media.length > 0 && <div className="page-gallery"><Gallery key={project.slug} items={project.media} lang={lang} morph /></div>}
+            </div>
+          )}
+          <div className="page-intro">
+            <p className="pw-status">{String(idx + 1).padStart(2, '0')} / {String(order.length).padStart(2, '0')} · {statusLabel[project.status][lang]}</p>
+            <h1 id="pg-h" className="page-title">{t(project.title)}</h1>
+            <p className="pw-lead">{info?.line ? t(info.line) : t(project.blurb)}</p>
+            {project.summary.mine && <section className="pw-sec"><h2>{t(ui.mine)}</h2><p>{t(project.summary.mine)}</p></section>}
+            {rows.map((k) => <section className="pw-sec" key={k}><h2>{t(ui[k])}</h2><p>{t(project.summary[k]!)}</p></section>)}
+            {project.paper && (
+              <section className="pw-sec paper">
+                <h2>{t(ui.abstract)}</h2>
+                <p>{t(project.paper.abstract)}</p>
+                <p className="muted">{t(project.paper.venue)}</p>
+                <p><a className="btn" href={import.meta.env.BASE_URL + project.paper.href} target="_blank" rel="noopener noreferrer"><FileText size={14} aria-hidden="true" /> {t(project.paper.label)}</a></p>
+              </section>
+            )}
+            {project.link && <p className="pw-link"><a href={project.link.href} target="_blank" rel="noopener noreferrer"><ExternalLink size={14} aria-hidden="true" /> {t(project.link.label)}</a></p>}
+          </div>
+        </div>
 
         {Fig ? (
           <div className="pw-sec">
@@ -207,18 +225,6 @@ export default function ProjectPage({ project }: { project: Project }) {
         ) : S && <SimPanel project={project} lang={lang} />}
 
         {mode === 'chaos' && <Suspense fallback={null}><ChaosClue slug={project.slug} lang={lang} /></Suspense>}
-
-        {project.summary.mine && <section className="pw-sec"><h2>{t(ui.mine)}</h2><p>{t(project.summary.mine)}</p></section>}
-        {rows.map((k) => <section className="pw-sec" key={k}><h2>{t(ui[k])}</h2><p>{t(project.summary[k]!)}</p></section>)}
-
-        {project.paper && (
-          <section className="pw-sec paper">
-            <h2>{t(ui.abstract)}</h2>
-            <p>{t(project.paper.abstract)}</p>
-            <p className="muted">{t(project.paper.venue)}</p>
-            <p><a className="btn" href={import.meta.env.BASE_URL + project.paper.href} target="_blank" rel="noopener noreferrer"><FileText size={14} aria-hidden="true" /> {t(project.paper.label)}</a></p>
-          </section>
-        )}
 
         {project.slug === 'stepscribe' && <Stepscribe lang={lang} />}
 
@@ -235,7 +241,6 @@ export default function ProjectPage({ project }: { project: Project }) {
         {!leadVideo && <Videos project={project} lang={lang} />}
         {leadVideo && project.videos!.length > 1 && <Videos project={{ ...project, videos: project.videos!.slice(1) }} lang={lang} />}
 
-        {project.link && <p className="pw-link"><a href={project.link.href} target="_blank" rel="noopener noreferrer"><ExternalLink size={14} aria-hidden="true" /> {t(project.link.label)}</a></p>}
 
         <nav className="pn" aria-label={lang === 'en' ? 'More projects' : '他のプロジェクト'}>
           <a className="pn-a prev" href={`#work/${prev.slug}`} onClick={(e) => { if (e.button !== 0 || e.metaKey || e.ctrlKey) return; e.preventDefault(); gotoProject(prev.slug) }}>
