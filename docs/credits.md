@@ -63,10 +63,15 @@ There are no audio files in the repository or in the build. Every sound is gener
 - **The fanfare** is an original synthesised chord. It is written in a heroic style but does not reproduce any film, game or wrestling theme.
 - Sound is muted from the speaker button, remembered for the visit, and never plays before the visitor has interacted with the page.
 
-## Third-party embeds and links (not hosted by this site)
-- **Rick roll video** (`youtube-nocookie.com/embed/dQw4w9WgXcQ`) and the **jumpscare theme video** (`youtube-nocookie.com/embed/_1CC4DWJvcQ`, a fan upload titled "WWE John Cena Official Theme Song (HQ)" by the channel MrSaddam14, not an official WWE channel): loaded from YouTube only when those Chaos effects fire, with a close button each. They are embeds, so no copy is stored or served by this site. YouTube's oEmbed service returned the video's metadata on 21 October 2026, which suggests embedding is allowed. Test it once on the live site. A fan upload can be removed or blocked at any time, so the gag has a text and sound fallback.
-- **Links only**: the First-Year Inauguration recording and the Elite Encounters episode on the Easwari Engineering College YouTube channel; the LeetCode and Duolingo profiles; LinkedIn and GitHub.
-- The Content Security Policy allows only `youtube-nocookie.com` as a frame source.
+## Hosted video clips (Chaos mode)
+- **Rick roll** (`public/media/vid/rick-90.mp4`) and the **John Cena entrance** (`public/media/vid/cena-90.mp4`): 90 second cuts of copyrighted clips supplied by Idris, hosted with this site and played in a loop until the popup is closed. Idris chose to host them instead of embedding YouTube. They are not licensed to this site, so a rights holder could ask for their removal; if that happens, delete the two files and the popups fall back to showing nothing.
+- The Content Security Policy allows no frames (`frame-src 'none'`) and `media-src 'self'`.
+
+## Links only (not hosted by this site)
+- The First-Year Inauguration recording and the Elite Encounters episode on the Easwari Engineering College YouTube channel; the LeetCode and Duolingo profiles; LinkedIn and GitHub.
+
+## Papers
+- `public/papers/ASANS-ICCORSE-2026.pdf`: the proceedings pages (cover and abstract) of ICCORSE 2026, Easwari Engineering College, ISBN 978-81-990189-7-6, containing the ASANS abstract.
 
 ## Generated art
 - The mascot Scout and every Chaos decoration are original SVG and CSS drawn for this site. They are not modelled on any existing character. Scout's design: round visor head, antenna with a yellow tip, pink side pods.

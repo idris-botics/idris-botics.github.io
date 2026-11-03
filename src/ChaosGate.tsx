@@ -77,7 +77,7 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
     if (step !== -1) return // music starts only after the visitor has pressed Proceed
     const stop = startMusic()
     const fallback = window.setTimeout(() => setReady(true), crawlMs.current + 10000) // never leave the screen without a way forward
-    const skip = window.setTimeout(() => setCanSkip(true), 10000) // a way past the crawl for phones, where typing a shortcut is not possible
+    const skip = window.setTimeout(() => setCanSkip(true), crawlMs.current * 0.65) // Proceed appears about two thirds of the way through the crawl
     return () => { stop(); clearTimeout(fallback); clearTimeout(skip) }
   }, [step])
   // shortcut: typing "idris" skips the crawl and every question
@@ -99,7 +99,12 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
     return () => { removeEventListener('keydown', k); document.body.style.overflow = prev }
   }, [onCancel])
 
-  const advance = () => { sfx(step + 1 >= STEPS.length ? 'fanfare' : 'blip'); if (step + 1 >= STEPS.length) onConfirm(); else setStep(step + 1) }
+  // each question arrives with a different, caused transition that starts from the button that was pressed (iris, whip, colour flood, grow, shake, glitch)
+  const [origin, setOrigin] = useState<{ x: number; y: number } | null>(null)
+  const advance = (e?: React.MouseEvent) => {
+    if (e) { const r = (e.currentTarget as HTMLElement).getBoundingClientRect(); setOrigin({ x: r.left + r.width / 2, y: r.top + r.height / 2 }) }
+    sfx(step + 1 >= STEPS.length ? 'fanfare' : 'blip'); if (step + 1 >= STEPS.length) onConfirm(); else setStep(step + 1)
+  }
   const s = step >= 0 ? STEPS[step] : null
   // the highlighted "yes" is on the right for every question except the last one, where Yes (dark) is on the left and the highlighted button is No
   const flip = step === STEPS.length - 1
@@ -143,10 +148,11 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
           </div>
         </>
       ) : (
-        <div className="gate-card">
+        <div key={step} className={`gate-card tx tx-${step % 6}`} style={{ '--ox': `${origin?.x ?? innerWidth / 2}px`, '--oy': `${origin?.y ?? innerHeight * 0.7}px` } as React.CSSProperties}>
+          {step % 6 === 2 && <i className="gate-flood" aria-hidden="true" />}
           <h2>{t(s.q)}</h2>
           <div className="gate-actions" style={{ flexDirection: flip ? 'row-reverse' : 'row' }}>
-            <button className={step === STEPS.length - 1 ? 'btn chaos-btn' : 'btn'} onClick={step === STEPS.length - 1 ? () => { sfx('error'); setCaught(true) } : onCancel}>{t(s.no)}</button>
+            <button className={step === STEPS.length - 1 ? 'btn chaos-btn' : 'btn gate-back'} onClick={step === STEPS.length - 1 ? () => { sfx('error'); setCaught(true) } : onCancel}>{t(s.no)}</button>
             <button key={step} className={step === STEPS.length - 1 ? 'btn' : 'btn chaos-btn'} autoFocus onClick={advance}>{t(s.yes)}</button>
           </div>
         </div>

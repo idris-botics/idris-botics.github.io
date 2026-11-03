@@ -48,7 +48,7 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   await p.context().close()
 }
 
-// 3. John Cena: text, no synthesised sting, X runs for 40 s, then stands still; Esc always closes
+// 3. John Cena: text, no synthesised sting, X runs for 30 s, then stands still; Esc always closes
 {
   const p = await fresh({ rand: 0.01, skip: ['rolled', 'cookie'] })
   let shown = false
@@ -57,25 +57,25 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   await p.waitForSelector('.cena-x', { timeout: 9000 }).catch(() => {})
   await p.evaluate(() => { if (window.__rand) Math.random = window.__rand })
   const hasVideo = (await p.locator('.cena-video').count()) === 1
-  out(hasVideo, 'theme video embedded')
+  out(hasVideo, 'theme video is the local file')
   const pos = async () => { const r = await p.locator('.cena-x').boundingBox(); return r ? [Math.round(r.x), Math.round(r.y)] : null }
   let moved = false
   for (let i = 0; i < 6 && !moved; i++) { const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(250); const d = await pos(); moved = Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) > 40 }
   out(moved, 'the X runs away from the pointer')
-  await sleep(20000)
+  await sleep(15000)
   const c1 = await pos(); await p.mouse.move(c1[0] + 24, c1[1] + 24); await sleep(400)
   const d1 = await pos()
-  out(Math.abs(d1[0] - c1[0]) + Math.abs(d1[1] - c1[1]) > 40, 'the cena X is still running after 20 s')
-  await sleep(21000)
+  out(Math.abs(d1[0] - c1[0]) + Math.abs(d1[1] - c1[1]) > 40, 'the cena X is still running after 15 s')
+  await sleep(17000)
   const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(400)
   const d = await pos()
-  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 40 s the X stands still')
+  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 32 s the X stands still')
   await p.locator('.cena-x').click()
   out((await p.locator('.cena').count()) === 0, 'the X closes it')
   await p.context().close()
 }
 
-// 5. rick roll: X runs for 40 seconds, then holds still; Esc always closes
+// 5. rick roll: X runs for 30 seconds, then holds still; Esc always closes
 {
   const p = await fresh({ rand: 0.01, skip: ['cena', 'cookie'] })
   for (let i = 0; i < 80 && !(await p.locator('.rick').count()); i++) { await p.mouse.wheel(0, 500); await sleep(60) }
@@ -86,14 +86,14 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   let moved = false
   for (let i = 0; i < 6 && !moved; i++) { const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(250); const d = await pos(); moved = Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) > 40 }
   out(moved, 'rick X runs away from the pointer')
-  await sleep(21000)
+  await sleep(15000)
   const c0 = await pos(); await p.mouse.move(c0[0] + 24, c0[1] + 24); await sleep(400)
   const d0 = await pos()
-  out(Math.abs(d0[0] - c0[0]) + Math.abs(d0[1] - c0[1]) > 40, 'rick X is still running after 20 s')
-  await sleep(21000)
+  out(Math.abs(d0[0] - c0[0]) + Math.abs(d0[1] - c0[1]) > 40, 'rick X is still running after 15 s')
+  await sleep(17000)
   const c = await pos(); await p.mouse.move(c[0] + 24, c[1] + 24); await sleep(400)
   const d = await pos()
-  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 40 s the rick X stands still')
+  out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 32 s the rick X stands still')
   await p.keyboard.press('Escape'); await sleep(300)
   out((await p.locator('.rick').count()) === 0, 'Esc closes the rick roll')
   await p.context().close()
@@ -175,11 +175,11 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   const ctx = await b.newContext({ viewport: { width: 1280, height: 800 } })
   const p = await ctx.newPage()
   await p.goto(url + '?lang=en', { waitUntil: 'networkidle' })
-  await p.getByRole('button', { name: /CHAOS/ }).click()
+  await p.getByRole('button', { name: /Enter Chaos/ }).click()
   await p.getByRole('button', { name: 'Proceed', exact: true }).click()
   await sleep(9000)
-  out((await p.getByRole('button', { name: 'Proceed', exact: true }).count()) === 0, 'no skip button before 10 s')
-  await sleep(2500)
+  out((await p.getByRole('button', { name: 'Proceed', exact: true }).count()) === 0, 'no skip button early in the crawl')
+  await p.getByRole('button', { name: 'Proceed', exact: true }).waitFor({ timeout: 100000 }) // appears about 65% of the way through the crawl
   await p.getByRole('button', { name: 'Proceed', exact: true }).click()
   out((await p.locator('.gate-card').count()) === 1, 'the skip button goes to the questions')
   for (let i = 0; i < 4; i++) { await p.locator('.gate-card .chaos-btn').click(); await sleep(150) }

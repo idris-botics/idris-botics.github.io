@@ -1,6 +1,6 @@
 // Clicks the CHAOS button and walks through the opening crawl and every "are you sure" dialog.
 export async function enterChaos(page) {
-  await page.getByRole('button', { name: /CHAOS/ }).click() // the button sits at the very bottom of the page
+  await page.getByRole('button', { name: 'Enter Chaos' }).click() // the teaser button near the bottom of the page
   await page.getByRole('button', { name: 'Proceed', exact: true }).click() // the plain notice comes first
   // the OK button only appears once the crawl has run: finish it early for tests
   await page.evaluate(() => document.querySelector('.crawl-inner')?.dispatchEvent(new Event('animationend', { bubbles: true })))

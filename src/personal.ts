@@ -20,7 +20,7 @@ export const openFields: Record<string, string[]> = {
   net: ['Paper title, venue, status (ICCORSE 2026?)'],
   gait: ['My role details beyond Hardware Team Lead', 'Photos of the build'],
   vehicles: ['Smart India Hackathon: role, problem statement, outcome'],
-  quadrupeds: ['Confirm the spider has 2 joints (8 servos): read from the photo', 'Better original photo of the spider quadruped'],
+  spider: ['Confirm the spider has 2 joints (8 servos): read from the video'],
   cpu8: ['Build-log photos and day-by-day lessons'],
   pipe: ['Source repo link for the Python simulation'],
   pid: ['Paper venue and status; hardware validation when done'],

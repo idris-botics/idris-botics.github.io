@@ -27,16 +27,17 @@ const OPTIONS: { key: Robot; label: { en: string; ja: string }; blurb: { en: str
 ]
 
 /** Quadruped lab: switch between the RoboDog mechanism and the spider's two-joint legs. */
-export default function GaitSim({ lang, onEvent }: { lang: Lang; onEvent?: (e: GaitEvent) => void }) {
-  const [robot, setRobot] = useState<Robot>('dog')
+export default function GaitSim({ lang, onEvent, robot: fixed }: { lang: Lang; onEvent?: (e: GaitEvent) => void; robot?: Robot }) {
+  const [chosen, setRobot] = useState<Robot>('dog')
+  const robot = fixed ?? chosen
   const cur = OPTIONS.find((o) => o.key === robot)!
   return (
     <div>
-      <div role="group" aria-label={lang === 'en' ? 'Choose a robot' : 'ロボットを選択'} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+      {!fixed && <div role="group" aria-label={lang === 'en' ? 'Choose a robot' : 'ロボットを選択'} style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
         {OPTIONS.map((o) => (
           <button key={o.key} className="chip" aria-pressed={robot === o.key} onClick={() => setRobot(o.key)}>{o.label[lang]}</button>
         ))}
-      </div>
+      </div>}
       <p style={{ margin: '0 0 8px', color: 'var(--muted)', maxWidth: 760 }}>{cur.blurb[lang]}</p>
       {robot === 'dog' ? <DogView lang={lang} onEvent={() => onEvent?.('chaos-gait')} /> : <SpiderView lang={lang} onEvent={onEvent} />}
     </div>

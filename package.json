@@ -17,8 +17,8 @@
     "workbook": "node scripts/gen-workbook.mjs",
     "test:run": "vitest run",
     "export:public": "node scripts/export-public.mjs",
-    "test:e2e": "node tests/calm-check.mjs && node tests/chaos-check.mjs && node tests/esc-collapse.mjs && node tests/browsers.mjs && node tests/mobile.mjs && node tests/break-ui.mjs && node tests/contact-cleanup.mjs && node tests/gate.mjs && node tests/gate-skip.mjs && node tests/net-loop.mjs && node tests/gallery-nav.mjs && node tests/lightbox.mjs && node tests/habit-links.mjs",
-    "test:chaos": "node tests/podcast.mjs && node tests/gravity.mjs && node tests/rick-filter.mjs && node tests/chaos-gags2.mjs && node tests/flyby-crash.mjs && node tests/robot-evict.mjs && node tests/section-notes.mjs && node tests/cena.mjs && node tests/enlarge.mjs"
+    "test:e2e": "node tests/calm-check.mjs && node tests/chaos-check.mjs && node tests/esc-collapse.mjs && node tests/browsers.mjs && node tests/mobile.mjs && node tests/break-ui.mjs && node tests/contact-cleanup.mjs && node tests/gate.mjs && node tests/gate-skip.mjs && node tests/net-loop.mjs && node tests/clips.mjs && node tests/gallery-nav.mjs && node tests/lightbox.mjs",
+    "test:chaos": "node tests/chaos-coverage.mjs && node tests/chaos-work.mjs && node tests/chaos-coffee.mjs && node tests/mission-control.mjs && node tests/achievements-version.mjs && node tests/podcast.mjs && node tests/gravity.mjs && node tests/rick-filter.mjs && node tests/chaos-gags2.mjs && node tests/flyby-crash.mjs && node tests/robot-evict.mjs && node tests/section-notes.mjs && node tests/cena.mjs && node tests/enlarge.mjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans-jp": "^5.3.1",

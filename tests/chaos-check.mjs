@@ -19,7 +19,7 @@ const stuck = await p.evaluate(() => [...document.querySelectorAll('main .card')
 console.log('elements still transformed after restore:', stuck, 'body overflow:', await p.evaluate(() => document.body.style.overflow || 'ok'))
 // Esc returns to Calm
 await p.keyboard.press('Escape')
-await p.waitForTimeout(500)
+await p.waitForTimeout(900)
 console.log('mode after Esc:', await p.evaluate(() => document.documentElement.dataset.mode))
 // barrel roll typing in chaos
 await enterChaos(p)

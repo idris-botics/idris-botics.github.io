@@ -14,7 +14,7 @@ const csp = (): Plugin => ({
       "style-src 'self' 'unsafe-inline'", // React inline style attributes
       "img-src 'self' data:",
       "media-src 'self'",
-      "frame-src https://www.youtube-nocookie.com", // only the optional embedded song, and only after the Chaos gag fires
+      "frame-src 'none'",
       "font-src 'self' data:",
       "connect-src 'self'",
       "worker-src 'self' blob:",

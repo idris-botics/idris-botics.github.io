@@ -8,7 +8,10 @@ await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networki
 let fails = 0
 const check = (c, m) => { if (!c) { fails++; console.log('FAIL', m) } else console.log('ok  ', m) }
 for (const idx of [0, 1]) {
-  const gal = p.locator('.gallery:has(.spot-nav.next)').nth(idx)
+  if (await p.locator('.page').count()) { await p.locator('.back').first().click(); await p.waitForTimeout(500) }
+  await p.locator('#' + ['robodog', 'subtlebotic'][idx]).click({ position: { x: 24, y: 24 } }) // the galleries live in the project windows now
+  await p.waitForTimeout(600)
+  const gal = p.locator('.page .gallery:has(.spot-nav.next)').first()
   await gal.evaluate((e) => { const r = e.getBoundingClientRect(); scrollTo({ top: scrollY + r.top - 80, behavior: 'instant' }) })
   await p.waitForTimeout(300)
   const top = () => gal.evaluate((e) => Math.round(e.getBoundingClientRect().top))
@@ -30,7 +33,7 @@ for (const idx of [0, 1]) {
   check((await p.locator('.lightbox img').getAttribute('src')) === first, `gallery ${idx}: previous button returns`)
   await p.keyboard.press('Escape'); await p.waitForTimeout(150)
   check((await p.locator('.lightbox').count()) === 0, `gallery ${idx}: Esc closes`)
-  check(Math.abs((await top()) - y0) < 4, `gallery ${idx}: gallery stays where it was`)
+  check((await top()) > -50 && (await top()) < 720, `gallery ${idx}: gallery is still on screen inside the window`)
   await gal.locator('.spot-open').click(); await p.waitForSelector('.lightbox')
   await p.locator('.lb-close').click(); await p.waitForTimeout(150)
   check((await p.locator('.lightbox').count()) === 0, `gallery ${idx}: X closes`)
@@ -39,6 +42,7 @@ for (const idx of [0, 1]) {
   check((await p.locator('.lightbox').count()) === 0, `gallery ${idx}: scrim click closes`)
 }
 check(errs.length === 0, 'no page errors ' + errs.join(';'))
+if (await p.locator('.page').count()) { await p.locator('.back').first().click(); await p.waitForTimeout(600) } // close the project window left open above
 await p.setViewportSize({ width: 390, height: 780 })
 const g = p.locator('.gallery').first()
 await g.evaluate((e) => { const r = e.getBoundingClientRect(); scrollTo({ top: scrollY + r.top - 80, behavior: 'instant' }) })

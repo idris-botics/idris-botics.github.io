@@ -6,21 +6,21 @@ const p = await b.newPage({ viewport: { width: 1366, height: 800 } })
 const errs = []
 p.on('pageerror', (e) => errs.push(e.message))
 await p.goto(url, { waitUntil: 'networkidle' })
-await p.evaluate(() => { document.getElementById('net').scrollIntoView({ behavior: 'instant' }); scrollBy({ top: 500, behavior: 'instant' }) })
-await p.waitForSelector('#net .sim', { timeout: 15000 })
-await p.evaluate(() => document.querySelector('#net .sim').scrollIntoView({ block: 'center', behavior: 'instant' }))
+await p.locator('#net').click(); await p.locator('.page .play').click()
+await p.waitForSelector('.page .sim', { timeout: 15000 })
+await p.evaluate(() => document.querySelector('.page .sim').scrollIntoView({ block: 'center', behavior: 'instant' }))
 await p.waitForTimeout(500)
 let fails = 0
 const check = (c, m) => { if (!c) { fails++; console.log('FAIL', m) } else console.log('ok  ', m) }
-check((await p.locator('#net .sim button', { hasText: /Launch|Next wave|Try again/ }).count()) === 0, 'no game buttons (launch, next wave, retry)')
-check((await p.locator('#net canvas').first().evaluate((c) => c.tabIndex < 0 && getComputedStyle(c).cursor !== 'grab')), 'the canvas is not interactive')
+check((await p.locator('.page .sim button', { hasText: /Launch|Next wave|Try again/ }).count()) === 0, 'no game buttons (launch, next wave, retry)')
+check((await p.locator('.page canvas').first().evaluate((c) => c.tabIndex < 0 && getComputedStyle(c).cursor !== 'grab')), 'the canvas is not interactive')
 // read the readout text over time: it reports captured debris counts
 const seen = new Set()
 let shot = false
 const t0 = Date.now()
 let sawCapture = false, loopedOn = false, capKey = ''
 while (Date.now() - t0 < 120000) {
-  const r = await p.locator('#net .sim-readout').first().innerText().catch(() => '')
+  const r = await p.locator('.page .sim-readout').first().innerText().catch(() => '')
   const m = r.match(/(\d+) of (\d+) debris captured, net (open|closed)/)
   if (m) { seen.add(`${m[1]}/${m[2]}/${m[3]}`); const key = `${m[1]}/${m[2]}/${m[3]}`; if (!sawCapture && m[2] !== '0' && m[1] === m[2] && m[3] === 'closed') { sawCapture = true; capKey = key } else if (sawCapture && key !== capKey) loopedOn = true }
   if (m && m[3] === 'closed' && !shot) { shot = true; await p.screenshot({ path: 'tests/out/net-loop-caught.png' }) }

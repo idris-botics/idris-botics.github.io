@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { projects, statusLabel, loopLabel, bench, timeline, progression, learning, fieldEvents, languages, skills, interests, highlights, beyond, beyondCards, fieldMedia, hero, links, type L } from './content'
+import { projects, statusLabel, loopLabel, timeline, pathRows, aboutText, tiles, strip, learning, fieldEvents, hero, links, featured, type L } from './content'
 import { EM_DASH, ROOT, SRC, read, walk } from './test/fs'
 
 const imgDir = join(ROOT, 'public', 'media', 'img')
@@ -26,7 +26,7 @@ describe('content integrity', () => {
   it('every bilingual field has non-empty en and ja', () => {
     const all = [
       ...projects.flatMap((p) => collectL(p, p.slug)),
-      ...collectL({ statusLabel, loopLabel, bench, timeline, progression, learning, fieldEvents, languages, skills, interests, highlights, beyond, beyondCards, fieldMedia, hero }, 'root'),
+      ...collectL({ statusLabel, loopLabel, timeline, pathRows, aboutText, tiles, strip, learning, fieldEvents, hero }, 'root'),
     ]
     expect(all.length).toBeGreaterThan(100)
     const bad = all.filter((x) => !x.l.en.trim() || !x.l.ja.trim()).map((x) => x.path)
@@ -44,6 +44,14 @@ describe('content integrity', () => {
       expect(statusLabel[p.status], p.slug).toBeDefined()
       expect(p.status, p.slug).not.toBe('OPEN')
     }
+  })
+
+  it('featured and tile data point at real projects', () => {
+    const slugs = projects.map((p) => p.slug)
+    expect(featured).toHaveLength(3)
+    for (const f of featured) { expect(slugs).toContain(f); expect(tiles[f].line, f).toBeDefined(); expect(tiles[f].did, f).toBeDefined() }
+    expect(slugs.filter((s) => !tiles[s])).toEqual([])
+    for (const s of strip) expect(existsSync(join(imgDir, `${s.media.src}-640.webp`)), s.media.src).toBe(true)
   })
 
   it('every project has a valid tier and loops', () => {
@@ -87,7 +95,7 @@ describe('content integrity', () => {
     const body = reg.slice(reg.indexOf('export const SimView'))
     for (const p of projects) if (p.sim) {
       expect(body, p.slug).toMatch(new RegExp(`\\b${p.sim}\\s*[:(]`))
-      expect(existsSync(join(SRC, 'sims', p.sim, 'View.tsx')), p.sim).toBe(true)
+      expect(existsSync(join(SRC, 'sims', p.sim === 'dog' || p.sim === 'spider' ? 'gait' : p.sim, 'View.tsx')), p.sim).toBe(true)
     }
   })
 
@@ -106,7 +114,7 @@ describe('source hygiene', () => {
     expect(offenders).toEqual([])
   })
   it('no OPEN placeholder leaks into rendered content data', () => {
-    const json = JSON.stringify({ projects, bench, timeline, highlights })
+    const json = JSON.stringify({ projects, timeline, pathRows, aboutText, tiles, strip })
     expect(json).not.toMatch(/\bOPEN\b/)
     expect(json).not.toMatch(/TODO|TBD|FIXME|lorem ipsum/i)
   })

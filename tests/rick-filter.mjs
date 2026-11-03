@@ -12,9 +12,10 @@ let fails = 0
 const check = (name, ok) => { if (!ok) fails++; console.log(ok ? 'ok  ' : 'FAIL', name) }
 
 // swarm tabs
-await p.locator('#swarm').scrollIntoViewIfNeeded(); await p.mouse.wheel(0, 900); await p.waitForTimeout(1500)
+await p.locator('#swarm').click({ position: { x: 24, y: 24 } }); await p.locator('.view-tabs .chip').nth(1).click(); await p.locator('.page .play').click(); await p.waitForTimeout(1500) // the simulation lives in the project window now
 const tabs = await p.getByRole('button', { name: /^[123]\s+(One robot|Coordination|Docking)/ }).count()
 check('swarm wrapper has 3 parts (' + tabs + ')', tabs === 3)
+await p.locator('.back').first().click(); await p.waitForTimeout(400)
 
 // chaos rick roll
 await enterChaos(p)

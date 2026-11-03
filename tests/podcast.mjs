@@ -3,7 +3,7 @@ import { chromium } from '@playwright/test'
 const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
 const p = await b.newPage({ viewport: { width: 1280, height: 800 } })
 const reqs = []
-p.on('request', (r) => { if (/youtube|ytimg/.test(r.url())) reqs.push(r.url()) })
+p.on('request', (r) => { if (/youtube|ytimg|youtube/.test(r.url())) reqs.push(r.url()) })
 await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networkidle' })
 await p.getByRole('link', { name: /recording on YouTube/ }).scrollIntoViewIfNeeded()
 await p.waitForTimeout(500)

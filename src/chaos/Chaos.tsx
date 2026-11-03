@@ -2,6 +2,8 @@
 // Every gag is registered through the scheduler (guide §22.8) and can be disabled in config.ts.
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Matter from 'matter-js'
+import HintBot from './HintBot'
+import CornerMenu from './CornerMenu'
 import '@fontsource/m-plus-rounded-1c/latin-500.css'
 import '@fontsource/m-plus-rounded-1c/latin-800.css'
 import '@fontsource/m-plus-rounded-1c/japanese-500.css'
@@ -10,6 +12,14 @@ import { chaosConfig, type GagId } from './config'
 import { Scheduler, type Tier } from './scheduler'
 import { caption } from './captions'
 import { subscribe } from '../bus'
+import Coffee from './Coffee'
+import MissionControl from './MissionControl'
+import Narrators from './Narrators'
+import WorkAwards from './WorkAwards'
+import { hitStop } from './juice'
+import { tidyThen } from '../lib/tidy'
+import Ending from './Ending'
+import { isHelped } from './hintsStore'
 import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
 import { X } from 'lucide-react'
 import { angerBeep, fall, impact, sfx, startConstruction } from './sfx'
@@ -18,6 +28,8 @@ import { useStore } from '../store'
 import Scout from '../Scout'
 
 const on = (g: GagId) => chaosConfig.gags[g]
+/** The scroll goals for the roll and the jumpscare were set for a page of about 9000 px; the redesigned page is much shorter, so they shrink with it (never below a quarter). */
+const pageScale = () => Math.max(0.25, Math.min(1, (document.documentElement.scrollHeight - innerHeight) / 9000))
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 const SIM_EVENTS = new Set(['p2a', 'p2b', 'p2c', 'p3', 'p5', 'p6a', 'p6b', 'p8a', 'p8d', 'p8e', 'p9a', 'p9b'])
 const FLYERS = ['🚀', '🛸', '☄️', '🛰️']
@@ -34,6 +46,13 @@ const ACH: Record<string, { en: string; ja: string }> = {
   evicted: { en: 'Evicted by the robot', ja: 'ロボットに追い出された' },
   cena: { en: 'Heard a name', ja: '名前を聞いた' },
   omae: { en: 'Heard the verdict', ja: '宣告を聞いた' },
+  coffee: { en: 'Caffeinated', ja: 'カフェイン注入' },
+  featured: { en: 'Opened every featured project', ja: '主な3件をすべて開いた' },
+  twin: { en: 'Ran the PID twin', ja: 'PIDツインを動かした' },
+  about: { en: 'Read the About story', ja: '自己紹介を読んだ' },
+  cv: { en: 'Found the CV', ja: '履歴書を見つけた' },
+  everything: { en: 'Found everything', ja: 'すべて見つけた' },
+  legend: { en: 'Saw a legendary line', ja: '伝説の一言を見た' },
 }
 const GUILT: { en: string; ja: string }[] = [
   { en: 'That was Captain Pip. He had a family, a goldfish, and a lifelong dream of reaching the Moon. He was nearly there.', ja: 'あれはピップ船長でした。家族も金魚もいて、月に行くのが夢でした。もう少しだったのに。' },
@@ -44,12 +63,13 @@ const GUILT: { en: string; ja: string }[] = [
 ]
 /** One short comment per section, shown only after the reader has been in that section for a moment. `slot` (from the joke workbook) wins if Idris has chosen one. */
 const SECTION_NOTES: Record<string, { slot?: string; en: string; ja: string; alt?: { en: string; ja: string } }> = {
-  pid: { en: 'The servo is thinking. Slowly. Give it a gain or two.', ja: 'サーボは考え中です。ゆっくりと。ゲインを少し足してあげてください。', alt: { en: 'Tuning by hand is a hobby. Tuning by search is a project.', ja: '手でゲインを合わせるのは趣味。探索で合わせるのはプロジェクトです。' } },
+  pid: { en: 'The servo is thinking. Slowly. Give it a gain or two.', ja: 'サーボは考え中です。ゆっくりと。ゲインを少し足してあげてください。', alt: { en: 'Tuning manually is a hobby. Tuning by search is a project.', ja: '手でゲインを合わせるのは趣味。探索で合わせるのはプロジェクトです。' } },
   swarm: { en: 'No leader in this one. Which is also how some group projects feel.', ja: 'このスウォームにはリーダーがいません。グループ課題みたいですね。', alt: { en: 'Three small robots, zero managers.', ja: '小さなロボット3台、上司はゼロ。' } },
   net: { en: 'Yes, it catches space junk. No, nobody has sent an invoice.', ja: '宇宙ゴミを捕まえます。請求書はまだ誰も送っていません。', alt: { en: 'Capture rate is high. Paperwork is still pending.', ja: '捕獲率は高めです。書類はまだ保留中です。' } },
   abb: { slot: 'p10', en: 'The arm is practising its handshake.', ja: 'アームは握手の練習中です。', alt: { en: 'An industrial arm, a bin of parts, and a lot of patience.', ja: '産業用アームと部品の山、そして大量の忍耐。' } },
-  cpu8: { en: 'Eight bits. Every wire placed by hand, and the flicker was one of them.', ja: '8ビット。配線はすべて手作業で、チラつきの犯人もその中の1本でした。', alt: { en: 'It computes. Slowly. By hand-placed wire.', ja: '計算します。ゆっくりと。手配線で。' } },
-  quadrupeds: { en: 'Two robots, eight legs between them, still no fur.', ja: 'ロボット2台、脚は合わせて8本。それでも毛はありません。', alt: { en: 'Eight legs in total. Perfectly balanced, as all things should not be.', ja: '脚は合計8本。バランスは完璧、のはずです。' } },
+  cpu8: { en: 'Eight bits. Every wire placed one at a time, and the flicker was one of them.', ja: '8ビット。配線はすべて手作業で、チラつきの犯人もその中の1本でした。', alt: { en: 'It computes. Slowly. On wires placed one at a time.', ja: '計算します。ゆっくりと。手配線で。' } },
+  robodog: { en: 'Four legs, two eyes, still no fur.', ja: '脚4本、目2つ。それでも毛はありません。', alt: { en: 'It has eyes now. It is judging you.', ja: '目がつきました。あなたを見ています。' } },
+  spider: { en: 'Eight servos, four legs, zero patience for carpets.', ja: 'サーボ8個、脚4本。絨毯は苦手です。', alt: { en: 'Eight servos. Perfectly balanced, as all things should not be.', ja: 'サーボは8個。バランスは完璧、のはずです。' } },
   vehicles: { en: 'Bluetooth connects when it feels like it. Be patient.', ja: 'Bluetoothは気が向いたときに繋がります。気長にどうぞ。', alt: { en: 'Four wheels, two tracks, and one stubborn Bluetooth link.', ja: '四輪、二本のキャタピラ、そして頑固なBluetooth。' } },
   pipe: { en: 'Somewhere in this pipe a leak is hiding. Do not tell it I said so.', ja: 'このパイプのどこかに漏れが隠れています。私が言ったとは内緒で。', alt: { en: 'The leak is somewhere in here. The pipe is not telling.', ja: '漏れはこのどこかに。パイプは黙秘中です。' } },
   stepscribe: { en: 'A tool that explains CAD so nobody has to. Lazy, but in a clever way.', ja: 'CADを説明してくれるツール。怠け者の発明ですが、賢い怠け方です。', alt: { en: 'CAD, explained in plain text.', ja: 'CADを、ふつうの文章で説明します。' } },
@@ -126,16 +146,24 @@ export default function Chaos() {
   const [progress, setProgress] = useState(0)
   const [nap, setNap] = useState(false)
   // the count starts again on a refresh or a normal exit; it is kept only after an eviction or a Chaos crash (see achievementsStore)
-  const [ach, setAch] = useState<string[]>(takeInitialAchievements)
+  const [ach, setAch] = useState<string[]>(() => takeInitialAchievements().filter((a) => a in ACH))
   const [achOpen, setAchOpen] = useState(false)
   useEffect(() => { achievementsTaken() }, [])
   const awarded = useRef(new Set<string>(ach))
   const award = useCallback((id: string) => {
-    if (awarded.current.has(id)) return
+    if (awarded.current.has(id) || !(id in ACH)) return
     awarded.current.add(id)
+    hitStop(40)
     setAch((a) => { const n = [...a, id]; setCurrentAchievements(n); return n })
     setTimeout(() => sfx('chime'), 350)
   }, [])
+  // end-to-end tests (?e2e=1) can award achievements directly, so the whole ending can be checked without playing every gag
+  useEffect(() => {
+    if (!new URLSearchParams(location.search).has('e2e')) return
+    const w = window as unknown as { __award?: (id: string) => void }
+    w.__award = award
+    return () => { delete w.__award }
+  }, [award])
   const [bubble, setBubble] = useState<string | null>(null)
   const [rick, setRick] = useState(false)
   const [boom, setBoom] = useState<{ id: number; x: number; y: number } | null>(null)
@@ -147,6 +175,7 @@ export default function Chaos() {
   const bubbleTimer = useRef(0)
   const setEvicted = useStore((s) => s.setEvicted)
   const [omae, setOmae] = useState(0)
+  const [coffee, setCoffee] = useState({ n: 0 }) // each "coffee" typed (or run from the command box) bumps n
   const [cena, setCena] = useState(0)
   const [pileStage, setPileStage] = useState(0)
   const [restoring, setRestoring] = useState(false) // the page is still being put back: no second press yet
@@ -154,16 +183,32 @@ export default function Chaos() {
   const stopWork = useRef<(() => void) | null>(null)
   useEffect(() => () => { stopWork.current?.() }, [])
   const [count, setCount] = useState(10) // the "you have to wait" countdown: starts at 10 and does not stop at 0
+  const [forgot, setForgot] = useState(false) // second press only: the count stops at 2, loses its place, and starts again from 10
+  const pileStageRef = useRef(0)
   useEffect(() => {
     if (!restoring) return
-    const id = window.setInterval(() => setCount((c) => (c <= -10 ? c : c - 1)), 1000)
-    return () => clearInterval(id)
+    if (pileStageRef.current !== 1) {
+      const id = window.setInterval(() => setCount((c) => (c <= -10 ? c : c - 1)), 1000)
+      return () => clearInterval(id)
+    }
+    let id = 0, wait = 0
+    const down = (stopAt: number, then?: () => void) => {
+      id = window.setInterval(() => setCount((c) => {
+        if (c - 1 <= stopAt) { clearInterval(id); if (then) then() }
+        return Math.max(stopAt, c - 1)
+      }), 1000)
+    }
+    down(2, () => {
+      setForgot(true)
+      wait = window.setTimeout(() => { setForgot(false); setCount(10); down(0) }, 3000)
+    })
+    return () => { clearInterval(id); clearTimeout(wait); setForgot(false) }
   }, [restoring])
   const [noteUp, setNoteUp] = useState(false)
   const noteTimer = useRef(0)
   const xBtn = useRef<HTMLButtonElement>(null)
   const xDodges = useRef(0)
-  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first 40 seconds, then holds still (Esc always closes)
+  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first 30 seconds, then holds still (Esc always closes)
   useEffect(() => { if (rick) rickOpenedAt.current = performance.now() }, [rick])
   const [xPos, setXPos] = useState<{ x: number; y: number } | null>(null)
   const [cenaPos, setCenaPos] = useState<{ x: number; y: number } | null>(null)
@@ -179,7 +224,7 @@ export default function Chaos() {
     tauntTimer.current = window.setTimeout(() => setTaunt(null), 1500)
   }, [])
   const cenaX = useRef<HTMLButtonElement>(null)
-  const cenaShownAt = useRef(0) // the X on the video runs away for its first 40 seconds, then holds still (Esc always closes)
+  const cenaShownAt = useRef(0) // the X on the video runs away for its first 30 seconds, then holds still (Esc always closes)
   useEffect(() => { if (cena === 3) cenaShownAt.current = performance.now() }, [cena])
   const [stops, setStops] = useState<{ id: string; at: number }[]>([])
   const toastTimer = useRef<number>(0)
@@ -224,7 +269,7 @@ export default function Chaos() {
     const k = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && document.querySelector('.cena-video')) { setCena(0); sched.current?.end('cena'); return }
       if (e.key === 'Escape' && document.querySelector('.rick')) { setRick(false); sched.current?.end('rick'); return }
-      if (e.key === 'Escape') { sched.current?.noteRestore(); collapse.current?.stop(); collapse.current = null; setMode('calm') }
+      if (e.key === 'Escape') { sched.current?.noteRestore(); const falling = !!collapse.current; collapse.current?.stop(); collapse.current = null; if (falling) setMode('calm'); else tidyThen(() => setMode('calm')) }
     }
     addEventListener('keydown', k)
     return () => removeEventListener('keydown', k)
@@ -406,7 +451,7 @@ export default function Chaos() {
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && run('finale', 'C', true)) {
         io.disconnect(); setFinale(true); award('finale'); sfx('fanfare'); say('g15', 7000)
-        setTimeout(() => { setFinale(false); sched.current?.end('finale') }, reduced() ? 1000 : 4500)
+        setTimeout(() => { setFinale(false); sched.current?.end('finale') }, reduced() ? 1000 : 2800)
       }
     }, { rootMargin: '-30% 0px -20% 0px', threshold: 0 })
     io.observe(el)
@@ -439,7 +484,7 @@ export default function Chaos() {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return } // the page falling is not reading
       travelled += Math.abs(scrollY - last)
       last = scrollY
-      if (done || travelled < goal) return
+      if (done || travelled < goal * pageScale()) return
       if (!run('rick', 'C', true)) return
       done = true
       const root = document.documentElement
@@ -487,10 +532,11 @@ export default function Chaos() {
     const onScroll = () => {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return }
       travelled += Math.abs(scrollY - last); last = scrollY
-      if (done || travelled < goal || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae')) return
+      if (done || travelled < goal * pageScale() || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae')) return
       if (!run('cena', 'C', true)) return
       done = true
       award('cena')
+      hitStop(60)
       setCena(1)
       setTimeout(() => setCena(2), 1050)
       setTimeout(() => setCena(3), 2600)
@@ -532,6 +578,25 @@ export default function Chaos() {
     return () => removeEventListener('keydown', k)
   }, [award])
 
+  // Mission Control (and the command box on phones) can run a secret without a keyboard
+  const fireWord = useCallback((id: string) => {
+    if (id === 'moon') { document.querySelector<HTMLElement>('.moon')?.click(); return }
+    for (const ch of id) document.body.dispatchEvent(new KeyboardEvent('keydown', { key: ch, bubbles: true }))
+  }, [])
+
+  // coffee: type it anywhere
+  useEffect(() => {
+    if (!on('coffee')) return
+    let buf = ''
+    const k = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest('input, textarea, select')) return
+      buf = (buf + e.key.toLowerCase()).slice(-6)
+      if (buf === 'coffee') { buf = ''; setCoffee((c) => ({ n: c.n + 1 })) }
+    }
+    addEventListener('keydown', k)
+    return () => removeEventListener('keydown', k)
+  }, [])
+
   // click a line of text: it breaks into words that fall, then re-forms
   useEffect(() => {
     if (!on('shatter') || reduced()) return
@@ -540,7 +605,7 @@ export default function Chaos() {
       const el = (e.target as HTMLElement).closest<HTMLElement>('main p, main li, main h3')
       if (!el || el.closest('.sim, .rick, a, button') || el.children.length > 0 || el.dataset.broken) return
       const text = el.textContent ?? ''
-      if (text.length < 12 || text.length > 240 || performance.now() - last < 3500 || Math.random() > 0.45) return
+      if (text.length < 12 || text.length > 420 || performance.now() - last < 3500 || Math.random() > 0.45) return
       last = performance.now()
       el.dataset.broken = '1'
       sfx('crack')
@@ -643,6 +708,7 @@ export default function Chaos() {
     const stage = moonCount
     const id = 'moon' + stage
     if (!run(id, 'C', true)) return
+    hitStop(60)
     setMoonCount(stage + 1)
     if (stage === 2) { // third press: no physics, just the song
       award('moon3'); sched.current?.end(id)
@@ -655,6 +721,7 @@ export default function Chaos() {
     fall(stage === 0 ? 1 : -1)
     setPile(true)
     setPileStage(stage)
+    pileStageRef.current = stage
     setNoteUp(false)
     clearTimeout(noteTimer.current)
     noteTimer.current = window.setTimeout(() => setNoteUp(true), 4300) // once it has all landed, the page speaks
@@ -673,7 +740,7 @@ export default function Chaos() {
     setRestoring(true)
     stopWork.current?.(); stopWork.current = startConstruction() // construction noise while the page is "fixed"
     clearTimeout(restoreTimer.current)
-    restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false; stopWork.current?.(); stopWork.current = null }, ms + 300)
+    restoreTimer.current = window.setTimeout(() => { setRestoring(false); quietRef.current = false; stopWork.current?.(); stopWork.current = null }, pileStageRef.current === 1 ? Math.max(ms + 300, 22000) : ms + 300) // second press: 10 to 2, a 3 s slip, then 10 to 0
     sched.current?.end(moonId.current)
   }, [])
 
@@ -794,7 +861,7 @@ export default function Chaos() {
       {cena > 0 && (
         <div className={cena < 3 ? 'cena' : 'cena cena-steady'} role="dialog" onPointerMove={(e) => {
           const x = cenaX.current
-          if (!x || cena < 3 || performance.now() - cenaShownAt.current > 40000) return
+          if (!x || cena < 3 || performance.now() - cenaShownAt.current > 30000) return
           const r = x.getBoundingClientRect()
           if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) > 160) return
           const m = 28
@@ -808,9 +875,7 @@ export default function Chaos() {
           <p className="cena-a" aria-hidden="true">{lang === 'en' ? 'AND HIS NAME IS' : 'そして彼の名は'}</p>
           {cena > 1 && <p className="cena-b" aria-hidden="true">JOHN CENA</p>}
           {cena > 2 && (
-            <iframe className="cena-video" title={lang === 'en' ? 'Entrance theme' : '入場テーマ'}
-              src="https://www.youtube-nocookie.com/embed/_1CC4DWJvcQ?autoplay=1&rel=0&playsinline=1"
-              allow="autoplay; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+            <LoopVideo className="cena-video" name="cena-90" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
           )}
           {cena > 2 && (
             <button ref={cenaX} className="btn cena-x" autoFocus aria-label={lang === 'en' ? 'Close' : '閉じる'}
@@ -820,6 +885,13 @@ export default function Chaos() {
         </div>
       )}
       {taunt && <span key={taunt.id} className={taunt.x > 220 ? 'x-taunt left' : 'x-taunt'} style={{ left: taunt.x + (taunt.x > 220 ? -12 : 60), top: taunt.y + 6 }} aria-hidden="true">{taunt.text}</span>}
+      {on('coffee') && <Coffee lang={lang} fire={coffee} say={sayText} award={award} start={() => run('coffee', 'C', true)} end={() => sched.current?.end('coffee')} />}
+      <MissionControl lang={lang} found={ach} say={sayText} fire={fireWord} />
+      <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} />
+      <CornerMenu lang={lang} />
+      <Narrators lang={lang} found={ach} say={sayText} award={award} />
+      <WorkAwards award={award} />
+      <Ending lang={lang} found={ach} award={award} />
       {omae > 0 && (
         <div className="omae" role="status" aria-label={lang === 'en' ? 'You are already dead. What?!' : 'お前はもう死んでいる。なに？！'}>
           <div className="omae-bar" aria-hidden="true" />
@@ -832,7 +904,7 @@ export default function Chaos() {
         <div className="rick" role="dialog" aria-modal="true" aria-label={lang === 'en' ? 'A short interruption' : '少しだけ中断'}
           onPointerMove={(e) => {
             const x = xBtn.current
-            if (!x || performance.now() - rickOpenedAt.current > 40000) return
+            if (!x || performance.now() - rickOpenedAt.current > 30000) return
             const r = x.getBoundingClientRect()
             if (Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)) > 160) return
             xDodges.current++
@@ -850,9 +922,7 @@ export default function Chaos() {
             <X size={22} aria-hidden="true" />
           </button>
           <div className="rick-box">
-            <iframe className="rick-video" title={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'}
-              src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1&rel=0&playsinline=1"
-              allow="autoplay; encrypted-media; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+            <LoopVideo className="rick-video" name="rick-90" label={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'} />
           </div>
         </div>
       )}
@@ -865,7 +935,7 @@ export default function Chaos() {
       {restoring && (
         <div className="wait-note" role="status">
           <div className="wait-main">
-            <p>{lang === 'en' ? 'Yes, you have to wait.' : 'はい、待つ必要があります。'}</p>
+            <p>{forgot ? (lang === 'en' ? 'Uh oh. I forgot what number I was at.' : 'あれ。今、何番まで数えたか忘れました。') : (lang === 'en' ? 'Yes, you have to wait.' : 'はい、待つ必要があります。')}</p>
             <strong aria-hidden="true">{count}</strong>
           </div>
           <p className="wait-sub">{FIX_NOTES[Math.min(pileStage, 1)][lang]}</p>
@@ -883,7 +953,7 @@ export default function Chaos() {
           <button className="btn" aria-expanded={achOpen} onClick={() => setAchOpen((o) => !o)}>
             <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{Object.keys(ACH).length}
           </button>
-          {achOpen && <ul>{ach.map((a) => <li key={a}>{ACH[a][lang]}</li>)}</ul>}
+          {achOpen && <ul>{ach.map((a) => <li key={a}>{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
         </div>
       )}
       <div ref={dock} className={anger > 6 ? 'scout-dock mad' : 'scout-dock'} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length }}>
@@ -918,6 +988,17 @@ export default function Chaos() {
       )}
     </div>
   )
+}
+
+/** A 90 s clip that plays with sound and repeats until the visitor closes the popup. Falls back to muted if the browser blocks sound. */
+function LoopVideo({ className, name, label }: { className: string; name: string; label: string }) {
+  const ref = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    v.play().catch(() => { v.muted = true; void v.play().catch(() => {}) })
+  }, [])
+  return <video ref={ref} className={className} src={`${import.meta.env.BASE_URL}media/vid/${name}.mp4`} aria-label={label} autoPlay loop playsInline preload="auto" />
 }
 
 /**
@@ -984,8 +1065,9 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
   }
   walk(root)
   // keep the biggest if there are too many for the physics engine
-  const picked = units.length > 420
-    ? units.map((e) => ({ e, a: e.getBoundingClientRect().width * e.getBoundingClientRect().height })).sort((x, y) => y.a - x.a).slice(0, 420).map((x) => x.e)
+  const CAP = matchMedia('(pointer: coarse)').matches ? 220 : 380 // fewer bodies on a phone keeps it at 60 fps
+  const picked = units.length > CAP
+    ? units.map((e) => ({ e, a: e.getBoundingClientRect().width * e.getBoundingClientRect().height })).sort((x, y) => y.a - x.a).slice(0, CAP).map((x) => x.e)
     : units
 
   const { Engine, Bodies, Composite, Runner } = Matter
@@ -1028,6 +1110,15 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
   document.body.style.overflow = 'hidden'
   const runner = Runner.create()
   Runner.run(runner, engine)
+  // the engine rests while the tab is hidden, and bodies already go to sleep when they stop moving (enableSleeping)
+  const onVis = () => { if (document.hidden) Runner.stop(runner); else Runner.run(runner, engine) }
+  document.addEventListener('visibilitychange', onVis)
+  // fling: grab any piece and let go; it keeps its momentum
+  const mouse = Matter.Mouse.create(document.documentElement)
+  const mc = Matter.MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.15, render: { visible: false } } })
+  Composite.add(engine.world, mc)
+  const m = mouse as unknown as { element: HTMLElement; mousewheel: EventListener; mousemove: EventListener; mousedown: EventListener; mouseup: EventListener; touchmove: EventListener; touchstart: EventListener; touchend: EventListener }
+  m.element.removeEventListener('mousewheel', m.mousewheel); m.element.removeEventListener('DOMMouseScroll', m.mousewheel); m.element.removeEventListener('wheel', m.mousewheel)
   let raf = 0
   const t0 = performance.now()
   const target = dir === 1 ? Math.max(0, docH - innerHeight) : 0
@@ -1063,6 +1154,9 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
     stop(slow = false) {
       const ms = slow ? 20000 : 900 // "slowly" means slowly: everything drifts back over twenty seconds, behind a blank page, with a countdown
       cancelAnimationFrame(raf)
+      document.removeEventListener('visibilitychange', onVis)
+      for (const ev of ['mousemove', 'mousedown', 'mouseup'] as const) m.element.removeEventListener(ev, m[ev])
+      for (const ev of ['touchmove', 'touchstart', 'touchend'] as const) m.element.removeEventListener(ev, m[ev])
       Runner.stop(runner); Composite.clear(engine.world, false); Engine.clear(engine)
       for (const i of items) { i.el.style.transition = `transform ${ms}ms cubic-bezier(.45, 0, .3, 1)`; i.el.style.transform = 'none' }
       document.body.style.overflow = prev

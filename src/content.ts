@@ -18,45 +18,41 @@ export const statusLabel: Record<Status, L> = {
   OPEN: { en: 'Details to be added', ja: '詳細は追って追加' },
 }
 
+// TODO(idris): a photo of me with one of my robots for the hero (answer 12). RoboDog stands in until then.
 export const hero = {
   name: 'Idris Sadiq',
-  kicker: { en: 'Portfolio', ja: 'ポートフォリオ' },
   line: {
-    en: 'Robotics engineer who builds the whole system: hardware, control and simulation.',
-    ja: 'ハードウェア、制御、シミュレーションまで一貫して手がけるロボティクスエンジニア志望です。',
+    en: 'I build robots end to end. I want to build them for space.',
+    ja: 'ロボットを最初から最後まで自分で作っています。いつか宇宙で使われるロボットを作りたいです。',
   },
   sub: {
-    en: 'Final-year B.E. Electrical & Electronics Engineering, SRM Easwari Engineering College, Chennai. Applying for a master’s programme in robotics in Japan.',
-    ja: 'SRM Easwari 工科大学（チェンナイ）電気電子工学科 学部4年。日本のロボティクス分野の修士課程への進学を志望しています。',
-  },
-  thread: {
-    en: 'The thread: machines that sense, decide and act, and coordinate without a central controller.',
-    ja: '一貫したテーマ：感じ、判断し、動き、中央制御なしで協調する機械。',
+    en: 'Final-year B.E. student, SRM Easwari Engineering College, Chennai.',
+    ja: 'SRM Easwari 工科大学（チェンナイ）電気電子工学科 学部4年。',
   },
 }
 
-// Draft wording derived from the deck and projects; Idris to confirm in his own words (open-questions.md).
-export const interests: L = {
-  en: 'I am drawn to robots that work where people cannot easily go or stay: space, snow, farmland and pipes. My projects pair hardware I build myself (PCBs, mechanisms, firmware) with control and coordination: a self-balancing swarm that docks into a platform, an auto-tuning PID digital twin, and a net-based debris-capture concept. I want to study how simple, robust mechanisms and decentralised control let small robots keep working when a part fails. Space robotics comes first for me, with field and mechanism robotics close behind.',
-  ja: '人が行きにくい場所、長くいられない場所で働くロボットに関心があります。宇宙、雪の中、農地、配管などです。これまでの取り組みでは、自分で作るハードウェア（基板、機構、ファームウェア）と制御・協調を組み合わせてきました。ドッキングする自己平衡スウォーム、自動調整PIDのデジタルツイン、ネット式デブリ捕獲のコンセプトです。単純で頑丈な機構と分散制御によって、部品が故障しても小型ロボットが動き続けられるようにする研究をしたいと考えています。まず宇宙ロボティクス、次にフィールド・機構ロボティクスに関心があります。',
-}
-
-export const highlights: { title: L; body: L }[] = [
+/** About: three short paragraphs in my own voice (docs/VOICE.md). Facts only; open questions live in docs/ANSWERS-NEEDED.md. */
+// About is Idris's own wording (Round 3), so it keeps its contractions. TODO(idris): one line on why Japan (answers 3 and 4).
+export const aboutText: L[] = [
   {
-    title: { en: 'Research Intern, ABB Global CoE (Easwari)', ja: '研究インターン：ABB Global CoE（Easwari）' },
-    body: { en: 'Robotics and industrial automation research, since July 2026.', ja: 'ロボティクスと産業オートメーションの研究（2026年7月〜）。' },
+    en: 'I\u2019ve always been fascinated by how things work. Ever since I was young, I\u2019ve loved building things, taking them apart, experimenting with whatever I could get my hands on, and occasionally breaking a few along the way. That curiosity grew into a passion for robotics.',
+    ja: '昔から、ものの仕組みに強く惹かれてきました。幼いころから、何かを作ったり、分解したり、手に入るものを使って試したり、ときには壊してしまったりしてきました。その好奇心が、ロボティクスへの情熱になりました。',
   },
   {
-    title: { en: 'EPICS in IEEE team grant, USD 3,000', ja: 'EPICS in IEEE チーム助成（3,000米ドル）' },
-    body: { en: 'G.A.I.T. Assist. I am the Hardware Team Lead.', ja: 'G.A.I.T. Assist。ハードウェアチームリーダー。' },
+    en: 'I study Electrical and Electronics Engineering, but what I enjoy most is the process of building. Designing a robot from scratch, figuring out why a sensor isn\u2019t behaving, tuning a controller, or spending hours on a stubborn circuit: I find the process just as exciting as the result.',
+    ja: '電気電子工学を学んでいますが、一番好きなのは作る過程です。ロボットをゼロから設計すること、センサーがうまく動かない理由を探ること、コントローラを調整すること、手ごわい回路に何時間も向き合うこと。結果と同じくらい、その過程にわくわくします。',
   },
   {
-    title: { en: 'InnovateX 2025 (IEEE hackathon): runner-up', ja: 'InnovateX 2025（IEEEハッカソン）：準優勝' },
-    body: { en: 'A rover built with team Code Slayers.', ja: 'チーム Code Slayers でローバーを製作。' },
+    en: 'Over the years I\u2019ve explored mobile robots, autonomous navigation, embedded systems, control systems, computer vision and neuro-robotics, through internships and my own projects.',
+    ja: 'これまで、インターンや個人のプロジェクトを通じて、移動ロボット、自律ナビゲーション、組込みシステム、制御システム、コンピュータビジョン、ニューロロボティクスに取り組んできました。',
   },
   {
-    title: { en: 'Ten-plus personal hardware projects', ja: '個人のハードウェア製作10件以上' },
-    body: { en: 'From logic gates to legged robots and wheeled vehicles.', ja: 'ロジックゲートから脚式ロボット、車両まで。' },
+    en: 'What I love most about robotics is how it brings so many disciplines together. Electronics, mechanics, software, maths and a bit of creativity combine into something that actually moves, senses and interacts with the world.',
+    ja: 'ロボティクスで一番好きなのは、多くの分野が一つにまとまるところです。電子回路、機構、ソフトウェア、数学、そして少しの創造性が組み合わさって、実際に動き、感じ取り、世界と関わるものになります。',
+  },
+  {
+    en: 'I\u2019m especially drawn to autonomous systems, swarm robotics, space robotics and adaptive machines. There is still so much I want to learn, build, break and figure out, and that is what keeps me coming back.',
+    ja: '特に、自律システム、群ロボット、宇宙ロボティクス、適応型の機械に惹かれています。学びたいこと、作りたいもの、壊して理解したいことがまだたくさんあり、それが私を引き戻し続けています。',
   },
 ]
 
@@ -68,7 +64,7 @@ export const loopLabel: Record<Loop, L> = {
   coordinate: { en: 'Works with others', ja: '他と協調する' },
 }
 
-export type SimKey = 'pid' | 'cpu8' | 'pipe' | 'swarm' | 'gait' | 'arena' | 'gaitsignal' | 'net'
+export type SimKey = 'pid' | 'cpu8' | 'pipe' | 'swarm' | 'gait' | 'dog' | 'spider' | 'arena' | 'gaitsignal' | 'net'
 
 export type Media = {
   src: string // basename in /media/img, without -640/-1280 suffix
@@ -95,6 +91,9 @@ export type Project = {
   credit?: L
   tags: string[]
   link?: { href: string; label: L }
+  leadVideo?: boolean // show the first video above the pictures
+  paper?: { href: string; label: L; abstract: L; venue: L }
+  more?: { title: L; body: L }[] // short extra sections shown in a "Details" disclosure on the project page
 }
 
 const IMG = (src: string, w: number, h: number, alt: L, extra: Partial<Media> = {}): Media => ({ src, w, h, alt, ...extra })
@@ -113,19 +112,19 @@ export const projects: Project[] = [
     },
     summary: {
       objective: { en: 'Tune a servo’s PID gains automatically, including when the load changes.', ja: '負荷が変わっても、サーボのPIDゲインを自動で調整する。' },
-      method: {
-        en: 'A physics-based digital twin of a geared DC servo (12 V, 180:1 gearbox, encoder), a fixed-gain PID baseline, and reinforcement-learning agents that adjust the gains.',
-        ja: 'ギア付きDCサーボ（12V、減速比180:1、エンコーダ）の物理ベースのデジタルツイン、固定ゲインPIDの基準、ゲインを調整する強化学習エージェント。',
-      },
       status: {
-        en: 'Simulation only: nothing is validated on hardware yet. In simulation a residual PPO policy beats a tuned constant by roughly 0.5 to 0.6 median return, but a larger search for the constant alone recovers most of that gain. The paper draft says so.',
-        ja: 'シミュレーションのみで、実機での検証はまだです。シミュレーションでは残差PPO方策が調整済み定数を中央値リターンで約0.5〜0.6上回りますが、定数のみをより広く探索すると大半が回復します。論文草稿にもそう記しています。',
+        en: 'Simulation only: nothing is validated on hardware yet.',
+        ja: 'シミュレーションのみで、実機での検証はまだです。',
       },
       mine: {
-        en: 'I set the specification and the evaluation rules, and directed and reviewed the work.',
-        ja: '仕様と評価ルールを定め、作業の方向づけと確認を行いました。',
+        en: 'I wrote the specification and the evaluation rules, and I review every result.',
+        ja: '仕様と評価ルールを書き、すべての結果を自分で確認しています。',
       },
     },
+    more: [
+      { title: { en: 'Simulation result in detail', ja: 'シミュレーション結果の詳細' }, body: { en: 'In simulation a residual PPO policy beats a tuned constant by roughly 0.5 to 0.6 median return, but a larger search for the constant alone recovers most of that gain. The paper draft says so.', ja: 'シミュレーションでは残差PPO方策が調整済み定数を中央値リターンで約0.5〜0.6上回りますが、定数のみをより広く探索すると大半が回復します。論文草稿にもそう記しています。' } },
+      { title: { en: 'The twin', ja: 'デジタルツイン' }, body: { en: 'A physics-based model of a geared DC servo: 12 V, 180:1 gearbox, encoder. A fixed-gain PID is the baseline; reinforcement-learning agents adjust the gains on top of it.', ja: 'ギア付きDCサーボ（12V、減速比180:1、エンコーダ）の物理ベースのモデル。固定ゲインPIDを基準に、強化学習エージェントがゲインを調整します。' } },
+    ],
     media: [IMG('image16', 1918, 904, { en: 'Screenshot of the servo PID digital-twin interface: servo with horn arm, gain sliders and response charts.', ja: 'サーボPIDデジタルツインの画面：サーボとアーム、ゲインのスライダー、応答グラフ。' }, { caption: { en: 'The original browser tool', ja: '元のブラウザツール' } })],
     videos: [
       { src: 'rl-pid', poster: 'rlpid-poster', caption: { en: 'Short demo: a payload change, then RL auto-tune (simulation)', ja: '短い紹介：負荷変更とRL自動調整（シミュレーション）' } },
@@ -156,7 +155,11 @@ export const projects: Project[] = [
         ja: '設計とシミュレーションまで。実機試験はこれからで、多数台への拡張は今後の課題です。',
       },
     },
-    media: [IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } })],
+    media: [
+      IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } }),
+      IMG('swarm-bot-top', 719, 1600, { en: 'Top view of one two-wheeled balancing robot: a white printed frame, two motors with wheels, a battery and a control board with wiring.', ja: '倒立振子型二輪ロボット1台を真上から見た写真：白い造形フレーム、モーター2つと車輪、バッテリー、配線された制御基板。' }, { widths: [640], caption: { en: 'One balancing unit, from above', ja: '倒立振子ユニット1台を上から' } }),
+    ],
+    videos: [{ src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } }],
     sim: 'swarm',
     tags: ['multi-agent', 'balance control', 'ESP-NOW'],
   },
@@ -168,12 +171,21 @@ export const projects: Project[] = [
     status: 'CONCEPTUAL',
     loops: ['coordinate'],
     blurb: {
-      en: 'A first-author paper proposing a multi-satellite net system for space debris capture. Conceptual and untested: no hardware or in-orbit validation yet.',
-      ja: '宇宙デブリ捕獲のための多衛星ネットシステムを提案する筆頭著者論文。概念検討の段階で、ハードウェアや軌道上での検証はまだありません。',
+      en: 'A conceptual paper I wrote. The design is not yet tested.',
+      ja: '私が書いた概念検討の論文です。設計はまだ検証していません。',
     },
     summary: {
       method: { en: 'Satellite nodes with an active intercept mesh panel, managed by a decentralised swarm rule.', ja: '能動的な捕獲メッシュパネルを持つ衛星ノットを、分散型のスウォーム制御で管理する。' },
       status: { en: 'Conceptual and untested.', ja: '概念検討・未検証。' },
+    },
+    paper: {
+      href: 'papers/ASANS-ICCORSE-2026.pdf',
+      label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' },
+      venue: { en: 'ICCORSE 2026, 12 May 2026 (proceedings page)', ja: 'ICCORSE 2026（2026年5月12日）掲載ページ' },
+      abstract: {
+        en: 'Orbital debris threatens satellites, and a single net or a rigid arm struggles with a tumbling target. This paper proposes the Adaptive Swarm-Actuated Net System: a group of small satellites that deploy, shape and tension one flexible net together. It covers the architecture, the workflow and the control strategy, and discusses the hard parts: orbital dynamics, communication limits and nonlinear net behaviour. It is a conceptual paper, and the design is not yet tested.',
+        ja: '軌道上のデブリは衛星の脅威ですが、単一のネットや剛体アームでは回転する標的への対応が難しくなります。本論文では、小型衛星の群れが1枚の柔軟なネットを一緒に展開し、形を整え、張力を調整する「適応型スウォーム作動ネットシステム」を提案します。構成、運用の流れ、制御方針を示し、軌道力学、通信の制約、ネットの非線形な挙動といった難所を議論します。概念検討の論文であり、設計はまだ検証していません。',
+      },
     },
     media: [IMG('image17', 2858, 1472, { en: 'Illustration: satellite swarm nodes with an active intercept mesh panel around debris.', ja: 'イラスト：デブリを囲む、衛星ノードと能動捕獲メッシュパネル。' }, { label: { en: 'Illustration', ja: 'イラスト' } })],
     sim: 'net',
@@ -193,7 +205,7 @@ export const projects: Project[] = [
     summary: {
       objective: { en: 'Tell an intentional gesture from a tremor, and trigger a simple action such as switching an appliance.', ja: '意図的なジェスチャーと震えを区別し、家電の切替などの操作につなげる。' },
       method: { en: 'A wrist-worn ESP32-S3 board with an IMU and on-device classification (TinyML).', ja: '手首装着のESP32-S3基板、IMU、端末上での分類（TinyML）。' },
-      status: { en: 'Prototype in development. Team grant, Jon C. Taenzer Memorial Fund (2026).', ja: '試作開発中。チーム助成（Jon C. Taenzer Memorial Fund、2026年）。' },
+      status: { en: 'Prototype in development. Team grant, Jon C. Taenzer Memorial Fund (2026). I am now building a v2 prototype: smaller, with better sensors and a housing.', ja: '試作開発中。チーム助成（Jon C. Taenzer Memorial Fund、2026年）。現在、より小型で、センサーを改良し、筐体をつけたv2試作を製作中です。' },
       mine: { en: 'Hardware Team Lead.', ja: 'ハードウェアチームリーダー。' },
     },
     media: [
@@ -206,15 +218,15 @@ export const projects: Project[] = [
   {
     slug: 'abb',
     tier: 'grant',
-    eyebrow: { en: 'Research placement', ja: '研究インターン' },
+    eyebrow: { en: 'Research internship', ja: '研究インターン' },
     title: { en: 'Research internship, ABB Global CoE (hosted at Easwari)', ja: '研究インターン：ABB Global CoE（Easwari内）' },
     status: 'INDUSTRY',
     loops: ['act', 'sense'],
     blurb: {
-      en: 'Working on an ABB IRB 1600 industrial robot in a 3D bin-picking cell with SICK vision, validated first in ABB RobotStudio. Hands-on with the arm, I identified a real gripper-orientation limitation in the task.',
-      ja: 'SICKビジョンを使った3Dビンピッキングセルで、ABB IRB 1600産業用ロボットに取り組んでいます。まずABB RobotStudioで検証しています。実機を扱う中で、作業におけるグリッパー姿勢の実際の制約を特定しました。',
+      en: 'I work with an industrial robot cell built for 3D bin-picking. I am learning how robots see, identify and pick up objects in cluttered, unstructured bins, using SICK vision systems and ABB\u2019s PickMaster and PLB environment for vision, object detection and motion planning. It is where I get to see robotics concepts turn into real industrial work.',
+      ja: '3Dビンピッキング用の産業用ロボットセルで取り組んでいます。散らかった、整理されていないビンの中の物を、ロボットがどう見て、識別し、つかむのかを学んでいます。SICKのビジョンシステムと、ABBのPickMasterおよびPLB環境で、視覚、物体検出、動作計画を扱います。ロボティクスの概念が実際の産業の仕事になる場面を見られる場所です。',
     },
-    summary: { status: { en: 'Since July 2026. A research placement at the ABB Global Centre of Excellence hosted at my college; not employment by ABB.', ja: '2026年7月〜。大学内に設置されたABB Global CoEでの研究インターンで、ABB社での雇用ではありません。' } },
+    summary: { status: { en: 'Since July 2026.', ja: '2026年7月から。' } },
     media: [IMG('image18', 1712, 856, { en: 'Workcell with an industrial robot arm, a parts bin and a chute.', ja: '産業用ロボットアーム、部品ビン、シュートのあるワークセル。' })],
     sim: undefined,
     tags: ['industrial robot', 'bin picking'],
@@ -227,53 +239,90 @@ export const projects: Project[] = [
     status: 'IN DEVELOPMENT',
     loops: ['decide'],
     blurb: {
-      en: 'Built from individual logic gates. A from-scratch computer architecture project covering binary arithmetic, memory and control logic in physical hardware.',
-      ja: '個別のロジックゲートから製作。2進演算、メモリ、制御ロジックを実機で扱う、計算機アーキテクチャの自作プロジェクト。',
+      en: 'A computer built from individual logic chips on breadboards, following Ben Eater\u2019s design.',
+      ja: 'Ben Eater氏の設計に沿って、個別のロジックICをブレッドボード上に組み上げたコンピュータです。',
     },
     summary: {
-      method: { en: 'Following Ben Eater’s design, with Pervin Korino Dasan. Days 1 to 9 so far: a loose wire caught on a phone camera, RAM debugging, display multiplexing, and a 2 AM substitution for JK flip-flops.', ja: 'Ben Eater氏の設計に沿ってPervin Korino Dasanと製作。9日目までに、スマホ動画で見つけた緩い配線、RAMのデバッグ、表示のマルチプレクス、深夜2時のJKフリップフロップ代替がありました。' },
+      objective: { en: 'See every part of a computer working, one wire at a time.', ja: 'コンピュータのすべての部分が動く様子を、配線1本ずつ確かめる。' },
+      method: {
+        en: 'A clock steps the machine. Registers hold values, an ALU adds and subtracts, and a shared bus carries data between them. I program it with switches, one instruction at a time.',
+        ja: 'クロックが動作を1ステップずつ進めます。レジスタが値を保持し、ALUが加減算を行い、共有バスがそれらの間でデータを運びます。プログラムはスイッチで、1命令ずつ入力します。',
+      },
+      status: {
+        en: 'What I learned: a loose wire can look like a design flaw, and a camera on the bench finds it faster than staring. Days 1 to 9 so far include RAM debugging, display multiplexing and a 2 AM substitution for JK flip-flops. Built with Pervin Korino Dasan.',
+        ja: '学んだこと：緩んだ配線は設計の欠陥に見えることがあり、作業台に置いたカメラのほうが、じっと見るより早く見つけてくれます。9日目までに、RAMのデバッグ、表示のマルチプレクス、深夜2時のJKフリップフロップ代替がありました。Pervin Korino Dasanと製作しています。',
+      },
     },
-    media: [IMG('image5', 1353, 1600, { en: 'Breadboard 8-bit computer with labelled register and clock blocks.', ja: 'レジスタとクロックのブロックを示した、ブレッドボード上の8ビットコンピュータ。' }),
+    media: [IMG('image5r', 1514, 1280, { en: 'The 8-bit computer on breadboards, seen from above: clock, registers, ALU and bus wired with coloured jumpers, with a microcontroller board at the side.', ja: '真上から見た、ブレッドボード上の8ビットコンピュータ：クロック、レジスタ、ALU、バスが色分けされたジャンパー線で配線され、横にマイコン基板があります。' }),
       IMG('eightbit-day1', 720, 720, { en: 'Breadboards from Day 1 of the build: logic gate and 555 timer tests wired up beside a development board.', ja: '製作1日目のブレッドボード：ロジックゲートと555タイマーの動作確認。' }, { widths: [640], caption: { en: 'Day 1: gates and 555 timer circuits', ja: '1日目：ゲートと555タイマー回路' } })],
     sim: 'cpu8',
     credit: { en: 'Design: Ben Eater', ja: '設計：Ben Eater' },
     tags: ['digital logic', 'debugging'],
   },
   {
-    slug: 'quadrupeds',
+    slug: 'robodog',
     tier: 'foundation',
-    eyebrow: { en: 'Personal projects', ja: '個人プロジェクト' },
-    title: { en: 'Quadruped robots', ja: '四足歩行ロボット' },
+    eyebrow: { en: 'Personal project', ja: '個人プロジェクト' },
+    title: { en: 'RoboDog', ja: 'RoboDog' },
     status: 'IN DEVELOPMENT',
     loops: ['act'],
     blurb: {
-      en: 'Two independent legged-robot builds exploring mobility over different terrains: a spider-inspired and a dog-inspired quadruped.',
-      ja: '地形ごとの移動性を探る、独立した2台の脚式ロボット：クモ型と犬型の四足ロボット。',
+      en: 'A 3D-printed quadruped, now with a pair of eyes. The mechanism is James Bruton\u2019s open design; the electronics and software are mine.',
+      ja: '3Dプリントの四足ロボットに、目がつきました。機構はJames Brutonさんのオープンな設計で、電子回路とソフトウェアは自作です。',
     },
     summary: {
       method: {
-        en: 'RoboDog is a 3D-printed quadruped. Mine: a custom 2S2P 18650 pack with a 20 A BMS, a hand-soldered ESP32 board driving 6 servos and 2 OLEDs, and a browser-based servo calibration tool.',
-        ja: 'RoboDog は3Dプリントの四足ロボット。自作したのは、20 A BMS付き2S2P 18650バッテリー、6サーボと2つのOLEDを駆動する手はんだのESP32基板、ブラウザ型サーボ校正ツール。',
+        en: 'A custom 2S2P 18650 pack with a 20 A BMS, a soldered ESP32 board driving 6 servos and 2 OLED eyes, and a browser-based servo calibration tool.',
+        ja: '20 A BMS付きの自作2S2P 18650バッテリー、6サーボと2つのOLEDの目を駆動するはんだ付けのESP32基板、ブラウザ型サーボ校正ツール。',
       },
       status: {
-        en: 'RoboDog is in development; the eyes and dog-like behaviour come next. Lessons so far: the “360°” servos were the wrong type, and a flicker was one loose ground pin.',
-        ja: 'RoboDog は開発中で、次は目と犬らしい挙動です。これまでの学び：「360°」サーボは種類違いで、画面のちらつきは接地ピン1本の緩みでした。',
+        en: 'In development; dog-like behaviour comes next. Lessons so far: the \u201c360°\u201d servos were the wrong type, and a flicker was one loose ground pin.',
+        ja: '開発中で、次は犬らしい挙動です。これまでの学び：「360°」サーボは種類違いで、画面のちらつきは接地ピン1本の緩みでした。',
       },
     },
     media: [
-      IMG('image6', 1080, 758, { en: 'Spider-inspired quadruped robot.', ja: 'クモ型の四足ロボット。' }, { caption: { en: 'Spider-inspired quadruped', ja: 'クモ型四足ロボット' }, widths: [640] }),
-      IMG('image7', 1600, 1185, { en: 'Dog-inspired quadruped robot with an acrylic-covered electronics bay and orange 3D-printed legs.', ja: 'アクリルカバーの電装部とオレンジの3Dプリント脚を持つ犬型四足ロボット。' }, { caption: { en: 'Dog-inspired quadruped (RoboDog)', ja: '犬型四足ロボット（RoboDog）' } }),
-      IMG('li-dog-bench', 800, 359, { en: 'RoboDog parts on the bench: orange and blue printed legs, yellow plates, servos and the ESP32 perfboard.', ja: '作業台の上のRoboDogの部品：オレンジと青の脚、黄色のプレート、サーボ、ESP32のユニバーサル基板。' }, { widths: [640], caption: { en: 'RoboDog on the bench', ja: '作業台のRoboDog' } }),
-      IMG('li-cad-dog', 832, 703, { en: 'CAD render of the RoboDog legs and plates in orange and blue.', ja: 'オレンジと青のRoboDogの脚とプレートのCADレンダリング。' }, { widths: [640], caption: { en: 'RoboDog in CAD', ja: 'RoboDogのCAD' } }),
+      IMG('dog-eyes-1', 1600, 719, { en: 'RoboDog on a workshop table with two glowing blue OLED eyes on its head, orange legs and a black electronics bay.', ja: '作業台の上のRoboDog。頭に青く光る2つのOLEDの目、オレンジの脚、黒い電装部。' }, { widths: [640, 1280], caption: { en: 'RoboDog with its eyes on', ja: '目が点いたRoboDog' } }),
+      IMG('dog-eyes-2', 1600, 719, { en: 'RoboDog from a slightly different angle, the blue eyes lit and the wiring visible behind the cover.', ja: '少し角度を変えたRoboDog。青い目が点き、カバーの奥に配線が見えます。' }, { widths: [640, 1280] }),
+      IMG('dog-eyes-3', 1600, 719, { en: 'RoboDog facing the camera, eyes lit, standing on its orange and blue legs.', ja: 'カメラに向かって立つRoboDog。目が点き、オレンジと青の脚で立っています。' }, { widths: [640, 1280] }),
+      IMG('dog-eyes-4', 1600, 719, { en: 'RoboDog seen from the side with the electronics bay open to the control board.', ja: '電装部を開けて制御基板が見える、RoboDogの側面。' }, { widths: [640, 1280] }),
+      IMG('image7', 1600, 1185, { en: 'Dog-inspired quadruped robot with an acrylic-covered electronics bay and orange 3D-printed legs.', ja: 'アクリルカバーの電装部とオレンジの3Dプリント脚を持つ犬型四足ロボット。' }, { caption: { en: 'Earlier version with the acrylic cover', ja: 'アクリルカバーつきの初期版' } }),
+      IMG('li-dog-bench', 800, 359, { en: 'RoboDog parts on the bench: orange and blue printed legs, yellow plates, servos and the ESP32 perfboard.', ja: '作業台の上のRoboDogの部品：オレンジと青の脚、黄色のプレート、サーボ、ESP32のユニバーサル基板。' }, { widths: [640], caption: { en: 'On the bench', ja: '作業台の上' } }),
+      IMG('li-cad-dog', 832, 703, { en: 'CAD render of the RoboDog legs and plates in orange and blue.', ja: 'オレンジと青のRoboDogの脚とプレートのCADレンダリング。' }, { widths: [640], caption: { en: 'In CAD', ja: 'CADモデル' } }),
       IMG('li-cad-part', 800, 743, { en: 'A printed part modelled in Fusion: a box with large round openings.', ja: 'Fusionでモデリングした、大きな丸い開口を持つ箱状の部品。' }, { widths: [640], caption: { en: 'A custom part in Fusion', ja: 'Fusionでのオリジナル部品' } }),
       IMG('li-battery', 800, 600, { en: 'A custom 2S2P pack of four 18650 cells with a 20 A protection board, wired with red and black leads.', ja: '20A保護基板付きの、18650セル4本によるオリジナルの2S2Pバッテリーパック。' }, { widths: [640], caption: { en: 'Custom 2S2P battery pack with a 20 A BMS', ja: '20A BMS付きのオリジナル2S2Pバッテリーパック' } }),
       IMG('li-calib-pins', 480, 1039, { en: 'Screenshot of the RoboDog calibration tool on a phone: pin assignment, wiggle test and neutral trim for each servo.', ja: 'スマートフォン上のRoboDog校正ツールの画面：サーボごとのピン割り当て、ウィグルテスト、中立位置の調整。' }, { widths: [640], caption: { en: 'Calibration tool: pins and neutral', ja: '校正ツール：ピンと中立位置' } }),
       IMG('li-calib-legs', 480, 1039, { en: 'Screenshot of the calibration tool: a table of legs with state, neutral and up and down pulse widths, and jog buttons.', ja: '校正ツールの画面：各脚の状態、中立、上下のパルス幅の表とジョグボタン。' }, { widths: [640], caption: { en: 'Calibration tool: leg table', ja: '校正ツール：脚の表' } }),
       IMG('li-calib-log', 480, 1039, { en: 'Screenshot of the calibration tool debug log showing legs reaching home and moving up and down.', ja: '各脚がホームに到達し上下に動く様子を示す、校正ツールのデバッグログの画面。' }, { widths: [640], caption: { en: 'Calibration tool: live debug log', ja: '校正ツール：リアルタイムのデバッグログ' } }),
     ],
-    sim: 'gait',
+    sim: 'dog',
     credit: { en: 'RoboDog design: James Bruton (open source)', ja: 'RoboDog 設計：James Bruton（オープンソース）' },
     tags: ['legged', 'ESP32', 'servo'],
+  },
+  {
+    slug: 'spider',
+    tier: 'foundation',
+    eyebrow: { en: 'Personal project', ja: '個人プロジェクト' },
+    title: { en: 'Spider quadruped', ja: 'クモ型四足ロボット' },
+    status: 'IN DEVELOPMENT',
+    loops: ['act'],
+    blurb: {
+      en: 'A spider-inspired quadruped with two servos in each leg, walking on a granite floor on a tether.',
+      ja: '1脚に2つのサーボを持つ、クモ型の四足ロボット。ケーブルをつないだまま、御影石の床を歩きます。',
+    },
+    summary: {
+      method: {
+        en: 'Four legs, each with a hip servo that swings the leg and a knee servo that lifts it: eight servos in total, wired to one controller.',
+        ja: '4本の脚はそれぞれ、脚を振る股関節サーボと持ち上げる膝サーボを持ち、合計8個のサーボを1つのコントローラにつないでいます。',
+      },
+      status: { en: 'Walking under cable power. Gait tuning is still going on.', ja: 'ケーブル給電で歩行中です。歩容の調整は続けています。' },
+    },
+    media: [
+      IMG('image6', 1080, 758, { en: 'Spider-inspired quadruped robot.', ja: 'クモ型の四足ロボット。' }, { caption: { en: 'The spider quadruped', ja: 'クモ型四足ロボット' }, widths: [640] }),
+    ],
+    leadVideo: true,
+    videos: [{ src: 'spider-walk-720', poster: 'spider-walk-poster', caption: { en: 'The spider walking across a granite floor', ja: '御影石の床を歩くクモ型ロボット' } }],
+    sim: 'spider',
+    tags: ['legged', 'servo', 'gait'],
   },
   {
     slug: 'vehicles',
@@ -283,10 +332,10 @@ export const projects: Project[] = [
     status: 'BUILT',
     loops: ['act', 'sense'],
     blurb: {
-      en: 'A running series of Bluetooth-controlled builds: a 2-wheel car with a castor, a 4-wheel car and a tracked tank. Chassis, drivetrain and control electronics built and tuned by hand.',
-      ja: 'Bluetooth操作の車両を継続的に製作：キャスター付き2輪車、4輪車、クローラー型。シャーシ、駆動系、制御回路を手作業で製作・調整。',
+      en: 'A running series of Bluetooth-controlled builds: a 2-wheel car with a castor, a 4-wheel car and a tracked tank. Chassis, drivetrain and control electronics built and tuned and tested.',
+      ja: 'Bluetooth操作の車両を継続的に製作：キャスター付き2輪車、4輪車、クローラー型。シャーシ、駆動系、制御回路を製作し、調整・試験しています。',
     },
-    summary: { method: { en: 'The tracked tank is the rover built for the Smart India Hackathon (September 2025): an on-board camera reads the grain size of beach sand across intertidal zones, which helps to predict and monitor weather and erosion patterns. The team did not qualify for the finals.', ja: 'クローラー型のロボットは、Smart India Hackathon（2025年9月）向けに製作したローバーです。車載カメラで潮間帯ごとの砂の粒径を読み取り、天候や侵食パターンの予測と監視に役立てます。チームは決勝には進出できませんでした。' } },
+    summary: { method: { en: 'The tracked tank is the rover built for the Smart India Hackathon (September 2025): an on-board camera reads the grain size of beach sand across intertidal zones, which helps to predict and monitor weather and erosion patterns.', ja: 'クローラー型のロボットは、Smart India Hackathon（2025年9月）向けに製作したローバーです。車載カメラで潮間帯ごとの砂の粒径を読み取り、天候や侵食パターンの予測と監視に役立てます。' } },
     media: [
       IMG('image8', 1056, 719, { en: 'Two-wheel car with a castor: four 18650 cells, buck converter, ESP32 and motor driver on perfboard.', ja: 'キャスター付き2輪車：18650セル4本、降圧コンバータ、ESP32、モータードライバをユニバーサル基板に実装。' }, { caption: { en: '2-wheel car with a castor', ja: 'キャスター付き2輪車' }, widths: [640] }),
       IMG('image10', 1627, 952, { en: 'Tracked tank-style robot.', ja: 'クローラー型の戦車ロボット。' }, { caption: { en: 'Tracked tank', ja: 'クローラー型の戦車' } }),
@@ -307,6 +356,8 @@ export const projects: Project[] = [
       ja: '配管内を移動する機構の提案。実機を作る前にモデル化とシミュレーションを行いました。',
     },
     summary: { status: { en: 'Proposed. Modelled and simulated; not built.', ja: '提案段階。モデル化とシミュレーションまでで、製作はしていません。' } },
+    leadVideo: true,
+    videos: [{ src: 'pipe-sim-720', poster: 'pipe-sim-poster', caption: { en: 'The in-pipe robot simulation', ja: '管内ロボットのシミュレーション' } }],
     media: [
       IMG('image11', 1920, 1051, { en: 'Blender render of the in-pipe robot design concept.', ja: '管内ロボットの設計コンセプトのBlenderレンダリング。' }, { label: { en: 'Design concept', ja: '設計コンセプト' } }),
       IMG('image12', 1920, 1080, { en: 'Still from the Python pipeline-scan simulation.', ja: 'Pythonによる配管スキャンのシミュレーション画面。' }, { caption: { en: 'Python simulation', ja: 'Pythonシミュレーション' } }),
@@ -334,17 +385,32 @@ export const projects: Project[] = [
     tags: ['CAD', 'MCP', 'Python'],
   },
   {
+    slug: 'stocksite',
+    tier: 'foundation',
+    eyebrow: { en: 'Outside robotics', ja: 'ロボット以外' },
+    title: { en: 'Stock and catalogue website', ja: '在庫・カタログのウェブサイト' },
+    status: 'BUILT',
+    loops: ['decide'],
+    blurb: {
+      en: 'Outside robotics, I built a stock and catalogue website for my father\u2019s business. The hard part was not the code. It was understanding how a real shop tracks its products, and designing something that people with no technical background could use every day.',
+      ja: 'ロボット以外にも、父の事業のための在庫・カタログのウェブサイトを作りました。難しかったのはコードではなく、実際のお店が商品をどう管理しているかを理解し、技術の知識がない人が毎日使えるものを設計することでした。',
+    },
+    summary: {},
+    tags: ['web', 'catalogue'],
+  },
+  {
     slug: 'subtlebotic',
     tier: 'foundation',
     eyebrow: { en: 'Internship', ja: 'インターン' },
-    title: { en: 'Electronics hardware internship, Subtlebotic', ja: '電子ハードウェアインターン（Subtlebotic）' },
+    title: { en: 'Neuro-robotics internship, Subtlebotic', ja: 'ニューロロボティクスのインターン（Subtlebotic）' },
     status: 'INTERNSHIP',
     loops: ['sense', 'act'],
     blurb: {
-      en: 'Schematic and PCB design intern, September to November 2025. The textbook boost converter has four parts; the real one needed a switching IC, a feedback network, ratings and layout.',
-      ja: '回路図・基板設計インターン（2025年9〜11月）。教科書の昇圧回路は部品4点ですが、実機にはスイッチングIC、帰還回路、定格選定、レイアウトが必要でした。',
+      en: 'I helped build and prototype electronics for neuro-robotics, brain-computer interfaces and assistive medical devices. That meant circuit design, choosing components, wiring up sensors, embedded code and a lot of debugging, turning early ideas into prototypes that actually worked. It was my first real look at where electronics, robotics and neuroscience meet, and at building things for people.',
+      ja: 'ニューロロボティクス、ブレイン・コンピュータ・インターフェース、医療支援機器のための電子回路の製作と試作を手伝いました。回路設計、部品選定、センサーの配線、組込みコード、そしてたくさんのデバッグを通じて、初期のアイデアを実際に動く試作に変えていきました。電子回路、ロボティクス、神経科学が出会う場所と、人のために作ることを、初めてしっかり見た経験です。',
     },
     summary: {
+      objective: { en: 'The textbook boost converter has four parts; the real one needed a switching IC, a feedback network, ratings and layout.', ja: '教科書の昇圧回路は部品4点ですが、実機にはスイッチングIC、帰還回路、定格選定、レイアウトが必要でした。' },
       method: { en: 'Three designs with schematics, EasyEDA layouts and reports: an XL6009 boost converter, a BQ24074 battery charger with protection, and a 555-based long-press switch.', ja: '回路図・EasyEDAレイアウト・報告書付きの3設計：XL6009昇圧回路、保護付きBQ24074充電回路、555タイマーの長押しスイッチ。' },
       status: { en: 'Design work and reports. My breadboard attempt at the boost converter did not work, which taught me why layout matters.', ja: '設計と報告書まで。昇圧回路のブレッドボード試作は動かず、レイアウトの重要性を学びました。' },
     },
@@ -360,13 +426,6 @@ export const projects: Project[] = [
   },
 ]
 
-export const bench: { t: L; d: L; media?: Media[] }[] = [
-  { t: { en: 'Robo Soccer, IIITDM Kancheepuram', ja: 'ロボサッカー（IIITDM Kancheepuram）' }, d: { en: 'Second attempt. The first ended with a motor driver bursting mid-event.', ja: '2回目の挑戦。初回は競技中にモータードライバが破裂しました。' }, media: [IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280] })] },
-  { t: { en: 'Custom 2S2P battery pack', ja: '自作2S2Pバッテリー' }, d: { en: 'Four 18650 cells with a 20 A BMS. Cell balancing taught me respect.', ja: '18650セル4本と20 A BMS。セルバランスの大切さを学びました。' }, media: [IMG('li-battery', 800, 600, { en: 'A custom 2S2P pack of four 18650 cells with a 20 A protection board, wired with red and black leads.', ja: '20A保護基板付きの、18650セル4本によるオリジナルの2S2Pバッテリーパック。' }, { widths: [640], caption: { en: 'Custom 2S2P battery pack with a 20 A BMS', ja: '20A BMS付きのオリジナル2S2Pバッテリーパック' } })] },
-  { t: { en: 'Stock and catalogue site', ja: '在庫・カタログサイト' }, d: { en: 'For my father’s business. I learnt to design for the customer, not for completeness.', ja: '父の事業のために製作。網羅性ではなく利用者のために設計することを学びました。' } },
-  { t: { en: 'DPDT motor reversal', ja: 'DPDTスイッチでのモーター反転' }, d: { en: 'A small bench experiment from February 2025.', ja: '2025年2月の小さな実験。' } },
-]
-
 export const timeline: { when: string; role: L; where: string }[] = [
   { when: '2026 Jul–', role: { en: 'Research Intern', ja: '研究インターン' }, where: 'ABB Global CoE, Easwari' },
   { when: '2026 May–', role: { en: 'Hardware Team Lead', ja: 'ハードウェアチームリーダー' }, where: 'EPICS in IEEE: G.A.I.T. Assist' },
@@ -374,15 +433,6 @@ export const timeline: { when: string; role: L; where: string }[] = [
   { when: '2025 Aug–', role: { en: 'Head of Content', ja: 'コンテンツ責任者' }, where: 'SEEE, SRM Easwari' },
   { when: '2025 May–', role: { en: 'Documentation Head', ja: '記録責任者' }, where: 'Campus Life, SRM Easwari' },
   { when: '2024 Sep–', role: { en: 'Creative Head', ja: 'クリエイティブ責任者' }, where: 'Electronics Hobby Club' },
-]
-
-export const progression: L[] = [
-  { en: 'Logic gates', ja: 'ロジックゲート' },
-  { en: 'Microcontrollers and motors', ja: 'マイコンとモーター' },
-  { en: 'Legged and wheeled platforms', ja: '脚式・車輪型プラットフォーム' },
-  { en: 'Modelling and simulation', ja: 'モデル化とシミュレーション' },
-  { en: 'Control tuning', ja: '制御の調整' },
-  { en: 'Decentralised swarms and space concepts', ja: '分散スウォームと宇宙構想' },
 ]
 
 /** Certificates grouped by theme (not by date); newest first inside each group. Source: LinkedIn export, approved by Idris. */
@@ -422,6 +472,13 @@ export const learning: { theme: L; items: L[] }[] = [
   },
 ]
 
+/** Publications and awards, shown inside the Certificates disclosure. */
+export const extras: { text: L; link?: { href: string; label: L } }[] = [
+  { text: { en: 'National Finalist, India Innovates 2026', ja: 'India Innovates 2026 全国ファイナリスト' } },
+  { text: { en: 'ICCORSE 2026: Adaptive Swarm-Actuated Net System for Space Debris Capture', ja: 'ICCORSE 2026：宇宙デブリ捕獲のための適応型スウォーム作動ネットシステム' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'PDF', ja: 'PDF' } } },
+  { text: { en: 'ICUMSAT 2025: Rare-Earth-Free PM-Assisted Synchronous Reluctance Motor using Tetrataenite for Light Electric Vehicles (third author, abstract)', ja: 'ICUMSAT 2025：軽電動車向け、テトラタエナイトを用いたレアアースフリー永久磁石補助同期リラクタンスモータ（第3著者、アブストラクト）' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'PDF', ja: 'PDF' } } },
+]
+
 /** Learning out in the field, one event per line. */
 export const fieldEvents: L[] = [
   { en: 'IISc EE Summer School 2025 (IEEE Bangalore Section)', ja: 'IISc EEサマースクール2025（IEEE Bangalore Section）' },
@@ -433,78 +490,75 @@ export const fieldEvents: L[] = [
   { en: 'Earlier: STEM Centre India robotics and coding, grades 5 to 8 (LEGO NXT, EV3)', ja: '幼少期：STEM Centre Indiaのロボット・コーディング教室（5〜8年生、LEGO NXT・EV3）' },
 ]
 
-export const languages: L = {
-  en: 'English (full professional), Gujarati and Hindi (native or bilingual), Urdu and Tamil (limited working), Japanese (limited working; JLPT N5 and NAT-TEST 4Q are the stronger evidence), Arabic (elementary).',
-  ja: '英語（ビジネス上級）、グジャラート語・ヒンディー語（母語レベル）、ウルドゥー語・タミル語（限定的な実務レベル）、日本語（限定的な実務レベル。JLPT N5とNAT-TEST 4Qがより確かな根拠）、アラビア語（初級）。',
+/** The Calm home page shows three featured builds as image-first tiles and the rest as a strip. Everything else lives in the project window. */
+// Featured: Idris's three proudest builds (answer 6): the 8-bit computer, RoboDog and the self-balancing swarm.
+export const featured = ['cpu8', 'robodog', 'swarm']
+/** The order of the project pages: the featured three first, then the rest. Previous and next follow it. */
+export const order = [...featured, ...projects.map((p) => p.slug).filter((x) => !featured.includes(x))]
+
+// `clip` is a 4 to 5 s seamless loop of the site's own simulation, cut with HyperFrames (project-videos/tile-clips). G.A.I.T. has no simulation footage yet.
+// TODO(idris): real footage of the wristband or the swarm hardware running.
+export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?: L; clip?: string }> = {
+  pid: {
+    short: { en: 'PID digital twin', ja: 'PIDデジタルツイン' },
+    line: { en: 'A servo twin that tunes its own PID gains.', ja: 'PIDゲインを自動調整するサーボのツイン。' },
+    did: { en: 'I wrote the specification and the evaluation rules.', ja: '仕様と評価ルールを書きました。' },
+    strip: { en: 'Servo PID auto-tuning', ja: 'サーボのPID自動調整' },
+    clip: 'tile-pid',
+  },
+  swarm: {
+    short: { en: 'Self-balancing swarm', ja: '自己平衡スウォーム' },
+    line: { en: 'Three balancing robots that coordinate without a central controller.', ja: '中央制御なしで協調する、倒立振子型ロボット3台。' },
+    did: { en: 'My final-year project, designed and simulated.', ja: '卒業研究。設計とシミュレーションまで。' },
+    strip: { en: 'Balancing robots that coordinate', ja: '協調する倒立振子ロボット' },
+    clip: 'tile-swarm',
+  },
+  gait: {
+    short: { en: 'G.A.I.T. Assist', ja: 'G.A.I.T. Assist' },
+    line: { en: 'A wristband that tells an intended gesture from a tremor.', ja: '意図したジェスチャーと震えを見分けるリストバンド。' },
+    did: { en: 'Hardware Team Lead, EPICS grant.', ja: 'ハードウェアチームリーダー、EPICS助成。' },
+    strip: { en: 'Gesture wristband, EPICS grant', ja: 'ジェスチャー検知リストバンド' },
+  },
+  net: { short: { en: 'Net system for debris', ja: 'デブリ捕獲ネット' }, strip: { en: 'Debris net, concept', ja: 'デブリ捕獲の概念' } },
+  abb: { short: { en: 'ABB research placement', ja: 'ABB 研究インターン' }, strip: { en: 'Bin-picking cell', ja: 'ビンピッキングセル' } },
+  cpu8: {
+    short: { en: '8-bit computer', ja: '8ビットコンピュータ' },
+    line: { en: 'A computer built from logic chips, programmed with switches.', ja: 'ロジックICで組んだ、スイッチでプログラムするコンピュータ。' },
+    did: { en: 'Built wire by wire with Pervin Korino Dasan.', ja: 'Pervin Korino Dasanと、配線を1本ずつ組みました。' },
+    strip: { en: 'Built from logic chips', ja: 'ロジックICから製作' } },
+  robodog: {
+    short: { en: 'RoboDog', ja: 'RoboDog' },
+    line: { en: 'A printed quadruped with working eyes.', ja: '目が光る、3Dプリントの四足ロボット。' },
+    did: { en: 'I built its electronics, code and calibration tool.', ja: '電子回路、コード、校正ツールを自作しました。' },
+    strip: { en: 'Printed quadruped', ja: '3Dプリント四足' } },
+  spider: { short: { en: 'Spider quadruped', ja: 'クモ型四足ロボット' }, strip: { en: 'Eight servos', ja: 'サーボ8個' } },
+  stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
+  vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
+  pipe: { short: { en: 'In-pipe inspection robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
+  stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 coming', ja: 'AI向けCAD、v2開発中' } },
+  subtlebotic: { short: { en: 'Neuro-robotics internship', ja: 'ニューロロボティクスのインターン' }, strip: { en: 'Electronics for BCI', ja: 'BCI向け電子回路' } },
 }
 
-export const skills: L = {
-  en: 'ABB RobotStudio, Altium, Arduino, Python, C, IoT, computer vision, mobile robotics. Coursework: PLC simulation (Factory I/O with Connected Components Workbench), robotic welding, industrial automation.',
-  ja: 'ABB RobotStudio、Altium、Arduino、Python、C、IoT、コンピュータビジョン、移動ロボット。授業での経験：PLCシミュレーション（Factory I/OとConnected Components Workbench）、ロボット溶接、産業オートメーション。',
-}
-
-export const beyond: L = {
-  en: 'Beyond the lab: on stage, on the mic, and at the printer.',
-  ja: '研究室の外では：ステージで、マイクの前で、そして3Dプリンターの前で。',
-}
-
-export type BeyondCard = { slug: string; title: L; when: L; body: L; images?: Media[]; link?: { href: string; label: L }; open: string }
-export const beyondCards: BeyondCard[] = [
-  {
-    slug: 'emcee',
-    title: { en: 'Emcee', ja: '司会' },
-    when: { en: 'January and August 2025', ja: '2025年1月・8月' },
-    body: {
-      en: 'Welcomed the incoming first-year class on stage at the First-Year Inauguration of Easwari Engineering College, with two co-hosts, and emceed the inaugural ceremony of Talentia, the two-day cultural event of the college.',
-      ja: 'Easwari Engineering Collegeの新入生歓迎式典で、2人の共同司会者とともにステージで新入生を迎え、また、大学の2日間の文化イベント「Talentia」の開会式でも司会を務めました。',
-    },
-    link: { href: 'https://www.youtube.com/watch?v=mXb8H1wp9NQ', label: { en: 'Watch the recording on YouTube', ja: 'YouTubeで録画を見る' } },
-    images: [
-      IMG('li-emcee', 624, 360, { en: 'The author on stage at the lectern during the First-Year Inauguration of Easwari Engineering College.', ja: 'Easwari Engineering Collegeの新入生歓迎式典で、演台に立つ本人。' }, { widths: [640], caption: { en: 'First-Year Inauguration, August 2025', ja: '新入生歓迎式典（2025年8月）' } }),
-      IMG('li-talentia-a', 1280, 853, { en: 'The author at the lectern during the inaugural ceremony of Talentia, the two-day cultural event of Easwari Engineering College.', ja: 'Easwari Engineering Collegeの2日間の文化イベント「Talentia」の開会式で、演台に立つ本人。' }, { widths: [640, 1280], caption: { en: 'Emceeing the Talentia inaugural ceremony, January 2025', ja: 'Talentia開会式の司会（2025年1月）' } }),
-      IMG('li-talentia-b', 600, 1280, { en: 'The author speaking at the lectern, which carries the Easwari Engineering College and Talentia sign.', ja: 'EaswariとTalentiaの看板が付いた演台で話す本人。' }, { widths: [640], caption: { en: 'At the Talentia lectern', ja: 'Talentiaの演台にて' } }),
-    ],
-    open: 'Emcee photo',
-  },
-  {
-    slug: 'podcast',
-    title: { en: 'Podcast host', ja: 'ポッドキャスト司会' },
-    when: { en: 'January 2026', ja: '2026年1月' },
-    body: {
-      en: 'Hosted Episode 8 of the series Person Behind The Power, an Elite Encounters show at Easwari Engineering College, published on the college YouTube channel.',
-      ja: 'Easwari Engineering Collegeの「Elite Encounters」による番組シリーズ「Person Behind The Power」の第8話の進行を務めました。大学のYouTubeチャンネルで公開されています。',
-    },
-    images: [IMG('li-podcast-logo', 1280, 720, { en: 'The Elite Encounters set: the author and a guest at the desk, with the show logo on the screen behind them.', ja: 'Elite Encountersの収録風景：机を挟んで座る本人とゲスト、背後のスクリーンに番組ロゴ。' }, { widths: [640, 1280], caption: { en: 'Elite Encounters', ja: 'Elite Encounters' } })],
-    link: { href: 'https://youtu.be/Q-IukgMDHOI', label: { en: 'Watch the episode on YouTube', ja: 'YouTubeでエピソードを見る' } },
-    open: 'Podcast photo or still',
-  },
-  {
-    slug: 'printing',
-    title: { en: '3D printing workshop', ja: '3Dプリンティングのワークショップ' },
-    when: { en: 'April 2026, HephaForge', ja: '2026年4月、HephaForge' },
-    body: {
-      en: 'A hands-on workshop led by Gowtham S.: modelled a part from scratch in Autodesk Fusion and watched it print. The first print was a dragon keychain for my bag. Next, custom parts for my robot builds.',
-      ja: 'Gowtham S.氏による実践ワークショップ。Autodesk Fusionで一から部品をモデリングし、印刷されるところまで体験しました。最初の作品は、バッグ用のドラゴンのキーホルダー。次は、ロボット製作用のオリジナル部品です。',
-    },
-    images: [
-      IMG('li-print-model', 480, 269, { en: 'The dragon keychain modelled in Autodesk Fusion: a round tag with a dragon relief.', ja: 'Autodesk Fusionでモデリングしたドラゴンのキーホルダー。円形のタグにドラゴンのレリーフ。' }, { widths: [640], caption: { en: 'Modelled in Fusion', ja: 'Fusionでのモデリング' } }),
-      IMG('li-print-result', 480, 640, { en: 'The printed dragon keychain in orange and blue on a tiled table.', ja: 'オレンジと青で印刷されたドラゴンのキーホルダー。' }, { widths: [640], caption: { en: 'The first print', ja: '最初の出力' } }),
-      IMG('li-print-bag', 800, 1066, { en: 'The dragon keychain hanging from the zip of a bag.', ja: 'バッグのファスナーに付けたドラゴンのキーホルダー。' }, { widths: [640], caption: { en: 'On my bag', ja: 'バッグに取り付けて' } }),
-    ],
-    open: 'Photo of the dragon keychain',
-  },
+/** Path: a short timeline. Awards sit in the same list. */
+// TODO(idris): JLPT level and date, and the master's start date (answer 11).
+export const pathRows: { when: string; text: L }[] = [
+  { when: '2026 Jul', text: { en: 'Research intern, ABB Global CoE, Easwari', ja: '研究インターン、ABB Global CoE（Easwari）' } },
+  { when: '2026 May', text: { en: 'Hardware Team Lead, G.A.I.T. Assist; EPICS in IEEE grant of USD 3,000', ja: 'ハードウェアチームリーダー（G.A.I.T. Assist）。EPICS in IEEE助成3,000米ドル' } },
+  { when: '2025 Sep', text: { en: 'Intern, Subtlebotic', ja: 'インターン、Subtlebotic' } },
+  { when: '2025', text: { en: 'InnovateX 2025, IEEE hackathon: runner-up', ja: 'InnovateX 2025（IEEEハッカソン）準優勝' } },
+  { when: '2025 Aug', text: { en: 'Head of Content, SEEE', ja: 'コンテンツ責任者、SEEE' } },
+  { when: '2024 Sep', text: { en: 'Creative Head, Electronics Hobby Club', ja: 'クリエイティブ責任者、Electronics Hobby Club' } },
 ]
 
-export const fieldMedia: Media[] = [
-  IMG('li-iisc-me', 480, 228, { en: 'The author standing beside the EE Summer School banner at the Department of Electrical Engineering, IISc.', ja: 'IIScの電気工学科で、EEサマースクールの看板の横に立つ本人。' }, { widths: [640], caption: { en: 'IISc EE Summer School, July 2025', ja: 'IISc EEサマースクール（2025年7月）' } }),
-  IMG('iisc-hall', 742, 768, { en: 'A large laboratory hall with tall insulator columns, seen on the lab tour at the IISc EE Summer School.', ja: 'IISc EEサマースクールの研究室見学で訪れた、背の高い碍子の柱が並ぶ大きな実験ホール。' }, { widths: [640], caption: { en: 'IISc EE Summer School, July 2025: lab tour', ja: 'IISc EEサマースクール（2025年7月）：研究室見学' } }),
-  IMG('iisc-lab', 480, 640, { en: 'A tall electrical cabinet full of control boards and wiring, from the lab tour at IISc.', ja: 'IIScの研究室見学で見た、制御基板と配線がぎっしり詰まった電気キャビネット。' }, { widths: [640], caption: { en: 'IISc: inside a control cabinet', ja: 'IISc：制御キャビネットの内部' } }),
-  IMG('expo-robots', 800, 360, { en: 'Industrial robot arms on a stand at Automation Expo South 2025, Chennai Trade Centre.', ja: 'Automation Expo South 2025（チェンナイ・トレードセンター）の展示ブースの産業用ロボットアーム。' }, { widths: [640], caption: { en: 'Automation Expo South, Chennai, March 2025', ja: 'Automation Expo South（チェンナイ、2025年3月）' } }),
-  IMG('expo-station', 1280, 720, { en: 'A pneumatic assembly line on a trade-expo stand, with a touch-screen controller, a control panel and a PLC cabinet at the front.', ja: '展示会のブースにある空圧式の組立ラインと、手前のタッチパネル、操作盤、PLCキャビネット。' }, { widths: [640, 1280], caption: { en: 'An expo stand: a pneumatic line with its PLC cabinet', ja: '展示会のブース：空圧ラインとPLCキャビネット' } }),
-  IMG('expo-spring', 480, 853, { en: 'A CNC wire-forming machine that coils springs, with its eight forming arms around a central tool.', ja: 'ばねを巻くCNCワイヤーフォーミングマシン。中央の工具を囲む8本の成形アーム。' }, { widths: [640], caption: { en: 'A CNC spring-coiling machine', ja: 'CNCばね成形機' } }),
-  IMG('expo-cutter', 480, 270, { en: 'A large flat-bed cutting machine under a black bellows cover on an expo stand.', ja: '展示会のブースにある、黒い蛇腹カバー付きの大型フラットベッド切断機。' }, { widths: [640], caption: { en: 'A flat-bed cutting machine', ja: 'フラットベッド切断機' } }),
-  IMG('expo-dino', 480, 270, { en: 'A metal dinosaur skeleton on a pedestal in front of a laser cutting machine, a showpiece on an expo stand.', ja: 'レーザー加工機の前の台座に置かれた、金属製の恐竜の骨格。展示ブースの目玉。' }, { widths: [640], caption: { en: 'A metal dinosaur on show at an expo stand', ja: '展示ブースに飾られた金属製の恐竜' } }),
+/** Beyond the lab: a photo strip with short captions. Only photos already published on the site. */
+export const strip: { media: Media; caption: L; link?: { href: string; label: L } }[] = [
+  { media: IMG('li-emcee', 624, 360, { en: 'The author on stage at the lectern during the First-Year Inauguration of Easwari Engineering College.', ja: 'Easwari Engineering Collegeの新入生歓迎式典で、演台に立つ本人。' }, { widths: [640] }), caption: { en: 'Emcee, first-year inauguration', ja: '新入生歓迎式典の司会' }, link: { href: 'https://www.youtube.com/watch?v=mXb8H1wp9NQ', label: { en: 'Watch the recording on YouTube', ja: 'YouTubeで録画を見る' } } },
+  { media: IMG('li-podcast-logo', 1280, 720, { en: 'The Elite Encounters set: the author and a guest at the desk, with the show logo on the screen behind them.', ja: 'Elite Encountersの収録風景：机を挟んで座る本人とゲスト、背後のスクリーンに番組ロゴ。' }, { widths: [640, 1280] }), caption: { en: 'Hosting a college podcast', ja: '大学のポッドキャスト司会' }, link: { href: 'https://youtu.be/Q-IukgMDHOI', label: { en: 'Watch the episode on YouTube', ja: 'YouTubeでエピソードを見る' } } },
+  { media: IMG('li-print-result', 480, 640, { en: 'The printed dragon keychain in orange and blue on a tiled table.', ja: 'オレンジと青で印刷されたドラゴンのキーホルダー。' }, { widths: [640] }), caption: { en: 'My first 3D print', ja: '初めての3Dプリント' } },
+  { media: IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280] }), caption: { en: 'Robo Soccer, second attempt', ja: 'ロボサッカー、2回目の挑戦' } },
 ]
+
+// TODO(idris): the new podcast (name, date, link). Hidden until filled in; add it to `strip` above when known (docs/ANSWERS-NEEDED.md).
 
 // Update `asOf` whenever these numbers are re-checked in the apps (guide §24.10).
 export const habits = {

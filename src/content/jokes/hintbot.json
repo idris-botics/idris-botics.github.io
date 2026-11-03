@@ -1,0 +1,598 @@
+{
+ "_note": "Hint bot (top right). Questions and taunts come before every hint. All JA strings need native review.",
+ "ui": {
+  "button": {
+   "en": "Hint",
+   "ja": "ヒント"
+  },
+  "title": {
+   "en": "Need a hint?",
+   "ja": "ヒントがほしい？"
+  },
+  "close": {
+   "en": "Close",
+   "ja": "閉じる"
+  },
+  "soon": {
+   "en": "Too soon. Look at the last hint again.",
+   "ja": "早すぎます。前回のヒントをもう一度。"
+  },
+  "none": {
+   "en": "Nothing left to hint. You found everything. Go away.",
+   "ja": "もうヒントはありません。全部見つけました。お疲れさま。"
+  },
+  "fire": {
+   "en": "Do it for me",
+   "ja": "代わりにやって"
+  },
+  "last": {
+   "en": "That was the last hint for this one.",
+   "ja": "この秘密のヒントはこれで最後です。"
+  },
+  "another": {
+   "en": "Another hint",
+   "ja": "次のヒント"
+  }
+ },
+ "questions": [
+  {
+   "q": {
+    "en": "Are you sure you want a hint?",
+    "ja": "本当にヒントがほしいですか？"
+   },
+   "a": {
+    "en": "Yes",
+    "ja": "はい"
+   },
+   "b": {
+    "en": "No",
+    "ja": "いいえ"
+   },
+   "ra": {
+    "en": "Bold of you to ask.",
+    "ja": "よく聞けましたね。"
+   },
+   "rb": {
+    "en": "Then why did you press it?",
+    "ja": "じゃあ、なぜ押したのですか？"
+   }
+  },
+  {
+   "q": {
+    "en": "Have you tried turning your brain off and on again?",
+    "ja": "頭を一度オフにして、またオンにしましたか？"
+   },
+   "a": {
+    "en": "Yes",
+    "ja": "はい"
+   },
+   "b": {
+    "en": "Not yet",
+    "ja": "まだ"
+   },
+   "ra": {
+    "en": "And it still came out like this?",
+    "ja": "それでこの結果ですか？"
+   },
+   "rb": {
+    "en": "Do it now. I will wait. I will not, but do it.",
+    "ja": "今どうぞ。待ちます。待ちませんが。"
+   }
+  },
+  {
+   "q": {
+    "en": "Is this your first time using a website?",
+    "ja": "ウェブサイトを使うのは初めてですか？"
+   },
+   "a": {
+    "en": "No",
+    "ja": "いいえ"
+   },
+   "b": {
+    "en": "Maybe",
+    "ja": "たぶん"
+   },
+   "ra": {
+    "en": "That explains a lot, actually.",
+    "ja": "それで色々と納得です。"
+   },
+   "rb": {
+    "en": "Honesty. Rare. Noted.",
+    "ja": "正直ですね。珍しい。記録しました。"
+   }
+  },
+  {
+   "q": {
+    "en": "Do you ask for directions in a room with one door?",
+    "ja": "出口が一つの部屋で道を聞くタイプですか？"
+   },
+   "a": {
+    "en": "Yes",
+    "ja": "はい"
+   },
+   "b": {
+    "en": "Never",
+    "ja": "いいえ"
+   },
+   "ra": {
+    "en": "I thought so.",
+    "ja": "やはり。"
+   },
+   "rb": {
+    "en": "Then why are you asking me?",
+    "ja": "では、なぜ私に聞くのですか？"
+   }
+  },
+  {
+   "q": {
+    "en": "On a scale of one to ten, how lost are you? Please do not say ten.",
+    "ja": "1から10で、どのくらい迷っていますか？ 10とは言わないでください。"
+   },
+   "a": {
+    "en": "Ten",
+    "ja": "10"
+   },
+   "b": {
+    "en": "Eleven",
+    "ja": "11"
+   },
+   "ra": {
+    "en": "Rude. Accurate, but rude.",
+    "ja": "失礼です。正確ですが、失礼です。"
+   },
+   "rb": {
+    "en": "Impressive. That is not on the scale.",
+    "ja": "すごい。目盛りにありません。"
+   }
+  },
+  {
+   "q": {
+    "en": "Did you read the page, or only look at the pictures?",
+    "ja": "ページを読みましたか？ それとも写真だけ？"
+   },
+   "a": {
+    "en": "Read it",
+    "ja": "読んだ"
+   },
+   "b": {
+    "en": "Pictures",
+    "ja": "写真だけ"
+   },
+   "ra": {
+    "en": "Liar. There was a lot of reading.",
+    "ja": "嘘ですね。読む量はたくさんありました。"
+   },
+   "rb": {
+    "en": "The pictures are very nice, to be fair.",
+    "ja": "写真はたしかにきれいです。"
+   }
+  },
+  {
+   "q": {
+    "en": "Would you like the hint with dignity or without?",
+    "ja": "ヒントは、プライドつきとプライドなし、どちらにしますか？"
+   },
+   "a": {
+    "en": "With",
+    "ja": "つき"
+   },
+   "b": {
+    "en": "Without",
+    "ja": "なし"
+   },
+   "ra": {
+    "en": "Too late. The dignity is gone.",
+    "ja": "遅かったですね。もうありません。"
+   },
+   "rb": {
+    "en": "A wise choice. You did not have much.",
+    "ja": "賢明です。もともとあまりありませんでした。"
+   }
+  },
+  {
+   "q": {
+    "en": "Do you promise not to tell the professor?",
+    "ja": "教授には言わないと約束しますか？"
+   },
+   "a": {
+    "en": "I promise",
+    "ja": "約束する"
+   },
+   "b": {
+    "en": "Who?",
+    "ja": "誰？"
+   },
+   "ra": {
+    "en": "Good. We never speak of this.",
+    "ja": "よろしい。この話はなかったことに。"
+   },
+   "rb": {
+    "en": "Exactly. Nobody. Carry on.",
+    "ja": "その通り。誰もいません。続けましょう。"
+   }
+  },
+  {
+   "q": {
+    "en": "Have you considered that the secret is hiding because of you?",
+    "ja": "秘密が隠れているのは、あなたのせいだと考えたことはありますか？"
+   },
+   "a": {
+    "en": "Yes",
+    "ja": "はい"
+   },
+   "b": {
+    "en": "No",
+    "ja": "いいえ"
+   },
+   "ra": {
+    "en": "Then you know what you did.",
+    "ja": "では、自分の行いはご存じですね。"
+   },
+   "rb": {
+    "en": "Now you have. Sit with that.",
+    "ja": "今、考えましたね。噛みしめてください。"
+   }
+  },
+  {
+   "q": {
+    "en": "Quick check: are you a robot?",
+    "ja": "確認です。あなたはロボットですか？"
+   },
+   "a": {
+    "en": "No",
+    "ja": "いいえ"
+   },
+   "b": {
+    "en": "Beep",
+    "ja": "ピッ"
+   },
+   "ra": {
+    "en": "Suspicious. Robots say that too.",
+    "ja": "怪しいですね。ロボットもそう言います。"
+   },
+   "rb": {
+    "en": "Finally, someone honest.",
+    "ja": "やっと正直な人が来ました。"
+   }
+  },
+  {
+   "q": {
+    "en": "Do you want it quick, or do you want it to hurt?",
+    "ja": "さくっと教えましょうか、それとも痛い方がいいですか？"
+   },
+   "a": {
+    "en": "Quick",
+    "ja": "さくっと"
+   },
+   "b": {
+    "en": "Hurt",
+    "ja": "痛い方"
+   },
+   "ra": {
+    "en": "Cowards get hints. Fine.",
+    "ja": "臆病者にもヒントはあります。どうぞ。"
+   },
+   "rb": {
+    "en": "Respect. Hint incoming, ouch included.",
+    "ja": "敬意を表します。痛みつきで来ます。"
+   }
+  },
+  {
+   "q": {
+    "en": "Is it a good idea to press things on a page that says Chaos?",
+    "ja": "「カオス」と書かれたページで、いろいろ押すのは良い考えですか？"
+   },
+   "a": {
+    "en": "Yes",
+    "ja": "はい"
+   },
+   "b": {
+    "en": "No",
+    "ja": "いいえ"
+   },
+   "ra": {
+    "en": "Correct. That is the whole site.",
+    "ja": "正解です。それがこのサイトです。"
+   },
+   "rb": {
+    "en": "Correct. And yet here we are.",
+    "ja": "正解です。それでもここにいますね。"
+   }
+  }
+ ],
+ "taunts": [
+  {
+   "n": "The robot",
+   "en": "I was built for precision. You are pressing a button for sympathy.",
+   "ja": "私は精度のために作られました。あなたは同情のためにボタンを押しています。"
+  },
+  {
+   "n": "The robot",
+   "en": "Hint requests this visit: noted. Judgement: also noted.",
+   "ja": "今回のヒント要求を記録しました。評価も記録しました。"
+  },
+  {
+   "n": "The robot",
+   "en": "I could tell you. I could also watch you try. Both are fun.",
+   "ja": "教えることもできます。試すあなたを眺めることもできます。どちらも楽しいです。"
+  },
+  {
+   "n": "The robot",
+   "en": "Please hold. Your patience is being evaluated.",
+   "ja": "少々お待ちください。あなたの忍耐力を評価中です。"
+  },
+  {
+   "n": "The robot",
+   "en": "I have eight sensors and none of them detect effort.",
+   "ja": "センサーは8つありますが、努力は検知できません。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Mission Control to visitor: have you tried not clicking everything?",
+   "ja": "ミッションコントロールより訪問者へ。全部押すのをやめてみましたか？"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Copy that. You are stuck. We are enjoying this.",
+   "ja": "了解。行き詰まりを確認。こちらは楽しんでいます。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Hint channel open. Dignity channel closed.",
+   "ja": "ヒント回線は開通。プライド回線は閉鎖。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Standing by. Standing by. Still standing by.",
+   "ja": "待機中。待機中。まだ待機中。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Telemetry says you have been here a while. Telemetry is worried.",
+   "ja": "テレメトリによると、長くここにいます。テレメトリは心配しています。"
+  },
+  {
+   "n": "The error log",
+   "en": "WARN: visitor requests help for the third time. Patience module offline.",
+   "ja": "警告：訪問者が3回目の助けを要求。忍耐モジュールはオフライン。"
+  },
+  {
+   "n": "The error log",
+   "en": "INFO: hint available. ERROR: user.",
+   "ja": "情報：ヒントあり。エラー：ユーザー。"
+  },
+  {
+   "n": "The error log",
+   "en": "DEBUG: the bug is between the chair and the keyboard.",
+   "ja": "デバッグ：バグは椅子とキーボードの間にあります。"
+  },
+  {
+   "n": "The error log",
+   "en": "WARN: curiosity detected. Proceeding anyway.",
+   "ja": "警告：好奇心を検出。続行します。"
+  },
+  {
+   "n": "The error log",
+   "en": "FATAL: tried to think. Operation timed out.",
+   "ja": "致命的：考えようとしました。タイムアウト。"
+  },
+  {
+   "n": "The professor",
+   "en": "Interesting approach to research. Ask the machine, skip the reading.",
+   "ja": "興味深い研究方法です。読まずに機械に聞くのですね。"
+  },
+  {
+   "n": "The professor",
+   "en": "I will give you partial credit for asking.",
+   "ja": "聞いたことに部分点を差し上げます。"
+  },
+  {
+   "n": "The professor",
+   "en": "This would have been a footnote in a better paper.",
+   "ja": "もっと良い論文なら、脚注で済んでいます。"
+  },
+  {
+   "n": "The professor",
+   "en": "See me after class. Bring a hint.",
+   "ja": "授業のあとで来なさい。ヒントを持って。"
+  },
+  {
+   "n": "The professor",
+   "en": "B-minus. The minus is for the clicking.",
+   "ja": "B-マイナスです。マイナスはクリックの分です。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "The next hint is arriving shortly. Please stand behind the yellow line.",
+   "ja": "まもなくヒントが到着します。黄色い線の内側でお待ちください。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "Delay due to the visitor. We apologise for nothing.",
+   "ja": "訪問者の都合により遅れています。お詫びはしません。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "Please do not lean on the secrets.",
+   "ja": "秘密に寄りかからないでください。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "This is a quiet carriage. Think quietly.",
+   "ja": "この車両は静かな車両です。静かに考えてください。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "Mind the gap between you and the answer.",
+   "ja": "あなたと答えの間にご注意ください。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "HINT NOT FOUND. TRY AGAIN. OR DO NOT.",
+   "ja": "ヒントが見つかりません。もう一度。またはやめる。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "BEEP. BOOP. YOU ARE STUCK. BEEP.",
+   "ja": "ピッ。ピッ。行き詰まりです。ピッ。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "READING YOUR MIND... 0 BYTES FOUND.",
+   "ja": "あなたの頭を読み込み中…0バイト。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "ERROR 404: PATIENCE. ERROR 405: EFFORT.",
+   "ja": "エラー404：忍耐。エラー405：努力。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "I HAVE EIGHT BITS. SEVEN ARE LAUGHING.",
+   "ja": "私は8ビット。7ビットは笑っています。"
+  },
+  {
+   "n": "The robot",
+   "en": "You have clicked that button more times than the Moon has been pressed.",
+   "ja": "あなたはそのボタンを、月が押された回数より多く押しました。"
+  },
+  {
+   "n": "The robot",
+   "en": "A secret does not become easier by asking twice.",
+   "ja": "秘密は、2回聞いても簡単になりません。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Be advised: hints are not free. They cost pride.",
+   "ja": "お知らせ。ヒントは無料ではありません。プライドが代金です。"
+  },
+  {
+   "n": "The professor",
+   "en": "Have you tried reading the project pages? They are very good.",
+   "ja": "プロジェクトのページは読みましたか？ とても良い内容です。"
+  },
+  {
+   "n": "The professor",
+   "en": "If you solve this on your own I will write you a letter.",
+   "ja": "自力で解けたら、推薦状を書きましょう。"
+  },
+  {
+   "n": "The error log",
+   "en": "INFO: three hints exist. You will see all three. Eventually.",
+   "ja": "情報：ヒントは3つあります。いつかすべて見られます。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "Tickets to the answer are on sale at the next window.",
+   "ja": "答え行きの切符は、次の窓口で販売中です。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "PRESS ANY KEY. NOT THAT ONE. THE OTHER ANY.",
+   "ja": "好きなキーを押してください。それではなく、別の好きなキーを。"
+  },
+  {
+   "n": "The robot",
+   "en": "I am not saying it is easy. I am saying it is four letters.",
+   "ja": "簡単とは言いません。ただ、4文字です。"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Tier one is gentle. Tier two is clearer. Tier three is shameful.",
+   "ja": "第1段階は優しく、第2段階は明確、第3段階は恥ずかしいです。"
+  },
+  {
+   "n": "The error log",
+   "en": "WARN: the hint button is warm. Please stop.",
+   "ja": "警告：ヒントボタンが熱を持っています。やめてください。"
+  },
+  {
+   "n": "The professor",
+   "en": "Everything on this page is a clue. Including your confidence.",
+   "ja": "このページのすべてがヒントです。あなたの自信も含めて。"
+  },
+  {
+   "n": "The robot",
+   "en": "You are doing great. That is a lie, but a kind one.",
+   "ja": "よくやっています。嘘ですが、優しい嘘です。"
+  },
+  {
+   "n": "The station announcer",
+   "en": "The secret is on platform four. You are on platform one.",
+   "ja": "秘密は4番線です。あなたは1番線にいます。"
+  },
+  {
+   "n": "The 8-bit computer",
+   "en": "LOADING SYMPATHY... 3%... 3%... 3%...",
+   "ja": "同情を読み込み中…3%…3%…3%…"
+  },
+  {
+   "n": "Mission Control",
+   "en": "Visitor, you are cleared to try again. Without us.",
+   "ja": "訪問者へ。こちらなしで再挑戦の許可が出ました。"
+  },
+  {
+   "n": "The robot",
+   "en": "I have been told to be nice. I am working on it.",
+   "ja": "優しくするよう言われています。努力中です。"
+  }
+ ],
+ "secrets": {
+  "coffee": [
+   {
+    "en": "Try typing a drink.",
+    "ja": "飲み物の名前を打ってみてください。"
+   },
+   {
+    "en": "It is brown, hot and six letters.",
+    "ja": "茶色くて、熱くて、6文字です。"
+   },
+   {
+    "en": "Type: coffee",
+    "ja": "「coffee」と打ってください。"
+   }
+  ],
+  "roll": [
+   {
+    "en": "Try typing what a barrel does when you push it.",
+    "ja": "樽を押したときの動きを打ってみてください。"
+   },
+   {
+    "en": "Four letters. Dice do it too.",
+    "ja": "4文字です。サイコロもやります。"
+   },
+   {
+    "en": "Type: roll",
+    "ja": "「roll」と打ってください。"
+   }
+  ],
+  "omae": [
+   {
+    "en": "Try typing a rude Japanese word for \"you\".",
+    "ja": "失礼な言い方の日本語の「あなた」を打ってみてください。"
+   },
+   {
+    "en": "Four letters in romaji. It starts with an O.",
+    "ja": "ローマ字で4文字。Oで始まります。"
+   },
+   {
+    "en": "Type: omae",
+    "ja": "「omae」と打ってください。"
+   }
+  ],
+  "moon": [
+   {
+    "en": "Look for a button that says not to press it.",
+    "ja": "「押さないで」と書かれたボタンを探してください。"
+   },
+   {
+    "en": "It is big, red and in the bottom left, shaped like the rock in the night sky.",
+    "ja": "大きくて赤く、左下にあります。夜空の石の形です。"
+   },
+   {
+    "en": "Press the Moon button, bottom left.",
+    "ja": "左下の月のボタンを押してください。"
+   }
+  ]
+ }
+}

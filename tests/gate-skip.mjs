@@ -7,7 +7,7 @@ for (const where of ['on the notice', 'during the crawl', 'during the questions'
   const errs = []
   p.on('pageerror', (e) => errs.push(e.message))
   await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networkidle' })
-  await p.getByRole('button', { name: /CHAOS/ }).click()
+  await p.getByRole('button', { name: 'Enter Chaos' }).click()
   if (where !== 'on the notice') await p.getByRole('button', { name: 'Proceed', exact: true }).click()
   await p.waitForTimeout(600)
   if (where === 'during the questions') {

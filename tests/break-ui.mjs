@@ -14,7 +14,7 @@ for (const lang of ['en', 'ja']) for (const w of [320, 390, 768, 1024, 1366]) {
     const out = { docOverflow: document.documentElement.scrollWidth > vw + 1, past: [], clipped: [] }
     const label = (e) => (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ')[0] : e.tagName.toLowerCase()) + ':' + (e.textContent || '').trim().slice(0, 28)
     for (const e of document.querySelectorAll('main *, header *')) {
-      if (e.closest('.sr-only, nav, .rail, .chaos-layer, canvas, svg, video, .sim-screen, table')) continue
+      if (e.closest('.sr-only, nav, .rail, .chaos-layer, canvas, svg, video, .sim-screen, table, .strip')) continue // the More builds strip scrolls sideways on purpose
       const rc = e.getBoundingClientRect()
       if (rc.width === 0 || rc.height === 0) continue
       if (rc.right > vw + 1 || rc.left < -1) out.past.push(label(e))

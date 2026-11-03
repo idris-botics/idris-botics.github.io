@@ -24,7 +24,7 @@ await p.waitForTimeout(2800)
 check('omae gone', (await p.locator('.omae').count()) === 0)
 
 // shatter
-const para = p.locator('#hl ~ * p, article.card p').first()
+const para = p.locator('.about-p').first()
 await para.scrollIntoViewIfNeeded()
 await para.click()
 await p.waitForTimeout(300)
@@ -33,7 +33,7 @@ await p.waitForTimeout(3600)
 check('text re-forms', (await p.locator('.shard').count()) === 0)
 
 // dodge
-const chip = p.locator('main article.card a.btn').first()
+const chip = p.locator('.hero-actions a.btn').first()
 await chip.scrollIntoViewIfNeeded()
 const before = await chip.boundingBox()
 await chip.hover({ force: true })

@@ -262,5 +262,113 @@
     "selected": 0,
     "custom": "",
     "status": "CHOSEN"
+  },
+  {
+    "id": "coffee-b1",
+    "context": "Coffee: brewing bar, first stage.",
+    "options": [
+      "抽出中…",
+      "お湯を沸かしています…",
+      "抽出中。しばらくお待ちください。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-b2",
+    "context": "Coffee: brewing bar, middle stage.",
+    "options": [
+      "豆を手で挽いています…",
+      "豆を手で、ゆっくり挽いています…",
+      "豆を一粒ずつ挽いています。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-b3",
+    "context": "Coffee: brewing bar, last stage.",
+    "options": [
+      "99%。カップに触らないでください。",
+      "99%。離れてください。",
+      "99%。カップが緊張しています。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-vend",
+    "context": "Coffee: the vending-machine can lands (sound word).",
+    "options": [
+      "ガコン",
+      "ガコン",
+      "ゴトン"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-c2",
+    "context": "Coffee: typed a second time.",
+    "options": [
+      "デカフェ？ この物価で？",
+      "デカフェは噂です。",
+      "デカフェ？ このサイトにはありません。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-c3",
+    "context": "Coffee: typed a third time.",
+    "options": [
+      "418：私はティーポットです。飲み物が違います。",
+      "エラー418。私はティーポットです。",
+      "418。ティーポットなので、飲み物が違います。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-c4",
+    "context": "Coffee: typed a fourth time (the robot arm holds the mug).",
+    "options": [
+      "アームがマグを持ちました。震えています。",
+      "手は安定しています。たぶん。",
+      "アームが運ぶと言って聞きません。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-c5",
+    "context": "Coffee: typed a fifth time or more.",
+    "options": [
+      "カフェイン上限に達しました。ロボットが振動しています。",
+      "カフェイン上限です。座ってください。",
+      "カフェイン上限です。ロボットを落ち着かせてください。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
+  },
+  {
+    "id": "coffee-r",
+    "context": "Coffee with reduced motion: one stain and a toast.",
+    "options": [
+      "コーヒーをこぼしました。洪水を想像してください。",
+      "カップを1杯こぼしました。洪水は省略です。",
+      "カップが1杯こぼれました。続きは想像してください。"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT needs-native-review"
   }
 ]

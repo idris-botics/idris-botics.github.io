@@ -13,5 +13,16 @@ for (const lang of ['en', 'ja']) {
     }
   }
 }
+// hints.json: every text object needs an English and a Japanese string
+const hints = { hints: JSON.parse(readFileSync('src/content/jokes/hints.json', 'utf8')), narrators: JSON.parse(readFileSync('src/content/jokes/narrators.json', 'utf8')), hintbot: JSON.parse(readFileSync('src/content/jokes/hintbot.json', 'utf8')) }
+let missing = 0
+const walk = (v, path) => {
+  if (v && typeof v === 'object') {
+    if (typeof v.en === 'string' || typeof v.ja === 'string') { if (!String(v.en ?? '').trim() || !String(v.ja ?? '').trim()) { console.error(`HINT missing en or ja: ${path}`); missing++ } }
+    else for (const k of Object.keys(v)) walk(v[k], `${path}.${k}`)
+  }
+}
+walk(hints, 'jokes')
+if (missing) process.exit(1)
 console.log(`${total - bad}/${total} caption slots reviewed`)
 if (bad && process.env.CHECK_STRICT === '1') process.exit(1)

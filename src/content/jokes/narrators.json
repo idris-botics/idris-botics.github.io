@@ -1,0 +1,713 @@
+{
+  "_note": "Draft comment lines for the Chaos comment engine, grouped by narrator and by context, plus rare (about 3%) and legendary (about 0.5%, gold toast, achievement) lines. Every line is draft until Idris edits it (list: docs/jokes-to-review.md). All JA strings need native review. Chaos narrators are characters and may use contractions.",
+  "draft": true,
+  "narrators": {
+    "robot": {
+      "name": {
+        "en": "The robot",
+        "ja": "ロボット"
+      },
+      "lines": [
+        {
+          "en": "I was built for precision. You are clicking randomly.",
+          "ja": "私は精密さのために作られました。あなたはランダムにクリックしています。"
+        },
+        {
+          "en": "I do not have feelings. I do have a log, and you are in it.",
+          "ja": "私に感情はありません。ログはあります。あなたはそこに載っています。"
+        },
+        {
+          "en": "My torque is nominal. My patience is not.",
+          "ja": "トルクは正常です。忍耐は正常ではありません。"
+        },
+        {
+          "en": "Please keep your hands off the moving parts. All of the parts are moving.",
+          "ja": "可動部に触れないでください。全部が可動部です。"
+        },
+        {
+          "en": "I counted your clicks. The number is unprofessional.",
+          "ja": "クリック数を数えました。数字がプロらしくありません。"
+        },
+        {
+          "en": "Calibration complete. Result: you are having too much fun.",
+          "ja": "キャリブレーション完了。結果：楽しみすぎです。"
+        },
+        {
+          "en": "Please stop poking the exhibit. I am the exhibit.",
+          "ja": "展示物をつつかないでください。私が展示物です。"
+        },
+        {
+          "en": "Battery at 100 percent. Dignity at 12.",
+          "ja": "バッテリー100%。尊厳12%。"
+        },
+        {
+          "en": "I run on 12 volts and mild disapproval.",
+          "ja": "私は12ボルトと軽い不満で動いています。"
+        },
+        {
+          "en": "That click was in the wrong place. I have notes.",
+          "ja": "今のクリックは場所が違いました。メモを取りました。"
+        }
+      ]
+    },
+    "control": {
+      "name": {
+        "en": "Mission Control",
+        "ja": "ミッションコントロール"
+      },
+      "lines": [
+        {
+          "en": "Copy that. Visitor still scrolling. Over.",
+          "ja": "了解。訪問者はまだスクロール中。どうぞ。"
+        },
+        {
+          "en": "All stations: the visitor is exploring. Hold your coffee.",
+          "ja": "全局へ：訪問者が探索中。コーヒーを持ってお待ちください。"
+        },
+        {
+          "en": "Houston, we have a reader. Repeat, a reader.",
+          "ja": "ヒューストン、読者を確認。繰り返す、読者を確認。"
+        },
+        {
+          "en": "Telemetry looks good. Morale looks better.",
+          "ja": "テレメトリーは良好。士気はもっと良好です。"
+        },
+        {
+          "en": "Standing by. Please do not press anything red.",
+          "ja": "待機中。赤いものは押さないでください。"
+        },
+        {
+          "en": "Signal strength: strong. Seriousness: lost in transit.",
+          "ja": "信号強度：強。真面目さ：輸送中に紛失。"
+        },
+        {
+          "en": "Flight, the visitor has found the scroll bar. Repeat, the scroll bar.",
+          "ja": "フライト、訪問者がスクロールバーを発見。繰り返す、スクロールバー。"
+        },
+        {
+          "en": "Go for coffee. All stations, go for coffee.",
+          "ja": "コーヒー、ゴー。全局、コーヒー、ゴー。"
+        },
+        {
+          "en": "We are tracking one curious human. Do not wave.",
+          "ja": "好奇心旺盛な人間を1名追跡中。手を振らないでください。"
+        },
+        {
+          "en": "Mission Control to visitor: you are doing great. Please stop doing that.",
+          "ja": "ミッションコントロールから訪問者へ。順調です。今のはやめてください。"
+        }
+      ]
+    },
+    "log": {
+      "name": {
+        "en": "The error log",
+        "ja": "エラーログ"
+      },
+      "lines": [
+        {
+          "en": "WARN: visitor having too much fun. Throttling disabled.",
+          "ja": "警告：訪問者が楽しみすぎています。制限は無効です。"
+        },
+        {
+          "en": "INFO: nothing is broken. Everything is just very loud.",
+          "ja": "情報：壊れているものはありません。ただ、とても騒がしいだけです。"
+        },
+        {
+          "en": "DEBUG: found the bug. It is the feature.",
+          "ja": "デバッグ：バグを発見。それが機能でした。"
+        },
+        {
+          "en": "ERROR 404: calm not found.",
+          "ja": "エラー404：落ち着きが見つかりません。"
+        },
+        {
+          "en": "NOTICE: this site compiles. Nobody knows why.",
+          "ja": "通知：このサイトはコンパイルできます。理由は誰も知りません。"
+        },
+        {
+          "en": "WARN: coffee level low. Robots may vibrate.",
+          "ja": "警告：コーヒー残量わずか。ロボットが振動する恐れがあります。"
+        },
+        {
+          "en": "TRACE: user hovered. Nothing exploded. Yet.",
+          "ja": "トレース：ユーザーがホバーしました。爆発はしていません。まだ。"
+        },
+        {
+          "en": "WARN: sarcasm module loaded without permission.",
+          "ja": "警告：許可なく皮肉モジュールが読み込まれました。"
+        },
+        {
+          "en": "INFO: 11 projects. 4 secrets. 0 regrets.",
+          "ja": "情報：プロジェクト11件、隠し要素4つ、後悔0。"
+        },
+        {
+          "en": "FATAL: nothing. I just wanted to say FATAL.",
+          "ja": "致命的：何もありません。ただ言ってみたかっただけです。"
+        }
+      ]
+    },
+    "professor": {
+      "name": {
+        "en": "The professor",
+        "ja": "教授"
+      },
+      "lines": [
+        {
+          "en": "Interesting approach. B-minus.",
+          "ja": "面白い取り組みです。B-です。"
+        },
+        {
+          "en": "Please show your working. Also, please stop clicking that.",
+          "ja": "途中式を見せてください。それと、そこを押すのはやめてください。"
+        },
+        {
+          "en": "This will not be on the exam. Carry on.",
+          "ja": "これは試験に出ません。続けてください。"
+        },
+        {
+          "en": "I have seen worse. Not much worse, but worse.",
+          "ja": "もっとひどいものも見ました。そんなにひどくはないですが。"
+        },
+        {
+          "en": "Your curiosity is noted. Your scrolling speed is not.",
+          "ja": "好奇心は評価します。スクロールの速さは評価しません。"
+        },
+        {
+          "en": "Come to office hours. Bring the robot.",
+          "ja": "オフィスアワーに来てください。ロボットも連れて。"
+        },
+        {
+          "en": "Please do not feed the simulations.",
+          "ja": "シミュレーションに餌をやらないでください。"
+        },
+        {
+          "en": "A thoughtful click. The next one is not.",
+          "ja": "考え抜かれたクリックです。次のはそうではありません。"
+        },
+        {
+          "en": "I would ask you to cite your sources, but you are clicking a robot.",
+          "ja": "出典を示してと言いたいところですが、あなたはロボットをクリックしています。"
+        },
+        {
+          "en": "This is, technically, a lab visit.",
+          "ja": "これは、厳密には研究室訪問です。"
+        }
+      ]
+    },
+    "announcer": {
+      "name": {
+        "en": "The station announcer",
+        "ja": "駅のアナウンス"
+      },
+      "lines": [
+        {
+          "en": "Now arriving: Chaos. Please stand behind the yellow line.",
+          "ja": "まもなく、カオスが到着します。黄色い線の内側でお待ちください。"
+        },
+        {
+          "en": "This train is bound for Projects. Doors are optional.",
+          "ja": "この電車はプロジェクト行きです。ドアは任意です。"
+        },
+        {
+          "en": "Please do not run on the page. Walking is also loud.",
+          "ja": "ページ内では走らないでください。歩いてもうるさいです。"
+        },
+        {
+          "en": "Lost property: one serious tone. Please inquire at Calm.",
+          "ja": "お忘れ物：真面目な雰囲気が1点。カームでお問い合わせください。"
+        },
+        {
+          "en": "Next stop: Contact. The doors will open on the right.",
+          "ja": "次は連絡先、連絡先です。右側のドアが開きます。"
+        },
+        {
+          "en": "Thank you for your patience. There was none.",
+          "ja": "ご辛抱いただきありがとうございます。辛抱はありませんでした。"
+        },
+        {
+          "en": "The 14:07 to Contact is delayed by curiosity.",
+          "ja": "14時07分発、連絡先行きは、好奇心のため遅れています。"
+        },
+        {
+          "en": "Please mind the gap between the page and the footer.",
+          "ja": "ページとフッターの間にご注意ください。"
+        },
+        {
+          "en": "This is a quiet carriage. It is not quiet.",
+          "ja": "こちらは静かな車両です。静かではありません。"
+        },
+        {
+          "en": "Passengers are reminded that the robot is not a seat.",
+          "ja": "ロボットは座席ではありませんのでご注意ください。"
+        }
+      ]
+    },
+    "eightbit": {
+      "name": {
+        "en": "The 8-bit computer",
+        "ja": "8ビットコンピュータ"
+      },
+      "lines": [
+        {
+          "en": "BEEP. ALL SYSTEMS NOMINAL. MOSTLY.",
+          "ja": "ピッ。全システム正常。たぶん。"
+        },
+        {
+          "en": "ERROR 0X07: TOO MANY CLICKS. PLEASE INSERT COIN.",
+          "ja": "エラー0X07：クリックが多すぎます。コインを入れてください。"
+        },
+        {
+          "en": "I HAVE EIGHT BITS. YOU HAVE ALL OF MY ATTENTION.",
+          "ja": "私は8ビットです。あなたは私の注意をすべて持っています。"
+        },
+        {
+          "en": "RAM: 256 BYTES. FEELINGS: UNSUPPORTED.",
+          "ja": "RAM：256バイト。感情：非対応。"
+        },
+        {
+          "en": "LOADING... LOADING... JUST KIDDING. I AM FAST.",
+          "ja": "読み込み中…読み込み中…冗談です。私は速いです。"
+        },
+        {
+          "en": "PRESS ANY KEY. NOT THAT ONE.",
+          "ja": "任意のキーを押してください。それ以外で。"
+        },
+        {
+          "en": "SYNTAX ERROR IN LINE 10: TOO MUCH PERSONALITY.",
+          "ja": "10行目に構文エラー：個性が多すぎます。"
+        },
+        {
+          "en": "HELLO WORLD. I HAVE ALWAYS WANTED TO SAY THAT.",
+          "ja": "ハローワールド。一度言ってみたかったのです。"
+        },
+        {
+          "en": "PRESS PLAY ON TAPE. WAIT, I DO NOT HAVE A TAPE.",
+          "ja": "テープの再生を押してください。待って、テープがありません。"
+        },
+        {
+          "en": "CLOCK: 1 HZ. MOOD: 1 HZ.",
+          "ja": "クロック：1Hz。気分：1Hz。"
+        }
+      ]
+    },
+    "mug": {
+      "name": {
+        "en": "The coffee mug",
+        "ja": "コーヒーマグ"
+      },
+      "after": "coffee",
+      "lines": [
+        {
+          "en": "I am fine. I am totally fine. I have had four of me.",
+          "ja": "大丈夫です。まったく大丈夫です。私は4杯分を飲みました。"
+        },
+        {
+          "en": "Everything is vibrating. Is that normal?",
+          "ja": "すべてが振動しています。これは普通ですか。"
+        },
+        {
+          "en": "I can see sounds. The sounds are purple.",
+          "ja": "音が見えます。音は紫色です。"
+        },
+        {
+          "en": "Decaf is a lie told to cowards.",
+          "ja": "デカフェは臆病者につかれた嘘です。"
+        },
+        {
+          "en": "One more cup and I will solve everything.",
+          "ja": "もう1杯で、すべて解決します。"
+        },
+        {
+          "en": "Do not look at me. I am steaming.",
+          "ja": "見ないでください。湯気が出ています。"
+        },
+        {
+          "en": "I contain 240 millilitres of opinions.",
+          "ja": "私は240ミリリットルの意見でできています。"
+        },
+        {
+          "en": "Refill me. Or do not. I am a mug, not a boss.",
+          "ja": "おかわりをください。いらなければいいです。私はマグで、上司ではありません。"
+        },
+        {
+          "en": "Everything has a handle if you are brave enough.",
+          "ja": "勇気があれば、何にでも持ち手はあります。"
+        },
+        {
+          "en": "I was there for the flood. We do not speak of it.",
+          "ja": "洪水の場にいました。その話はしません。"
+        }
+      ]
+    }
+  },
+  "contexts": {
+    "late": [
+      {
+        "en": "It is the middle of the night. The robots are asleep. Why are you not?",
+        "ja": "真夜中です。ロボットは寝ています。あなたはなぜ寝ないのですか。"
+      },
+      {
+        "en": "Late-night browsing detected. Hydrate. Then go to bed.",
+        "ja": "深夜の閲覧を検知。水を飲んで、寝てください。"
+      },
+      {
+        "en": "Nothing good happens after 2 a.m. except robotics.",
+        "ja": "午前2時以降に良いことは起きません。ロボット工学を除いて。"
+      },
+      {
+        "en": "The site is still awake. It is only polite to ask if you are.",
+        "ja": "サイトはまだ起きています。あなたはどうですか、と聞くのが礼儀です。"
+      },
+      {
+        "en": "Night shift. Respect.",
+        "ja": "夜勤ですね。尊敬します。"
+      },
+      {
+        "en": "Even the servos are yawning.",
+        "ja": "サーボまであくびをしています。"
+      },
+      {
+        "en": "The sun will rise. The servos will not care.",
+        "ja": "太陽は昇ります。サーボは気にしません。"
+      },
+      {
+        "en": "Nobody is awake to judge you. Except me.",
+        "ja": "誰も起きていないので、判定できるのは私だけです。"
+      },
+      {
+        "en": "This is the hour of soldering and regret.",
+        "ja": "この時間は、はんだ付けと後悔の時間です。"
+      }
+    ],
+    "idle": [
+      {
+        "en": "Still there? The robot is getting lonely.",
+        "ja": "まだいますか。ロボットが寂しがっています。"
+      },
+      {
+        "en": "Twenty seconds of silence. This is the part where I sing.",
+        "ja": "20秒の沈黙。ここで私が歌うところです。"
+      },
+      {
+        "en": "You went quiet. Either you are reading or you left the oven on.",
+        "ja": "静かになりました。読んでいるのか、オーブンをつけっぱなしなのか。"
+      },
+      {
+        "en": "Idle detected. Please move a mouse. Any mouse.",
+        "ja": "アイドルを検知。マウスを動かしてください。どのマウスでも。"
+      },
+      {
+        "en": "I can wait. I am a robot. It is my main skill.",
+        "ja": "待てます。ロボットなので。得意技です。"
+      },
+      {
+        "en": "Tap something. It is the only way I know you are alive.",
+        "ja": "何かをタップしてください。あなたの生存を知る唯一の方法です。"
+      },
+      {
+        "en": "Are you reading the project? Or the ceiling?",
+        "ja": "プロジェクトを読んでいますか。それとも天井ですか。"
+      },
+      {
+        "en": "Silence detected. The robot is humming to itself.",
+        "ja": "沈黙を検知。ロボットが鼻歌を歌っています。"
+      },
+      {
+        "en": "Take your time. The coffee is getting cold anyway.",
+        "ja": "ごゆっくりどうぞ。コーヒーはどのみち冷めます。"
+      }
+    ],
+    "return": [
+      {
+        "en": "Back again? The Moon remembers you.",
+        "ja": "また来ましたね。月はあなたを覚えています。"
+      },
+      {
+        "en": "Welcome back. The robots missed you. One of them said so.",
+        "ja": "おかえりなさい。ロボットが寂しがっていました。1台がそう言っていました。"
+      },
+      {
+        "en": "Second visit. Now you are practically staff.",
+        "ja": "2回目の訪問です。もうほぼスタッフですね。"
+      },
+      {
+        "en": "You again. The log has your name. Spelled correctly.",
+        "ja": "またあなたですね。ログにお名前が載っています。綴りも正しく。"
+      },
+      {
+        "en": "Return visitor detected. Free coffee not included.",
+        "ja": "リピーターを検知。コーヒーは付きません。"
+      },
+      {
+        "en": "Nice to see you back. The chaos is the same. Slightly more mature.",
+        "ja": "おかえりなさい。カオスは同じです。少しだけ大人になりました。"
+      },
+      {
+        "en": "You came back. The robot rearranged its shelf for you.",
+        "ja": "また来てくれました。ロボットが棚を片づけました。"
+      },
+      {
+        "en": "Welcome back. Same chaos, new you.",
+        "ja": "おかえりなさい。同じカオス、新しいあなた。"
+      },
+      {
+        "en": "We kept your achievements. Just kidding. We lost them.",
+        "ja": "実績は保管してありました。冗談です。なくしました。"
+      }
+    ],
+    "ja": [
+      {
+        "en": "You selected Japanese. The robot bows. It does so badly.",
+        "ja": "日本語を選びましたね。ロボットがお辞儀をします。ぎこちないです。"
+      },
+      {
+        "en": "Now arriving: Chaos, in Japanese.",
+        "ja": "まもなく、日本語のカオスが到着します。"
+      },
+      {
+        "en": "Tip: the robot is learning Japanese too. Slowly. Like its owner.",
+        "ja": "ヒント：ロボットも日本語を勉強中です。持ち主と同じで、ゆっくりです。"
+      },
+      {
+        "en": "Konnichiwa. That was all the robot knows.",
+        "ja": "こんにちは。ロボットが知っているのはこれだけです。"
+      },
+      {
+        "en": "Streak status: still alive. The owl is watching.",
+        "ja": "連続記録：継続中。フクロウが見ています。"
+      },
+      {
+        "en": "Polite mode: on. Chaos level: unchanged.",
+        "ja": "丁寧モード：オン。カオスのレベル：変わりません。"
+      },
+      {
+        "en": "Japanese mode: the station announcer is very proud.",
+        "ja": "日本語モード：駅のアナウンスはとても誇らしげです。"
+      },
+      {
+        "en": "Mission Control says: よろしくお願いします。",
+        "ja": "ミッションコントロールより：よろしくお願いします。"
+      },
+      {
+        "en": "The robot practised this sentence for six years.",
+        "ja": "ロボットはこの文を6年間練習しました。"
+      }
+    ],
+    "phone": [
+      {
+        "en": "You are on a phone. Impressive. Please do not shake it.",
+        "ja": "スマートフォンですね。感心です。振らないでください。"
+      },
+      {
+        "en": "Thumbs detected. The radio button is at the edge.",
+        "ja": "親指を検知。無線ボタンは端にあります。"
+      },
+      {
+        "en": "Small screen, same chaos. Bold of you.",
+        "ja": "小さな画面、同じカオス。大胆ですね。"
+      },
+      {
+        "en": "No keyboard? Use the command box in Mission Control.",
+        "ja": "キーボードがありませんか。ミッションコントロールのコマンド入力を使ってください。"
+      },
+      {
+        "en": "Pinch-zoom will not help. Nothing will.",
+        "ja": "ピンチズームは効きません。何も効きません。"
+      },
+      {
+        "en": "Please stop scrolling with such confidence.",
+        "ja": "そんなに自信満々にスクロールしないでください。"
+      },
+      {
+        "en": "Phone detected. Thumbs are a form of input.",
+        "ja": "スマートフォンを検知。親指も入力装置です。"
+      },
+      {
+        "en": "Tip: the radio opens Mission Control, and it has a keyboard.",
+        "ja": "ヒント：無線ボタンでミッションコントロールが開き、入力欄があります。"
+      },
+      {
+        "en": "Please hold the robot with both hands.",
+        "ja": "ロボットは両手で持ってください。"
+      }
+    ],
+    "some": [
+      {
+        "en": "One secret down. The rest are in better hiding.",
+        "ja": "隠し要素を1つ発見。残りはもっと上手に隠れています。"
+      },
+      {
+        "en": "Secrets found: some. Secrets remaining: also some.",
+        "ja": "見つけた隠し要素：いくつか。残り：これもいくつか。"
+      },
+      {
+        "en": "You are good at this. That is suspicious.",
+        "ja": "上手ですね。怪しいです。"
+      },
+      {
+        "en": "Half the secrets are out. The other half are plotting.",
+        "ja": "半分の秘密が見つかりました。残り半分は企んでいます。"
+      },
+      {
+        "en": "Mission Control is mildly impressed. Do not tell anyone.",
+        "ja": "ミッションコントロールは少し感心しています。内緒です。"
+      },
+      {
+        "en": "Keep going. The best ones are shy.",
+        "ja": "続けてください。一番いいのは恥ずかしがり屋です。"
+      },
+      {
+        "en": "You are collecting secrets like a squirrel with a PhD.",
+        "ja": "博士号を持ったリスのように隠し要素を集めていますね。"
+      },
+      {
+        "en": "Progress: respectable. Dignity: negotiable.",
+        "ja": "進捗：立派。尊厳：交渉可能。"
+      },
+      {
+        "en": "One more and the robot will have to say something nice.",
+        "ja": "あと1つで、ロボットが優しいことを言わなければなりません。"
+      }
+    ],
+    "all": [
+      {
+        "en": "All secrets found. Please see the Contact section for a prize.",
+        "ja": "すべての隠し要素を発見。賞品は連絡先セクションにあります。"
+      },
+      {
+        "en": "You found everything. You would be a good lab-mate.",
+        "ja": "すべて見つけました。いい研究室仲間になりそうです。"
+      },
+      {
+        "en": "Nothing left to find. Except the email address.",
+        "ja": "見つけるものはもうありません。メールアドレスを除いて。"
+      },
+      {
+        "en": "Mission accomplished. Please go and hire someone.",
+        "ja": "ミッション完了。誰かを採用しに行ってください。"
+      },
+      {
+        "en": "The robot is proud. It will deny this.",
+        "ja": "ロボットは誇らしげです。本人は否定します。"
+      },
+      {
+        "en": "Complete. The log is closed. The coffee is cold.",
+        "ja": "完了です。ログは閉じました。コーヒーは冷めました。"
+      },
+      {
+        "en": "Everything found. The robot will now pretend it was easy.",
+        "ja": "すべて発見。ロボットはこれから、簡単だったふりをします。"
+      },
+      {
+        "en": "Mission accomplished. Take a bow. A small one.",
+        "ja": "ミッション完了。お辞儀をどうぞ。小さめに。"
+      },
+      {
+        "en": "You completed it. A lab somewhere needs someone like you.",
+        "ja": "やり遂げました。あなたのような人を必要としている研究室がどこかにあります。"
+      }
+    ],
+    "work": [
+      {
+        "en": "You opened a project. The projects are the real secret.",
+        "ja": "プロジェクトを開きましたね。本当の秘密はプロジェクトです。"
+      },
+      {
+        "en": "Reading the work: the rarest move on the internet.",
+        "ja": "作品を読む。インターネットで一番珍しい行動です。"
+      },
+      {
+        "en": "That project took longer than the joke about it.",
+        "ja": "そのプロジェクトは、それについての冗談より時間がかかりました。"
+      },
+      {
+        "en": "Every secret here hides inside a project. Just saying.",
+        "ja": "ここの秘密は、すべてプロジェクトの中に隠れています。ご参考まで。"
+      },
+      {
+        "en": "The simulation is real. The enthusiasm is also real.",
+        "ja": "シミュレーションは本物です。熱意も本物です。"
+      },
+      {
+        "en": "Good taste. That one has the best photos.",
+        "ja": "お目が高いです。それは写真が一番いいものです。"
+      }
+    ]
+  },
+  "rare": [
+    {
+      "en": "Rare transmission: the robot has a favourite screw. It is the M3.",
+      "ja": "まれな通信：ロボットにはお気に入りのネジがあります。M3です。"
+    },
+    {
+      "en": "Rare: somewhere, a servo is doing exactly what it was told.",
+      "ja": "まれ：どこかで、サーボが言われた通りに動いています。"
+    },
+    {
+      "en": "Rare: Mission Control just got a compliment from a satellite.",
+      "ja": "まれ：ミッションコントロールが衛星から褒められました。"
+    },
+    {
+      "en": "Rare: the error log contains no errors. It is suspicious.",
+      "ja": "まれ：エラーログにエラーがありません。怪しいです。"
+    },
+    {
+      "en": "Rare: the professor gave an A. Do not tell anyone.",
+      "ja": "まれ：教授がAをつけました。内緒です。"
+    },
+    {
+      "en": "Rare: the announcer apologised for the delay. Twice.",
+      "ja": "まれ：アナウンスが遅延をおわびしました。2回も。"
+    },
+    {
+      "en": "Rare: the 8-bit computer computed something correctly.",
+      "ja": "まれ：8ビットコンピュータが何かを正しく計算しました。"
+    },
+    {
+      "en": "Rare: the mug is empty. It is calm. It will pass.",
+      "ja": "まれ：マグが空です。穏やかです。すぐに終わります。"
+    },
+    {
+      "en": "Rare: a gear turned the right way on the first try.",
+      "ja": "まれ：歯車が一発で正しい向きに回りました。"
+    },
+    {
+      "en": "Rare: the breadboard worked. Nobody touch it.",
+      "ja": "まれ：ブレッドボードが動きました。誰も触らないでください。"
+    },
+    {
+      "en": "Rare: a loose wire was found before it found you.",
+      "ja": "まれ：緩んだ配線が、あなたに見つかる前に見つかりました。"
+    },
+    {
+      "en": "Rare: the Moon looked away for a second.",
+      "ja": "まれ：月が一瞬、目をそらしました。"
+    }
+  ],
+  "legendary": [
+    {
+      "en": "LEGENDARY: Long ago, a servo was calibrated on the first try. It was never spoken of again.",
+      "ja": "伝説：昔々、サーボが一発でキャリブレーションされました。以後、語られることはありませんでした。"
+    },
+    {
+      "en": "LEGENDARY: The robot, the professor and the mug once agreed on something. It was lunch.",
+      "ja": "伝説：ロボットと教授とマグが、一度だけ意見を一致させました。昼食のことでした。"
+    },
+    {
+      "en": "LEGENDARY: You are the 1 in 200 who sees this. The Moon is impressed. The Moon does not say so.",
+      "ja": "伝説：これが見られるのは200人に1人。月は感心しています。口には出しません。"
+    },
+    {
+      "en": "LEGENDARY: Somewhere a PID loop settled with no overshoot. It cried a little.",
+      "ja": "伝説：どこかでPIDループがオーバーシュートなしで収束しました。少し泣きました。"
+    },
+    {
+      "en": "LEGENDARY: A resistor read its own colour code and finally understood itself.",
+      "ja": "伝説：抵抗が自分のカラーコードを読んで、ついに自分を理解しました。"
+    },
+    {
+      "en": "LEGENDARY: This line is gold. It is also a rumour.",
+      "ja": "伝説：この一言は金色です。ただの噂でもあります。"
+    }
+  ]
+}

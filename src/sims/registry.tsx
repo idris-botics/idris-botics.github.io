@@ -34,6 +34,8 @@ export const SimView: Record<SimKey, ComponentType<P>> = {
   pipe: (p) => <Pipe {...p} {...({ onEvent: pipeEvt } as object)} />,
   swarm: (p) => <Swarm {...p} onEvent={swarmEvt} />,
   gait: (p) => <Gait {...p} onEvent={gaitEvt} />,
+  dog: (p) => <Gait {...p} robot="dog" onEvent={gaitEvt} />,
+  spider: (p) => <Gait {...p} robot="spider" onEvent={gaitEvt} />,
   arena: ArenaSim,
   gaitsignal: (p) => <GaitSignal {...p} />,
   net: (p) => <Net {...p} {...({ onEvent: netEvt } as object)} />,

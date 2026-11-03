@@ -2,7 +2,7 @@
 // number appears in any text file, or if a PDF's Author/Title/Subject/Keywords/XMP metadata holds a phone number or an email address.
 // (The body text of a PDF such as the CV is not scanned: report what it contains instead.)
 // Terms come from docs/blocklist.txt (private, gitignored) and, in CI, the BLOCKLIST secret (comma separated).
-// With CHECK_STRICT=1 it also fails on unreviewed draft markers (turn on before going public).
+// With CHECK_STRICT=1 it also fails on unreviewed draft markers and on any TODO(idris) (turn on before going public).
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs'
 import { extname, join } from 'node:path'
 import { EMAIL, hasIeeeNumber, hasPhone, pdfMetadataStrings } from './patterns.mjs'
@@ -16,7 +16,9 @@ const block = [...fromFile, ...fromEnv].map((s) => s.trim().toLowerCase()).filte
 const strict = process.env.CHECK_STRICT === '1'
 const TEXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.css', '.html', '.json', '.svg', '.txt', '.xml', '.md', '.webmanifest'])
 
+const BIN = new Set(['.mp4', '.webm', '.webp', '.avif', '.png', '.jpg', '.jpeg', '.woff', '.woff2', '.ico', '.mp3', '.wav']) // random bytes can spell anything
 for (const f of files) {
+  if (BIN.has(extname(f).toLowerCase())) continue
   let txt
   try { txt = readFileSync(f, 'utf8').toLowerCase() } catch { continue }
   for (const t of block) if (txt.includes(t)) { console.error(`BLOCKLIST "${t}" in ${f}`); bad++ }
@@ -28,6 +30,7 @@ for (const f of files) {
   if (extname(f).toLowerCase() === '.pdf') {
     for (const m of pdfMetadataStrings(readFileSync(f))) if (hasPhone(m) || EMAIL.test(m)) { console.error(`PDF METADATA holds a phone number or email in ${f} (${m.slice(0, 60)}): strip it with an exiftool or qpdf pass`); bad++ }
   }
+  if (strict && txt.includes('todo(idris)')) { console.error(`TODO(idris) left in ${f}`); bad++ }
   if (strict && (/"status":\s*"draft"/.test(txt) && f.includes('jokes') || txt.includes('(draft)') || txt.includes('（下書き）'))) {
     console.error(`DRAFT marker in ${f}`); bad++
   }

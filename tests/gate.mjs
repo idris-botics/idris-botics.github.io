@@ -4,13 +4,13 @@ const b = await chromium.launch({ executablePath: process.env.CHROME || undefine
 const p = await b.newPage({ viewport: { width: 1280, height: 800 } })
 await p.goto(process.argv[2] ?? 'http://localhost:4173/', { waitUntil: 'networkidle' })
 // the entry button is not in the header: it sits at the bottom of the page, under "One more thing"
-const headerHas = await p.locator('.site-header').getByRole('button', { name: /CHAOS/ }).count()
-await p.getByRole('button', { name: /CHAOS/ }).click()
+const headerHas = await p.locator('.site-header').getByRole('button', { name: 'Enter Chaos' }).count()
+await p.getByRole('button', { name: 'Enter Chaos' }).click()
 // the first screen is a plain notice with two choices; going back leaves Chaos closed
 const notice = await p.locator('.gate.pro').count(), noticeText = await p.locator('.notice').innerText()
 await p.getByRole('button', { name: 'Go back', exact: true }).click()
 const closed = (await p.locator('.gate').count()) === 0
-await p.getByRole('button', { name: /CHAOS/ }).click()
+await p.getByRole('button', { name: 'Enter Chaos' }).click()
 await p.getByRole('button', { name: 'Proceed', exact: true }).click()
 await p.waitForTimeout(1500)
 const early = await p.getByRole('button', { name: 'OK', exact: true }).count()

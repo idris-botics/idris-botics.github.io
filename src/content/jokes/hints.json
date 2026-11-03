@@ -1,0 +1,395 @@
+{
+  "_note": "Hint text for Mission Control. Hard by default. All JA strings need native review. check:jokes verifies every string has en and ja.",
+  "ui": {
+    "title": {
+      "en": "Mission Control",
+      "ja": "ミッションコントロール"
+    },
+    "open": {
+      "en": "Open Mission Control",
+      "ja": "ミッションコントロールを開く"
+    },
+    "close": {
+      "en": "Close",
+      "ja": "閉じる"
+    },
+    "locked": {
+      "en": "Unknown secret",
+      "ja": "不明な隠し要素"
+    },
+    "found": {
+      "en": "Found",
+      "ja": "発見"
+    },
+    "waiting": {
+      "en": "Transmission incoming in",
+      "ja": "受信まで"
+    },
+    "decode": {
+      "en": "Decode (costs 1 fuel cell)",
+      "ja": "解読する（燃料電池を1つ使用）"
+    },
+    "decodeIn": {
+      "en": "Decode available in",
+      "ja": "解読できるまで"
+    },
+    "decoding": {
+      "en": "Mission Control is judging you…",
+      "ja": "ミッションコントロールが審査中です…"
+    },
+    "needCell": {
+      "en": "No fuel cell. Open projects and run a simulation to earn some.",
+      "ja": "燃料電池がありません。プロジェクトを開いてシミュレーションを動かすと貯まります。"
+    },
+    "spoilerIn": {
+      "en": "Spoiler available in",
+      "ja": "答えが見られるまで"
+    },
+    "spoiler": {
+      "en": "Show the answer",
+      "ja": "答えを見る"
+    },
+    "helped": {
+      "en": "SOLVED WITH HELP",
+      "ja": "ヒントで解決"
+    },
+    "cells": {
+      "en": "Fuel cells",
+      "ja": "燃料電池"
+    },
+    "command": {
+      "en": "Command box",
+      "ja": "コマンド入力"
+    },
+    "run": {
+      "en": "Send",
+      "ja": "送信"
+    },
+    "placeholder": {
+      "en": "Type a word…",
+      "ja": "言葉を入力…"
+    },
+    "mode": {
+      "en": "Mode",
+      "ja": "モード"
+    },
+    "hard": {
+      "en": "Hard",
+      "ja": "ハード"
+    },
+    "easy": {
+      "en": "Easy",
+      "ja": "イージー"
+    },
+    "settings": {
+      "en": "Settings",
+      "ja": "設定"
+    },
+    "legend": {
+      "en": "Colour code: black 0, brown 1, red 2, orange 3, yellow 4, green 5, blue 6, violet 7, grey 8, white 9. Each pair of bands is one number; 1 is A, 2 is B, and so on.",
+      "ja": "カラーコード：黒0、茶1、赤2、橙3、黄4、緑5、青6、紫7、灰8、白9。2本で1つの数字になり、1はA、2はBです。"
+    },
+    "tapReplay": {
+      "en": "Tap to replay",
+      "ja": "タップで再生"
+    },
+    "please": {
+      "en": "Mission Control sighs and decodes the next hint.",
+      "ja": "ミッションコントロールはため息をついて、次のヒントを解読しました。"
+    },
+    "nothing": {
+      "en": "Nothing to decode yet.",
+      "ja": "まだ解読するものがありません。"
+    },
+    "bts": {
+      "en": "Behind the scenes",
+      "ja": "舞台裏"
+    },
+    "openProject": {
+      "en": "Open the project",
+      "ja": "プロジェクトを開く"
+    },
+    "endTitle": {
+      "en": "You found everything.",
+      "ja": "すべて見つけました。"
+    },
+    "endBody": {
+      "en": "You would be a good lab-mate.",
+      "ja": "いい研究室仲間になりそうです。"
+    },
+    "endClose": {
+      "en": "Back to the page",
+      "ja": "ページに戻る"
+    },
+    "cv": {
+      "en": "CV (PDF)",
+      "ja": "履歴書（PDF）"
+    },
+    "clueRig": {
+      "en": "Rig board",
+      "ja": "装置の基板"
+    },
+    "clueLed": {
+      "en": "Status light, robot 2",
+      "ja": "状態ランプ（ロボット2）"
+    },
+    "clueOut": {
+      "en": "Output display",
+      "ja": "出力表示"
+    },
+    "clueLog": {
+      "en": "Serial log",
+      "ja": "シリアルログ"
+    }
+  },
+  "secrets": {
+    "coffee": {
+      "name": {
+        "en": "Coffee",
+        "ja": "コーヒー"
+      },
+      "ach": "coffee",
+      "word": "coffee",
+      "t1": [
+        {
+          "kind": "riddle",
+          "text": {
+            "en": "Engineers turn me into code. I am hot, I am dark, and I am the reason this site exists.",
+            "ja": "エンジニアは私をコードに変えます。熱くて、黒くて、このサイトが存在する理由です。"
+          }
+        },
+        {
+          "kind": "hex",
+          "value": "0xC0FFEE",
+          "text": {
+            "en": "A colour code that is also a drink. Type it in plain letters.",
+            "ja": "飲み物でもある色コードです。ふつうの文字で入力してください。"
+          }
+        },
+        {
+          "kind": "morse",
+          "value": "-.-. --- ..-. ..-. . .",
+          "text": {
+            "en": "Read the blinks.",
+            "ja": "点滅を読み取ってください。"
+          }
+        },
+        {
+          "kind": "katakana",
+          "value": "コーヒー",
+          "text": {
+            "en": "Type what this says, in English letters.",
+            "ja": "これが何と読むか、英字で入力してください。"
+          }
+        }
+      ],
+      "t2": {
+        "en": "Four letters on a mug: J-A-V-A. Now say it in English, six letters. Also: the board on the PID rig has something to say. Read the bands left to right, two to a letter.",
+        "ja": "マグカップに書かれた4文字：J-A-V-A。それを英語で言うと、6文字です。それと、PIDの装置の基板が何か言っています。帯を左から右へ、2本で1文字として読んでください。"
+      },
+      "t3": {
+        "en": "Type: coffee",
+        "ja": "入力：coffee"
+      },
+      "bts": {
+        "slug": "subtlebotic",
+        "title": {
+          "en": "Behind the scenes: the boost converter",
+          "ja": "舞台裏：昇圧回路"
+        },
+        "text": {
+          "en": "The textbook boost converter has four parts. The real one needed a switching IC, a feedback network, ratings and layout. My breadboard attempt did not work, which taught me why layout matters.",
+          "ja": "教科書の昇圧回路は部品4点ですが、実機にはスイッチングIC、帰還回路、定格選定、レイアウトが必要でした。ブレッドボードの試作は動かず、レイアウトの重要性を学びました。"
+        }
+      }
+    },
+    "roll": {
+      "name": {
+        "en": "Barrel roll",
+        "ja": "バレルロール"
+      },
+      "ach": "roll",
+      "word": "roll",
+      "t1": [
+        {
+          "kind": "riddle",
+          "text": {
+            "en": "Never gonna tell you. But a certain Rick would know what to type.",
+            "ja": "教えるつもりはありません。でも、あるリックなら何を入力すべきか知っています。"
+          }
+        },
+        {
+          "kind": "resistor",
+          "value": "18 15 12 12",
+          "text": {
+            "en": "Four numbers, eight bands. Read the legend.",
+            "ja": "4つの数字、8本の帯。凡例を読んでください。"
+          }
+        },
+        {
+          "kind": "binary",
+          "value": "01110010 01101111 01101100 01101100",
+          "text": {
+            "en": "Four letters, in eight lights each.",
+            "ja": "8個のランプで1文字、全部で4文字です。"
+          }
+        }
+      ],
+      "t2": {
+        "en": "It is what dice and pranks have in common. Also: the G.A.I.T. wristband keeps a serial log. Read the bytes as letters.",
+        "ja": "サイコロといたずらに共通することです。それと、G.A.I.T.のリストバンドはシリアルログを残しています。バイトを文字として読んでください。"
+      },
+      "t3": {
+        "en": "Type: roll",
+        "ja": "入力：roll"
+      },
+      "bts": {
+        "slug": "robodog",
+        "title": {
+          "en": "Behind the scenes: RoboDog",
+          "ja": "舞台裏：RoboDog"
+        },
+        "text": {
+          "en": "The \"360 degree\" servos turned out to be the wrong type, and a flicker on the screen was one loose ground pin. The pack is four 18650 cells with a 20 A BMS that I built myself.",
+          "ja": "「360°」サーボは種類違いで、画面のちらつきは接地ピン1本の緩みでした。電源は、自作の18650セル4本と20 A BMSです。"
+        }
+      }
+    },
+    "omae": {
+      "name": {
+        "en": "The verdict",
+        "ja": "宣告"
+      },
+      "ach": "omae",
+      "word": "omae",
+      "t1": [
+        {
+          "kind": "riddle",
+          "text": {
+            "en": "Four letters. The sentence they start ends with you already being finished.",
+            "ja": "4文字。それで始まる文は、あなたがもう終わっていることで終わります。"
+          }
+        },
+        {
+          "kind": "binary",
+          "value": "01101111 01101101 01100001 01100101",
+          "text": {
+            "en": "Four letters, in eight lights each.",
+            "ja": "8個のランプで1文字、全部で4文字です。"
+          }
+        }
+      ],
+      "t2": {
+        "en": "Japanese for \"you\", said rudely. Four letters in romaji. Also: the output display of the 8-bit computer is counting something. Numbers are letters.",
+        "ja": "日本語で乱暴に言う「あなた」。ローマ字で4文字です。それと、8ビットコンピュータの出力表示が何かを数えています。数字は文字です。"
+      },
+      "t3": {
+        "en": "Type: omae",
+        "ja": "入力：omae"
+      },
+      "bts": {
+        "slug": "cpu8",
+        "title": {
+          "en": "Behind the scenes: the 8-bit computer",
+          "ja": "舞台裏：8ビットコンピュータ"
+        },
+        "text": {
+          "en": "A loose wire showed up on a phone camera before it showed up on the bench. Day 9 so far, with a 2 AM substitution for the JK flip-flops.",
+          "ja": "スマホの動画に、作業台より先に緩い配線が映りました。9日目までに、深夜2時のJKフリップフロップ代替がありました。"
+        }
+      }
+    },
+    "moon": {
+      "name": {
+        "en": "The Moon",
+        "ja": "月"
+      },
+      "ach": "moon",
+      "word": "moon",
+      "t1": [
+        {
+          "kind": "riddle",
+          "text": {
+            "en": "Look up. Then click the thing that has always been looking down.",
+            "ja": "見上げてください。そして、ずっと見下ろしているものをクリックしてください。"
+          }
+        },
+        {
+          "kind": "morse",
+          "value": "-- --- --- -.",
+          "text": {
+            "en": "Read the blinks. It is a thing in the sky.",
+            "ja": "点滅を読み取ってください。空にあるものです。"
+          }
+        }
+      ],
+      "t2": {
+        "en": "It is round, it is red, and it says do not. People press it anyway. Also: one robot in the swarm has a blinking status light.",
+        "ja": "丸くて、赤くて、「押すな」と書いてあります。それでも人は押します。それと、スウォームのロボットの1台が状態ランプを点滅させています。"
+      },
+      "t3": {
+        "en": "Press the big red button, bottom left.",
+        "ja": "左下の大きな赤いボタンを押してください。"
+      },
+      "bts": {
+        "slug": "vehicles",
+        "title": {
+          "en": "Behind the scenes: Robo Soccer",
+          "ja": "舞台裏：ロボサッカー"
+        },
+        "text": {
+          "en": "My first attempt at Robo Soccer ended when a motor driver burst in the middle of the event. The second attempt is the two-wheeled car with a castor.",
+          "ja": "ロボサッカーの初挑戦は、競技中にモータードライバが破裂して終わりました。2回目は、キャスター付きの2輪車で挑みました。"
+        }
+      }
+    }
+  },
+  "ambient": [
+    {
+      "en": "Something on this page answers to a word. Mission Control knows which.",
+      "ja": "このページには、ある言葉に反応するものがあります。ミッションコントロールが知っています。"
+    },
+    {
+      "en": "Secrets found so far: fewer than you think. The others are shy.",
+      "ja": "見つかった隠し要素は、思ったより少ないです。残りは恥ずかしがり屋です。"
+    },
+    {
+      "en": "This site has a keyboard. Most people forget.",
+      "ja": "このサイトにはキーボードがあります。たいてい忘れられています。"
+    },
+    {
+      "en": "Intercepted: somebody here has not opened the radio.",
+      "ja": "傍受：ここにいる誰かが、まだ無線を開いていません。"
+    }
+  ],
+  "wrong": {
+    "warm": [
+      {
+        "en": "{w}: so close the beans are crying.",
+        "ja": "{w}：惜しい。豆が泣いています。"
+      },
+      {
+        "en": "{w}: warm. One letter off.",
+        "ja": "{w}：近いです。1文字違い。"
+      },
+      {
+        "en": "{w}: Mission Control squints. Nearly.",
+        "ja": "{w}：ミッションコントロールが目を細めています。惜しい。"
+      }
+    ],
+    "cold": [
+      {
+        "en": "{w}: cold. Mission Control is unimpressed.",
+        "ja": "{w}：冷えています。ミッションコントロールは感心していません。"
+      },
+      {
+        "en": "{w}: that is not it. The robot yawns.",
+        "ja": "{w}：それではありません。ロボットがあくびをしました。"
+      },
+      {
+        "en": "{w}: nothing happens. Loudly.",
+        "ja": "{w}：何も起きません。大きな音で。"
+      }
+    ]
+  }
+}

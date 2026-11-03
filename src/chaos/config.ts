@@ -17,6 +17,7 @@ export const chaosConfig = {
     flyby: true, // ambient fly-by
     dodge: true, // buttons in the page body step away from the cursor (a couple of times each)
     cena: true, // random jumpscare: giant text and a brass sting (original, not the real theme), once per visit
+    coffee: true, // type "coffee": a brewing bar, a coffee flood, stains and a vending-machine can
     omae: true, // type "omae": a famous verdict, then NANI
     shatter: true, // click a line of text: it breaks into words that fall and reassemble
     echo: true, // headings repeat themselves (documentation only: this effect is CSS and has no code switch yet)

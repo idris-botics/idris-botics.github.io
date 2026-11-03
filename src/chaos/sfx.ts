@@ -1,8 +1,9 @@
 // Chaos-mode sound effects, synthesised with the Web Audio API (no audio files to download).
 // Nothing plays until the visitor has interacted with the page, and the mute switch is remembered for the session.
 let ctx: AudioContext | null = null
-let muted = false
-try { muted = sessionStorage.getItem('sfx-muted') === '1' } catch { /* ignore */ }
+// Sound is off until the visitor turns it on (the choice is remembered for the session).
+let muted = true
+try { muted = sessionStorage.getItem('sfx-muted') !== '0' } catch { /* ignore */ }
 
 export const isMuted = () => muted
 export function setMuted(m: boolean) {
@@ -135,6 +136,10 @@ const RECIPES = {
   error: (c: AudioContext) => { tone(c, 'sawtooth', 200, 110, 0.3, 0.6); tone(c, 'sawtooth', 160, 80, 0.4, 0.6, 0.18) },
   chomp: (c: AudioContext) => { noise(c, 0.07, 3000, 600, 0.8, 0, 'bandpass'); noise(c, 0.07, 3000, 600, 0.8, 0.1, 'bandpass') },
   shake: (c: AudioContext) => noise(c, 1.7, 180, 60, 0.9),
+  // coffee: a pour that glugs, a slurp as it drains, and a vending-machine clunk
+  pour: (c: AudioContext) => { noise(c, 1.1, 1400, 500, 0.5, 0, 'bandpass'); for (let i = 0; i < 5; i++) tone(c, 'sine', 300 + i * 40, 520 + i * 60, 0.09, 0.45, 0.1 + i * 0.17) },
+  slurp: (c: AudioContext) => { noise(c, 0.8, 600, 2400, 0.4, 0, 'bandpass'); tone(c, 'sine', 500, 160, 0.7, 0.4) },
+  gachon: (c: AudioContext) => { tone(c, 'sine', 140, 60, 0.18, 1); noise(c, 0.1, 1200, 200, 0.7); tone(c, 'triangle', 220, 110, 0.25, 0.6, 0.12) },
 } as const
 
 export type Sfx = keyof typeof RECIPES

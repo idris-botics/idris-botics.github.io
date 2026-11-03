@@ -262,5 +262,113 @@
     "selected": 0,
     "custom": "",
     "status": "CHOSEN"
+  },
+  {
+    "id": "coffee-b1",
+    "context": "Coffee: brewing bar, first stage.",
+    "options": [
+      "Brewing…",
+      "Warming up the kettle…",
+      "Brewing. Please hold."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-b2",
+    "context": "Coffee: brewing bar, middle stage.",
+    "options": [
+      "Grinding the beans…",
+      "Grinding the beans. Slowly.",
+      "Grinding the beans. One at a time."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-b3",
+    "context": "Coffee: brewing bar, last stage.",
+    "options": [
+      "99%. Do not touch the cup.",
+      "99%. Stand back.",
+      "99%. The cup is nervous."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-vend",
+    "context": "Coffee: the vending-machine can lands (sound word).",
+    "options": [
+      "KA-CHUNK",
+      "CLUNK",
+      "THUNK"
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-c2",
+    "context": "Coffee: typed a second time.",
+    "options": [
+      "Decaf? In this economy?",
+      "Decaf is a rumour.",
+      "Decaf? Not on this site."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-c3",
+    "context": "Coffee: typed a third time.",
+    "options": [
+      "418: I am a teapot. Wrong drink.",
+      "Error 418. I am a teapot.",
+      "418. Short and stout, but wrong drink."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-c4",
+    "context": "Coffee: typed a fourth time (the robot arm holds the mug).",
+    "options": [
+      "The arm has the mug now. It is shaking.",
+      "Steady hands. Mostly.",
+      "The arm insists on carrying it."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-c5",
+    "context": "Coffee: typed a fifth time or more.",
+    "options": [
+      "Caffeine limit reached. The robots are vibrating.",
+      "Caffeine limit reached. Please sit down.",
+      "Caffeine limit reached. Someone call the robots down."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
+  },
+  {
+    "id": "coffee-r",
+    "context": "Coffee with reduced motion: one stain and a toast.",
+    "options": [
+      "Coffee spilled. Imagine a flood.",
+      "One cup spilled. The flood is optional.",
+      "A cup spilled. Use your imagination for the rest."
+    ],
+    "selected": 0,
+    "custom": "",
+    "status": "DRAFT"
   }
 ]

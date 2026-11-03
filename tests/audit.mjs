@@ -30,7 +30,7 @@ for (const [name, w, h] of [['1440', 1440, 900], ['1366', 1366, 768], ['390', 39
   })
   report[key] = { first, ...m, console: [...new Set(msgs)].slice(0, 6) }
   // per section shots (project headers and main blocks)
-  const ids = ['hl', 'work', 'pid', 'swarm', 'net', 'gait', 'abb', 'cpu8', 'quadrupeds', 'vehicles', 'pipe', 'stepscribe', 'subtlebotic', 'path', 'japan', 'contact']
+  const ids = ['hl', 'work', 'pid', 'swarm', 'net', 'gait', 'abb', 'cpu8', 'robodog', 'spider', 'vehicles', 'pipe', 'stepscribe', 'subtlebotic', 'path', 'japan', 'contact']
   for (const id of ids) {
     const ok = await p.evaluate((i) => { const e = document.getElementById(i) ?? document.querySelector(`[aria-labelledby="${i}"]`); if (!e) return false; scrollTo({ top: e.getBoundingClientRect().top + scrollY - 70, behavior: 'instant' }); return true }, id)
     if (!ok) continue
