@@ -472,11 +472,14 @@ export const learning: { theme: L; items: L[] }[] = [
   },
 ]
 
-/** Publications and awards, shown inside the Certificates disclosure. */
-export const extras: { text: L; link?: { href: string; label: L } }[] = [
-  { text: { en: 'National Finalist, India Innovates 2026', ja: 'India Innovates 2026 全国ファイナリスト' } },
-  { text: { en: 'ICCORSE 2026: Adaptive Swarm-Actuated Net System for Space Debris Capture', ja: 'ICCORSE 2026：宇宙デブリ捕獲のための適応型スウォーム作動ネットシステム' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'PDF', ja: 'PDF' } } },
-  { text: { en: 'ICUMSAT 2025: Rare-Earth-Free PM-Assisted Synchronous Reluctance Motor using Tetrataenite for Light Electric Vehicles (third author, abstract)', ja: 'ICUMSAT 2025：軽電動車向け、テトラタエナイトを用いたレアアースフリー永久磁石補助同期リラクタンスモータ（第3著者、アブストラクト）' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'PDF', ja: 'PDF' } } },
+/** Publications and awards: their own section on the home page, after About. Newest or most important first inside each group. */
+export type Honour = { group: 'pub' | 'award'; year: string; title: L; line: L; link?: { href: string; label: L } }
+export const honours: Honour[] = [
+  { group: 'pub', year: '2026', title: { en: 'Swarm-actuated net for space debris', ja: '宇宙デブリ捕獲のスウォーム作動ネット' }, line: { en: 'ICCORSE 2026, conceptual, not yet tested.', ja: 'ICCORSE 2026。概念検討で、未検証です。' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' } } },
+  { group: 'pub', year: '2025', title: { en: 'Rare-earth-free reluctance motor', ja: 'レアアースフリーのリラクタンスモータ' }, line: { en: 'ICUMSAT 2025, third author.', ja: 'ICUMSAT 2025、第3著者。' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'Abstract (PDF)', ja: 'アブストラクト（PDF）' } } },
+  { group: 'award', year: '2026', title: { en: 'IEEE EPICS grant', ja: 'IEEE EPICS 助成' }, line: { en: 'USD 3,000, awarded. Hardware Team Lead.', ja: '3,000米ドルを獲得。ハードウェアチームリーダー。' } },
+  { group: 'award', year: '2025', title: { en: 'InnovateX 2025', ja: 'InnovateX 2025' }, line: { en: 'IEEE hackathon, runner-up.', ja: 'IEEEハッカソン、準優勝。' } },
+  { group: 'award', year: '2026', title: { en: 'India Innovates 2026', ja: 'India Innovates 2026' }, line: { en: 'National finalist.', ja: '全国ファイナリスト。' } },
 ]
 
 /** Learning out in the field, one event per line. */
@@ -509,7 +512,7 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   swarm: {
     short: { en: 'Self-balancing swarm', ja: '自己平衡スウォーム' },
     line: { en: 'Three balancing robots that coordinate without a central controller.', ja: '中央制御なしで協調する、倒立振子型ロボット3台。' },
-    did: { en: 'My final-year project, designed and simulated.', ja: '卒業研究。設計とシミュレーションまで。' },
+    did: { en: 'Final-year project, designed and simulated.', ja: '卒業研究。設計とシミュレーションまで。' },
     strip: { en: 'Balancing robots that coordinate', ja: '協調する倒立振子ロボット' },
     clip: 'tile-swarm',
   },
@@ -543,9 +546,8 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
 // TODO(idris): JLPT level and date, and the master's start date (answer 11).
 export const pathRows: { when: string; text: L }[] = [
   { when: '2026 Jul', text: { en: 'Research intern, ABB Global CoE, Easwari', ja: '研究インターン、ABB Global CoE（Easwari）' } },
-  { when: '2026 May', text: { en: 'Hardware Team Lead, G.A.I.T. Assist; EPICS in IEEE grant of USD 3,000', ja: 'ハードウェアチームリーダー（G.A.I.T. Assist）。EPICS in IEEE助成3,000米ドル' } },
+  { when: '2026 May', text: { en: 'Hardware Team Lead, G.A.I.T. Assist', ja: 'ハードウェアチームリーダー（G.A.I.T. Assist）' } },
   { when: '2025 Sep', text: { en: 'Intern, Subtlebotic', ja: 'インターン、Subtlebotic' } },
-  { when: '2025', text: { en: 'InnovateX 2025, IEEE hackathon: runner-up', ja: 'InnovateX 2025（IEEEハッカソン）準優勝' } },
   { when: '2025 Aug', text: { en: 'Head of Content, SEEE', ja: 'コンテンツ責任者、SEEE' } },
   { when: '2024 Sep', text: { en: 'Creative Head, Electronics Hobby Club', ja: 'クリエイティブ責任者、Electronics Hobby Club' } },
 ]

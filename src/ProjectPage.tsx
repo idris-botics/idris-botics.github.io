@@ -6,7 +6,7 @@ import { Gallery, mediaBase } from './Gallery'
 import { ProjectOpen } from './Extras'
 import { backToWork, gotoProject } from './route'
 import { stepscribe } from './content/stepscribe'
-import { order, projects, statusLabel, tiles, type Project } from './content'
+import { links, order, projects, statusLabel, tiles, type Project } from './content'
 
 const FIGURES: Record<string, React.LazyExoticComponent<React.ComponentType<{ lang: 'en' | 'ja' }>>> = {
   pid: lazy(() => import('./sims/anatomy/PidRig')),
@@ -35,6 +35,8 @@ const ui = {
   whatsNew: { en: 'New in v2', ja: 'v2の新機能' },
   changelog: { en: 'Changelog', ja: '変更履歴' },
   noSound: { en: 'no sound', ja: '音声なし' },
+  interested: { en: 'Interested in this project? Email me.', ja: 'このプロジェクトに興味がありますか？ メールでご連絡ください。' },
+  emailMe: { en: 'Email', ja: 'メール' },
   specStatus: { en: 'Status', ja: '状態' },
   specKind: { en: 'Kind', ja: '種類' },
   specStack: { en: 'Stack', ja: '技術' },
@@ -198,7 +200,7 @@ export default function ProjectPage({ project }: { project: Project }) {
               {project.media && project.media.length > 0 && <div className="page-gallery"><Gallery key={project.slug} items={project.media} lang={lang} morph /></div>}
             </div>
           )}
-          <div className="page-intro">
+          <div className="page-intro surface">
             <p className="pw-status">{String(idx + 1).padStart(2, '0')} / {String(order.length).padStart(2, '0')}</p>
             <h1 id="pg-h" className="page-title">{t(project.title)}</h1>
             <p className="pw-lead">{info?.line ? t(info.line) : t(project.blurb)}</p>
@@ -251,6 +253,11 @@ export default function ProjectPage({ project }: { project: Project }) {
         {!leadVideo && <Videos project={project} lang={lang} />}
         {leadVideo && project.videos!.length > 1 && <Videos project={{ ...project, videos: project.videos!.slice(1) }} lang={lang} />}
 
+
+        <aside className="interest surface">
+          <p>{t(ui.interested)}</p>
+          <a className="btn primary" href={`mailto:${links.email}?subject=${encodeURIComponent((lang === 'ja' ? 'プロジェクトについて：' : 'About your project: ') + t(project.title))}`}>{t(ui.emailMe)}: {links.email}</a>
+        </aside>
 
         <nav className="pn" aria-label={lang === 'en' ? 'More projects' : '他のプロジェクト'}>
           <a className="pn-a prev" href={`#work/${prev.slug}`} onClick={(e) => { if (e.button !== 0 || e.metaKey || e.ctrlKey) return; e.preventDefault(); gotoProject(prev.slug) }}>

@@ -110,6 +110,7 @@ export default function HeroScene() {
         {/* the mascot: boxy, mustard, charcoal outlines, a blue screen face, an antenna. Feet at the ground line. */}
         <g className="lay l-mascot">
           <g transform="translate(640 266)" className="mascot" role="button" tabIndex={0} aria-label={label} onClick={wave} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wave() } }} style={{ cursor: 'pointer' }}>
+            <ellipse className="mascot-ring" cx="0" cy="2" rx="60" ry="9" fill="none" stroke="#2f5f9f" strokeWidth="4" strokeDasharray="10 6" />
             <rect x="-34" y="-12" width="28" height="12" rx="4" fill="#3f6fb5" stroke="#26221f" strokeWidth="3.5" />
             <rect x="6" y="-12" width="28" height="12" rx="4" fill="#3f6fb5" stroke="#26221f" strokeWidth="3.5" />
             <rect x="-28" y="-34" width="14" height="24" fill="#fff8ea" stroke="#26221f" strokeWidth="3.5" />

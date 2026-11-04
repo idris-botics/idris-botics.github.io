@@ -4,6 +4,7 @@ import { useStore } from './store'
 import { useReducedMotion } from './lib/hooks'
 import PointField from './PointField'
 import HeroScene from './HeroScene'
+import Awards from './Awards'
 import PaperGrid from './PaperGrid'
 import Toolpath from './Toolpath'
 import ChaosGate from './ChaosGate'
@@ -13,7 +14,7 @@ import { tidyThen } from './lib/tidy'
 import Work from './Work'
 import { Gallery } from './Gallery'
 import { Reveal, Tick } from './Reveal'
-import { hero, aboutText, pathRows, learning, extras, fieldEvents, strip, projects, habits, links, type L } from './content'
+import { hero, aboutText, pathRows, learning, fieldEvents, strip, projects, habits, links, type L } from './content'
 import { personal } from './personal'
 import ProjectPage from './ProjectPage'
 import { restoreHome, useRoute } from './route'
@@ -75,12 +76,13 @@ const Chaos = lazy(() => import('./chaos/Chaos'))
 
 const ui = {
   skip: { en: 'Skip to content', ja: '本文へ' },
-  nav: { about: { en: 'About', ja: '自己紹介' }, work: { en: 'Work', ja: '制作' }, path: { en: 'Path', ja: '経歴' }, contact: { en: 'Contact', ja: '連絡先' } },
+  nav: { awards: { en: 'Awards', ja: '受賞' }, about: { en: 'About', ja: '自己紹介' }, work: { en: 'Work', ja: '制作' }, path: { en: 'Path', ja: '経歴' }, contact: { en: 'Contact', ja: '連絡先' } },
   seeWork: { en: 'See my work', ja: '制作を見る' },
   email: { en: 'Email me', ja: 'メールする' },
   cv: { en: 'CV (PDF)', ja: '履歴書（PDF）' },
   about: { en: 'About', ja: '自己紹介' },
   path: { en: 'Path', ja: '経歴' },
+  awardsFull: { en: 'Publications and awards', ja: '論文・受賞' },
   beyond: { en: 'Beyond the lab', ja: '研究室の外で' },
   contact: { en: 'Contact', ja: '連絡先' },
   contactBody: {
@@ -122,8 +124,8 @@ function Name() {
   )
 }
 
-const SECTIONS = ['about', 'work', 'path', 'contact']
-const TOOLPATH_IDS = ['about', 'work', 'path', 'beyond', 'contact'] as const
+const SECTIONS = ['work', 'about', 'awards', 'path', 'contact'] as const
+const TOOLPATH_IDS = ['work', 'about', 'awards', 'path', 'beyond', 'contact'] as const
 /** The section nearest the top of the viewport, for the nav underline. */
 function useActiveSection(on: boolean) {
   const [active, setActive] = useState('')
@@ -153,7 +155,7 @@ export default function App() {
   const base = import.meta.env.BASE_URL
   const slug = useRoute()
   const project = slug ? projects.find((p) => p.slug === slug) ?? null : null
-  const tpPoints = useMemo(() => TOOLPATH_IDS.map((id) => ({ id, label: id === 'beyond' ? ui.beyond[lang] : ui.nav[id][lang] })), [lang])
+  const tpPoints = useMemo(() => TOOLPATH_IDS.map((id) => ({ id, label: id === 'beyond' ? ui.beyond[lang] : id === 'awards' ? ui.awardsFull[lang] : ui.nav[id][lang] })), [lang])
   const active = useActiveSection(!slug)
   const wasProject = useRef(false)
   // coming back from a project page: the home page is where the reader left it
@@ -176,7 +178,7 @@ export default function App() {
         <div className="wrap">
           <strong className="brand" style={{ fontFamily: 'var(--font-head)' }}>Idris Sadiq</strong>
           <nav aria-label="Primary">
-            {SECTIONS.map((id) => <a key={id} href={`#${id}`} className={active === id ? 'on' : undefined} aria-current={active === id ? 'location' : undefined}>{t(ui.nav[id as 'about' | 'work' | 'path' | 'contact'])}</a>)}
+            {SECTIONS.map((id) => <a key={id} href={`#${id}`} className={active === id ? 'on' : undefined} aria-current={active === id ? 'location' : undefined}>{t(ui.nav[id])}</a>)}
           </nav>
           <span style={{ flex: 1 }} />
           <button className="btn" onClick={() => setLang(lang === 'en' ? 'ja' : 'en')} lang={lang === 'en' ? 'ja' : 'en'} title={lang === 'en' ? 'Switch language' : '言語切替'}>
@@ -199,7 +201,7 @@ export default function App() {
         <div>
         <section className="hero">
           <div className="wrap hero-grid">
-            <div className="hero-text">
+            <div className="hero-text surface">
               <Name />
               <p className="hero-line">{t(hero.line)}</p>
               <p className="hero-sub">{t(hero.sub)}</p>
@@ -214,21 +216,27 @@ export default function App() {
           <div className="wrap"><HeroScene /></div>
         </section>
 
+        <Work />
+
         <section id="about" className="sec" aria-labelledby="ab">
           <div className="wrap about-grid">
             <div>
               <h2 id="ab">{t(ui.about)}</h2>
-              {aboutText.map((p, i) => <Reveal key={i} delay={i * 50}><p className="about-p">{t(p)}</p></Reveal>)}
+              <div className="surface">
+                {aboutText.map((p, i) => <Reveal key={i} delay={i * 50}><p className="about-p">{t(p)}</p></Reveal>)}
+              </div>
             </div>
-            <ul className="facts">
-              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>}, {t(ui.facts.jp)}</li>
+            <ul className="facts surface">
+              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>}</li>
+              <li>{t(ui.facts.jp).split(/(NAT-TEST 4Q\S*)/).map((part, i) => (i % 2 ? <span key={i} className="nb">{part}</span> : part))}</li>
             </ul>
           </div>
         </section>
 
         </div>
 
-        <Work />
+        <Awards />
+
 
         <section id="path" className="sec" aria-labelledby="pt">
           <div className="wrap">
@@ -236,8 +244,8 @@ export default function App() {
             <ol className="path">
               {pathRows.map((r) => <li key={r.when + r.text.en}><span className="when">{r.when}</span><span>{t(r.text)}</span></li>)}
             </ol>
-            <details className="certs">
-              <summary>{t(ui.certs)} ({learning.reduce((n, g) => n + g.items.length, 0) + fieldEvents.length + extras.length})</summary>
+            <details className="certs surface">
+              <summary>{t(ui.certs)} ({learning.reduce((n, g) => n + g.items.length, 0) + fieldEvents.length})</summary>
               <div className="certs-body">
                 {learning.map((g) => (
                   <div key={g.theme.en}>
@@ -245,10 +253,6 @@ export default function App() {
                     <ul>{g.items.map((l) => <li key={l.en}>{t(l)}</li>)}</ul>
                   </div>
                 ))}
-                <div>
-                  <h3>{lang === 'en' ? 'Publications and awards' : '論文・受賞'}</h3>
-                  <ul>{extras.map((x) => <li key={x.text.en}>{t(x.text)}{x.link && <> <a href={base + x.link.href} target="_blank" rel="noopener noreferrer" aria-label={`${t(x.text)} (PDF)`}>{t(x.link.label)}</a></>}</li>)}</ul>
-                </div>
                 <div>
                   <h3>{lang === 'en' ? 'Out in the field' : '現場での学び'}</h3>
                   <ul>{fieldEvents.map((l) => <li key={l.en}>{t(l)}</li>)}</ul>
@@ -275,12 +279,14 @@ export default function App() {
         <section id="contact" className="sec contact" aria-labelledby="ct">
           <div className="wrap">
             <h2 id="ct">{t(ui.contact)}</h2>
+            <div className="surface">
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
               <a className="btn" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
               <a href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
               <a href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
               <Documents />
+            </div>
             </div>
           </div>
         </section>

@@ -131,7 +131,6 @@ export default function Work() {
                 <a className="mini" id={s} href={`#work/${s}`} onClick={(e) => plain(e, () => openProject(s, (e.currentTarget as HTMLElement).querySelector('img')))}>
                   {img && <img src={img} alt="" loading="lazy" decoding="async" width={160} height={100} />}
                   <strong>{t(info.short)}</strong>
-                  <span>{t(info.strip)}</span>
                   <ArrowUpRight className="tile-go" size={14} aria-hidden="true" />
                 </a>
               </li>
