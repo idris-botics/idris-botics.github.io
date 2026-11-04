@@ -1,6 +1,6 @@
 import { chromium } from '@playwright/test'
 import { enterChaos } from './enter-chaos.mjs'
-const url = 'https://idris900323.github.io/'
+const url = 'https://idris-botics.github.io/'
 const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
 const log = (ok, m) => console.log(ok ? 'ok  ' : 'FAIL', m)
 const p = await b.newPage({ viewport: { width: 1440, height: 900 } })

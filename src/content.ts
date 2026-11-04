@@ -381,7 +381,7 @@ export const projects: Project[] = [
       status: { en: 'Not yet checked against a CAD system for accuracy; verify important numbers there.', ja: 'CADシステムとの精度照合は未実施のため、重要な数値は別途確認してください。' },
     },
     videos: [{ src: 'stepscribe', poster: 'stepscribe-poster', caption: { en: 'Short demo: a STEP file in, a readable description out', ja: '短い紹介：STEPファイルを入力し、読みやすい説明を出力' } }],
-    link: { href: 'https://github.com/idris900323/stepscribe-cad', label: { en: 'Source on GitHub', ja: 'GitHubのソース' } },
+    link: { href: 'https://github.com/idris-botics/stepscribe-cad', label: { en: 'Source on GitHub', ja: 'GitHubのソース' } },
     tags: ['CAD', 'MCP', 'Python'],
   },
   {
@@ -571,6 +571,6 @@ export const habits = {
 
 export const links = {
   linkedin: 'https://www.linkedin.com/in/idris-sadiq-934697213/',
-  github: 'https://github.com/idris900323',
+  github: 'https://github.com/idris-botics',
   email: 'idris.connected@gmail.com',
 }

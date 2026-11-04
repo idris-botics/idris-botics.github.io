@@ -1,13 +1,13 @@
 // Builds a clean copy of the site for a NEW public repository: tracked files only (no ignored files, no history),
 // without the working notes in docs/, with one commit authored by the configured git user and no trailers.
-// Usage: npm run export:public -- ../idris900323.github.io
+// Usage: npm run export:public -- ../idris-botics.github.io
 // It never pushes. Afterwards: cd into the folder, run `npm ci && CHECK_STRICT=1 npm run check:publish`, then push yourself.
 import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
 const target = process.argv[2]
-if (!target) { console.error('Give the target folder, e.g. npm run export:public -- ../idris900323.github.io'); process.exit(2) }
+if (!target) { console.error('Give the target folder, e.g. npm run export:public -- ../idris-botics.github.io'); process.exit(2) }
 const out = resolve(target)
 if (existsSync(out) && readdirSync(out).length) { console.error(`${out} exists and is not empty`); process.exit(2) }
 mkdirSync(out, { recursive: true })

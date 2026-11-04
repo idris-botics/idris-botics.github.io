@@ -69,7 +69,7 @@ Private working documents (build report, improvement audit, publish checklist, p
 
 Analytics is off until you give the build a Measurement ID. Nothing is hardcoded; with no ID, no Google code loads and the Content-Security-Policy stays fully self-hosted.
 
-1. **Get the ID.** In [analytics.google.com](https://analytics.google.com): Admin, Create, Property. Then Data streams, Add stream, Web, enter the site address (https://idris900323.github.io). The stream page shows a Measurement ID like `G-XXXXXXXXXX`.
+1. **Get the ID.** In [analytics.google.com](https://analytics.google.com): Admin, Create, Property. Then Data streams, Add stream, Web, enter the site address (https://idris-botics.github.io). The stream page shows a Measurement ID like `G-XXXXXXXXXX`.
 2. **Locally.** Copy `.env.example` to `.env.local` and set `VITE_GA_MEASUREMENT_ID=G-XXXXXXXXXX`. Then `npm run build && npm run preview`. (`.env*` files are git-ignored.)
 3. **On GitHub Pages.** In the repository: Settings, Secrets and variables, Actions, Variables tab, New repository variable named `VITE_GA_MEASUREMENT_ID`. The deploy workflow passes it to the build. A Measurement ID is public by design, so a variable (not a secret) is right.
 4. **Test.** Open Analytics, Reports, Realtime, then visit the live site in another tab; you should appear within about 30 seconds. For event detail use Admin, DebugView (add `?debug_mode=1`-style debugging with the Tag Assistant extension).
