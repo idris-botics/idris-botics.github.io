@@ -19,26 +19,16 @@ for (const [name, viewport] of [['desktop', { width: 1280, height: 800 }], ['pho
   check(box.width >= 44 && box.height >= 44, `${name}: hint button is at least 44 px`)
   await btn.click()
   check(await p.locator('.hb-panel').count() === 1, `${name}: panel opens`)
-  let questions = 0
-  for (let i = 0; i < 6; i++) {
-    const hasQ = await p.locator('.hb-opts button').count() === 2
-    if (await p.locator('.hb-hint').count()) break
-    if (hasQ) { questions++; await p.locator('.hb-opts button').first().click() }
-    else { await p.locator('.hb-opts button', { hasText: /Continue/ }).click() }
-  }
-  check(questions >= 3, `${name}: ${questions} questions come before the first hint`)
-  const first = await p.locator('.hb-hint').innerText()
-  check(/drink/i.test(first), `${name}: first hint says what to do (${first})`)
-  await p.locator('.hb-x').click()
-  // second request: fewer questions, and the second hint is not ready yet
-  await btn.click()
-  for (let i = 0; i < 8; i++) {
-    if (await p.locator('.hb-hint').count()) break
-    if (await p.locator('.hb-opts button').count() === 2) await p.locator('.hb-opts button').first().click()
+  // the dialogue branches: answer whatever is asked until a hint (or a refusal) arrives; at least one question comes first
+  let questions = 0, end = ''
+  for (let i = 0; i < 14 && !end; i++) {
+    if (await p.locator('.hb-hint').count()) end = 'hint'
+    else if (/No hint right now/i.test(await p.locator('.hb-body').innerText().catch(() => ''))) end = 'refused'
+    else if ((await p.locator('.hb-opts button').count()) === 2) { questions++; await p.locator('.hb-opts button').nth(i % 2).click() }
     else await p.locator('.hb-opts button', { hasText: /Continue/ }).click()
   }
-  const again = await p.locator('.hb-hint').innerText()
-  check(/too soon/i.test(again), `${name}: an early second request is told to wait`)
+  check(questions >= 1 && !!end, `${name}: ${questions} question(s) came first, then ${end}`)
+  await p.locator('.hb-x').click()
   check(errors.filter((e) => !/postMessage|frame-shell/.test(e)).length === 0, `${name}: no console errors ${JSON.stringify(errors)}`)
   await p.screenshot({ path: `tests/out/hint-${name}.png` })
   await p.close()

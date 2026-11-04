@@ -32,274 +32,16 @@
   "another": {
    "en": "Another hint",
    "ja": "次のヒント"
+  },
+  "refused": {
+   "en": "No hint right now. Think about what you did, and press again in thirty seconds.",
+   "ja": "今はヒントなしです。自分の行いを振り返って、30秒後にもう一度押してください。"
+  },
+  "cont": {
+   "en": "Continue",
+   "ja": "続ける"
   }
  },
- "questions": [
-  {
-   "q": {
-    "en": "Are you sure you want a hint?",
-    "ja": "本当にヒントがほしいですか？"
-   },
-   "a": {
-    "en": "Yes",
-    "ja": "はい"
-   },
-   "b": {
-    "en": "No",
-    "ja": "いいえ"
-   },
-   "ra": {
-    "en": "Bold of you to ask.",
-    "ja": "よく聞けましたね。"
-   },
-   "rb": {
-    "en": "Then why did you press it?",
-    "ja": "じゃあ、なぜ押したのですか？"
-   }
-  },
-  {
-   "q": {
-    "en": "Have you tried turning your brain off and on again?",
-    "ja": "頭を一度オフにして、またオンにしましたか？"
-   },
-   "a": {
-    "en": "Yes",
-    "ja": "はい"
-   },
-   "b": {
-    "en": "Not yet",
-    "ja": "まだ"
-   },
-   "ra": {
-    "en": "And it still came out like this?",
-    "ja": "それでこの結果ですか？"
-   },
-   "rb": {
-    "en": "Do it now. I will wait. I will not, but do it.",
-    "ja": "今どうぞ。待ちます。待ちませんが。"
-   }
-  },
-  {
-   "q": {
-    "en": "Is this your first time using a website?",
-    "ja": "ウェブサイトを使うのは初めてですか？"
-   },
-   "a": {
-    "en": "No",
-    "ja": "いいえ"
-   },
-   "b": {
-    "en": "Maybe",
-    "ja": "たぶん"
-   },
-   "ra": {
-    "en": "That explains a lot, actually.",
-    "ja": "それで色々と納得です。"
-   },
-   "rb": {
-    "en": "Honesty. Rare. Noted.",
-    "ja": "正直ですね。珍しい。記録しました。"
-   }
-  },
-  {
-   "q": {
-    "en": "Do you ask for directions in a room with one door?",
-    "ja": "出口が一つの部屋で道を聞くタイプですか？"
-   },
-   "a": {
-    "en": "Yes",
-    "ja": "はい"
-   },
-   "b": {
-    "en": "Never",
-    "ja": "いいえ"
-   },
-   "ra": {
-    "en": "I thought so.",
-    "ja": "やはり。"
-   },
-   "rb": {
-    "en": "Then why are you asking me?",
-    "ja": "では、なぜ私に聞くのですか？"
-   }
-  },
-  {
-   "q": {
-    "en": "On a scale of one to ten, how lost are you? Please do not say ten.",
-    "ja": "1から10で、どのくらい迷っていますか？ 10とは言わないでください。"
-   },
-   "a": {
-    "en": "Ten",
-    "ja": "10"
-   },
-   "b": {
-    "en": "Eleven",
-    "ja": "11"
-   },
-   "ra": {
-    "en": "Rude. Accurate, but rude.",
-    "ja": "失礼です。正確ですが、失礼です。"
-   },
-   "rb": {
-    "en": "Impressive. That is not on the scale.",
-    "ja": "すごい。目盛りにありません。"
-   }
-  },
-  {
-   "q": {
-    "en": "Did you read the page, or only look at the pictures?",
-    "ja": "ページを読みましたか？ それとも写真だけ？"
-   },
-   "a": {
-    "en": "Read it",
-    "ja": "読んだ"
-   },
-   "b": {
-    "en": "Pictures",
-    "ja": "写真だけ"
-   },
-   "ra": {
-    "en": "Liar. There was a lot of reading.",
-    "ja": "嘘ですね。読む量はたくさんありました。"
-   },
-   "rb": {
-    "en": "The pictures are very nice, to be fair.",
-    "ja": "写真はたしかにきれいです。"
-   }
-  },
-  {
-   "q": {
-    "en": "Would you like the hint with dignity or without?",
-    "ja": "ヒントは、プライドつきとプライドなし、どちらにしますか？"
-   },
-   "a": {
-    "en": "With",
-    "ja": "つき"
-   },
-   "b": {
-    "en": "Without",
-    "ja": "なし"
-   },
-   "ra": {
-    "en": "Too late. The dignity is gone.",
-    "ja": "遅かったですね。もうありません。"
-   },
-   "rb": {
-    "en": "A wise choice. You did not have much.",
-    "ja": "賢明です。もともとあまりありませんでした。"
-   }
-  },
-  {
-   "q": {
-    "en": "Do you promise not to tell the professor?",
-    "ja": "教授には言わないと約束しますか？"
-   },
-   "a": {
-    "en": "I promise",
-    "ja": "約束する"
-   },
-   "b": {
-    "en": "Who?",
-    "ja": "誰？"
-   },
-   "ra": {
-    "en": "Good. We never speak of this.",
-    "ja": "よろしい。この話はなかったことに。"
-   },
-   "rb": {
-    "en": "Exactly. Nobody. Carry on.",
-    "ja": "その通り。誰もいません。続けましょう。"
-   }
-  },
-  {
-   "q": {
-    "en": "Have you considered that the secret is hiding because of you?",
-    "ja": "秘密が隠れているのは、あなたのせいだと考えたことはありますか？"
-   },
-   "a": {
-    "en": "Yes",
-    "ja": "はい"
-   },
-   "b": {
-    "en": "No",
-    "ja": "いいえ"
-   },
-   "ra": {
-    "en": "Then you know what you did.",
-    "ja": "では、自分の行いはご存じですね。"
-   },
-   "rb": {
-    "en": "Now you have. Sit with that.",
-    "ja": "今、考えましたね。噛みしめてください。"
-   }
-  },
-  {
-   "q": {
-    "en": "Quick check: are you a robot?",
-    "ja": "確認です。あなたはロボットですか？"
-   },
-   "a": {
-    "en": "No",
-    "ja": "いいえ"
-   },
-   "b": {
-    "en": "Beep",
-    "ja": "ピッ"
-   },
-   "ra": {
-    "en": "Suspicious. Robots say that too.",
-    "ja": "怪しいですね。ロボットもそう言います。"
-   },
-   "rb": {
-    "en": "Finally, someone honest.",
-    "ja": "やっと正直な人が来ました。"
-   }
-  },
-  {
-   "q": {
-    "en": "Do you want it quick, or do you want it to hurt?",
-    "ja": "さくっと教えましょうか、それとも痛い方がいいですか？"
-   },
-   "a": {
-    "en": "Quick",
-    "ja": "さくっと"
-   },
-   "b": {
-    "en": "Hurt",
-    "ja": "痛い方"
-   },
-   "ra": {
-    "en": "Cowards get hints. Fine.",
-    "ja": "臆病者にもヒントはあります。どうぞ。"
-   },
-   "rb": {
-    "en": "Respect. Hint incoming, ouch included.",
-    "ja": "敬意を表します。痛みつきで来ます。"
-   }
-  },
-  {
-   "q": {
-    "en": "Is it a good idea to press things on a page that says Chaos?",
-    "ja": "「カオス」と書かれたページで、いろいろ押すのは良い考えですか？"
-   },
-   "a": {
-    "en": "Yes",
-    "ja": "はい"
-   },
-   "b": {
-    "en": "No",
-    "ja": "いいえ"
-   },
-   "ra": {
-    "en": "Correct. That is the whole site.",
-    "ja": "正解です。それがこのサイトです。"
-   },
-   "rb": {
-    "en": "Correct. And yet here we are.",
-    "ja": "正解です。それでもここにいますね。"
-   }
-  }
- ],
  "taunts": [
   {
    "n": "The robot",
@@ -594,5 +336,491 @@
     "ja": "左下の月のボタンを押してください。"
    }
   ]
- }
+ },
+ "nodes": {
+  "sure": {
+   "q": {
+    "en": "Are you sure you want a hint?",
+    "ja": "本当にヒントがほしいですか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes",
+     "ja": "はい"
+    },
+    "reply": {
+     "en": "Bold of you to ask.",
+     "ja": "よく聞けましたね。"
+    },
+    "next": "why"
+   },
+   "b": {
+    "label": {
+     "en": "No",
+     "ja": "いいえ"
+    },
+    "reply": {
+     "en": "Then why did you press it?",
+     "ja": "じゃあ、なぜ押したのですか？"
+    },
+    "next": "press"
+   }
+  },
+  "read": {
+   "q": {
+    "en": "Did you read the page, or only look at the pictures?",
+    "ja": "ページを読みましたか？ それとも写真だけ？"
+   },
+   "a": {
+    "label": {
+     "en": "Read it",
+     "ja": "読んだ"
+    },
+    "reply": {
+     "en": "Prove it.",
+     "ja": "証明してください。"
+    },
+    "next": "quiz"
+   },
+   "b": {
+    "label": {
+     "en": "Pictures",
+     "ja": "写真だけ"
+    },
+    "reply": {
+     "en": "The pictures are very nice, to be fair. Read the words next time.",
+     "ja": "写真はたしかにきれいです。次は文章も読んでください。"
+    },
+    "effect": "more"
+   }
+  },
+  "dignity": {
+   "q": {
+    "en": "Would you like the hint with dignity or without?",
+    "ja": "ヒントは、プライドつきとプライドなし、どちらにしますか？"
+   },
+   "a": {
+    "label": {
+     "en": "With",
+     "ja": "つき"
+    },
+    "reply": {
+     "en": "Too late. The dignity is gone, and so is the quick route.",
+     "ja": "遅かったですね。プライドはもうありません。近道もなしです。"
+    },
+    "effect": "more"
+   },
+   "b": {
+    "label": {
+     "en": "Without",
+     "ja": "なし"
+    },
+    "reply": {
+     "en": "Wise. You did not have much. Here it comes.",
+     "ja": "賢明です。もともとあまりありませんでした。どうぞ。"
+    },
+    "effect": "skip"
+   }
+  },
+  "speed": {
+   "q": {
+    "en": "Do you want it quick, or do you want it to hurt?",
+    "ja": "さくっと教えましょうか、それとも痛い方がいいですか？"
+   },
+   "a": {
+    "label": {
+     "en": "Quick",
+     "ja": "さくっと"
+    },
+    "reply": {
+     "en": "Cowards get hints. Fine. Quick it is.",
+     "ja": "臆病者にもヒントはあります。さくっといきます。"
+    },
+    "effect": "skip"
+   },
+   "b": {
+    "label": {
+     "en": "Hurt",
+     "ja": "痛い方"
+    },
+    "reply": {
+     "en": "Respect. Two more questions, ouch included.",
+     "ja": "敬意を表します。質問をあと2つ、痛みつきで。"
+    },
+    "effect": "more"
+   }
+  },
+  "robot": {
+   "q": {
+    "en": "Quick check: are you a robot?",
+    "ja": "確認です。あなたはロボットですか？"
+   },
+   "a": {
+    "label": {
+     "en": "No",
+     "ja": "いいえ"
+    },
+    "reply": {
+     "en": "Suspicious. Robots say that too.",
+     "ja": "怪しいですね。ロボットもそう言います。"
+    },
+    "next": "captcha"
+   },
+   "b": {
+    "label": {
+     "en": "Beep",
+     "ja": "ピッ"
+    },
+    "reply": {
+     "en": "Finally, someone honest. Robot to robot: here.",
+     "ja": "やっと正直な人が来ました。ロボット同士、どうぞ。"
+    },
+    "effect": "skip"
+   }
+  },
+  "stuck": {
+   "q": {
+    "en": "On a scale of one to ten, how lost are you? Please do not say ten.",
+    "ja": "1から10で、どのくらい迷っていますか？ 10とは言わないでください。"
+   },
+   "a": {
+    "label": {
+     "en": "Ten",
+     "ja": "10"
+    },
+    "reply": {
+     "en": "Rude. Accurate, but rude. I will allow it.",
+     "ja": "失礼です。正確ですが、失礼です。許可します。"
+    },
+    "next": "giveup"
+   },
+   "b": {
+    "label": {
+     "en": "Eleven",
+     "ja": "11"
+    },
+    "reply": {
+     "en": "Impressive. That is not on the scale. Sit down.",
+     "ja": "すごい。目盛りにありません。座ってください。"
+    },
+    "next": "giveup"
+   }
+  },
+  "prof": {
+   "q": {
+    "en": "Do you promise not to tell the professor?",
+    "ja": "教授には言わないと約束しますか？"
+   },
+   "a": {
+    "label": {
+     "en": "I promise",
+     "ja": "約束する"
+    },
+    "reply": {
+     "en": "Good. We never speak of this.",
+     "ja": "よろしい。この話はなかったことに。"
+    },
+    "effect": "skip"
+   },
+   "b": {
+    "label": {
+     "en": "Who?",
+     "ja": "誰？"
+    },
+    "reply": {
+     "en": "Exactly. Nobody. Carry on, but think harder.",
+     "ja": "その通り。誰もいません。続けましょう。"
+    },
+    "effect": "more"
+   }
+  },
+  "brain": {
+   "q": {
+    "en": "Have you tried turning your brain off and on again?",
+    "ja": "頭を一度オフにして、またオンにしましたか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes",
+     "ja": "はい"
+    },
+    "reply": {
+     "en": "And it still came out like this?",
+     "ja": "それでこの結果ですか？"
+    },
+    "next": "again"
+   },
+   "b": {
+    "label": {
+     "en": "Not yet",
+     "ja": "まだ"
+    },
+    "reply": {
+     "en": "Do it now. I will wait. I will not, but do it.",
+     "ja": "今どうぞ。待ちます。待ちませんが。"
+    },
+    "next": "again"
+   }
+  },
+  "fault": {
+   "q": {
+    "en": "Have you considered that the secret is hiding because of you?",
+    "ja": "秘密が隠れているのは、あなたのせいだと考えたことはありますか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes",
+     "ja": "はい"
+    },
+    "reply": {
+     "en": "Then you know what you did.",
+     "ja": "では、自分の行いはご存じですね。"
+    },
+    "effect": "refuse"
+   },
+   "b": {
+    "label": {
+     "en": "No",
+     "ja": "いいえ"
+    },
+    "reply": {
+     "en": "Now you have. Sit with that.",
+     "ja": "今、考えましたね。噛みしめてください。"
+    },
+    "next": "sorry"
+   }
+  },
+  "chaos": {
+   "q": {
+    "en": "Is it a good idea to press things on a page that says Chaos?",
+    "ja": "「カオス」と書かれたページで、いろいろ押すのは良い考えですか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes",
+     "ja": "はい"
+    },
+    "reply": {
+     "en": "Correct. That is the whole site.",
+     "ja": "正解です。それがこのサイトです。"
+    },
+    "next": "again"
+   },
+   "b": {
+    "label": {
+     "en": "No",
+     "ja": "いいえ"
+    },
+    "reply": {
+     "en": "Correct. And yet here we are.",
+     "ja": "正解です。それでもここにいますね。"
+    },
+    "next": "press"
+   }
+  },
+  "why": {
+   "q": {
+    "en": "Why do you want it, really?",
+    "ja": "本当のところ、なぜほしいのですか？"
+   },
+   "a": {
+    "label": {
+     "en": "I am stuck",
+     "ja": "行き詰まった"
+    },
+    "reply": {
+     "en": "Honest. Stuck is a start.",
+     "ja": "正直ですね。行き詰まりは出発点です。"
+    }
+   },
+   "b": {
+    "label": {
+     "en": "I am impatient",
+     "ja": "せっかち"
+    },
+    "reply": {
+     "en": "Impatient visitors get the slow hint. Two more questions.",
+     "ja": "せっかちな人にはゆっくりのヒントです。質問をあと2つ。"
+    },
+    "effect": "more"
+   }
+  },
+  "press": {
+   "q": {
+    "en": "You pressed it with your own finger. Do you regret it?",
+    "ja": "自分の指で押しましたよね。後悔していますか？"
+   },
+   "a": {
+    "label": {
+     "en": "A little",
+     "ja": "少し"
+    },
+    "reply": {
+     "en": "Good. Regret builds character. Here is something.",
+     "ja": "よろしい。後悔は人を育てます。どうぞ。"
+    },
+    "effect": "skip"
+   },
+   "b": {
+    "label": {
+     "en": "Not at all",
+     "ja": "全然"
+    },
+    "reply": {
+     "en": "Then you can wait. No hint for now.",
+     "ja": "ならば待てますね。今回はヒントなしです。"
+    },
+    "effect": "refuse"
+   }
+  },
+  "quiz": {
+   "q": {
+    "en": "What is the dog on the Work section called?",
+    "ja": "Workのセクションにいる四足ロボットの名前は？"
+   },
+   "a": {
+    "label": {
+     "en": "RoboDog",
+     "ja": "RoboDog"
+    },
+    "reply": {
+     "en": "Correct. You can read. I am shocked.",
+     "ja": "正解です。読めるのですね。驚きました。"
+    },
+    "effect": "skip"
+   },
+   "b": {
+    "label": {
+     "en": "Rex",
+     "ja": "レックス"
+    },
+    "reply": {
+     "en": "Wrong. You did not read it. Extra question as a fine.",
+     "ja": "不正解です。読んでいませんね。罰として質問を追加します。"
+    },
+    "effect": "more"
+   }
+  },
+  "captcha": {
+   "q": {
+    "en": "Select all squares with a robot. There is one square. It is all of them.",
+    "ja": "ロボットが写っているマスをすべて選んでください。マスは1つ。全部です。"
+   },
+   "a": {
+    "label": {
+     "en": "Select it",
+     "ja": "選ぶ"
+    },
+    "reply": {
+     "en": "Verified human. Barely.",
+     "ja": "人間と確認しました。ぎりぎり。"
+    }
+   },
+   "b": {
+    "label": {
+     "en": "Skip",
+     "ja": "スキップ"
+    },
+    "reply": {
+     "en": "Skipping is what robots do. Hint on the house.",
+     "ja": "スキップはロボットの行動です。ヒントはサービスです。"
+    },
+    "effect": "skip"
+   }
+  },
+  "giveup": {
+   "q": {
+    "en": "Do you want me to just tell you the answer?",
+    "ja": "いっそ答えを教えましょうか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes, please",
+     "ja": "お願いします"
+    },
+    "reply": {
+     "en": "Very well. It will be stamped SOLVED WITH HELP. Forever.",
+     "ja": "よろしい。「ヒントで解決」の印が永遠に残ります。"
+    },
+    "effect": "reveal"
+   },
+   "b": {
+    "label": {
+     "en": "No, a hint",
+     "ja": "いや、ヒントで"
+    },
+    "reply": {
+     "en": "Brave. A hint, then.",
+     "ja": "勇敢ですね。ではヒントで。"
+    }
+   }
+  },
+  "again": {
+   "q": {
+    "en": "Would you do it all again?",
+    "ja": "もう一度、全部やり直しますか？"
+   },
+   "a": {
+    "label": {
+     "en": "Yes",
+     "ja": "はい"
+    },
+    "reply": {
+     "en": "Of course you would. Two more.",
+     "ja": "でしょうね。あと2つどうぞ。"
+    },
+    "effect": "more"
+   },
+   "b": {
+    "label": {
+     "en": "No",
+     "ja": "いいえ"
+    },
+    "reply": {
+     "en": "Smart. Hint, then.",
+     "ja": "賢いですね。では、ヒントです。"
+    },
+    "effect": "skip"
+   }
+  },
+  "sorry": {
+   "q": {
+    "en": "Say sorry to the secret.",
+    "ja": "秘密にあやまってください。"
+   },
+   "a": {
+    "label": {
+     "en": "Sorry, secret",
+     "ja": "ごめんなさい"
+    },
+    "reply": {
+     "en": "It forgives you. Barely.",
+     "ja": "許してくれました。ぎりぎり。"
+    }
+   },
+   "b": {
+    "label": {
+     "en": "No",
+     "ja": "いやだ"
+    },
+    "reply": {
+     "en": "Then it stays hidden. Come back in thirty seconds.",
+     "ja": "では隠れたままです。30秒後にまた来てください。"
+    },
+    "effect": "refuse"
+   }
+  }
+ },
+ "starts": [
+  "sure",
+  "read",
+  "dignity",
+  "speed",
+  "robot",
+  "stuck",
+  "prof",
+  "brain",
+  "fault",
+  "chaos"
+ ]
 }

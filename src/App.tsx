@@ -1,11 +1,10 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
-import { ExternalLink, Mail, Moon, Pause, Play, Sun, X } from 'lucide-react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { ExternalLink, Mail, Pause, Play, X } from 'lucide-react'
 import { useStore } from './store'
 import { useReducedMotion } from './lib/hooks'
 import PointField from './PointField'
-import ArmBand from './ArmBand'
+import HeroScene from './HeroScene'
 import PaperGrid from './PaperGrid'
-import { SectionTitle } from './Dim'
 import Toolpath from './Toolpath'
 import ChaosGate from './ChaosGate'
 import ChaosGuard from './chaos/ChaosGuard'
@@ -41,7 +40,8 @@ function HeroReel({ lang }: { lang: 'en' | 'ja' }) {
         <source src={`${base}media/vid/hero-reel-${small ? 720 : 1080}.mp4`} type="video/mp4" />
         <source src={`${base}media/vid/hero-reel-720.webm`} type="video/webm" />
       </video>
-      <button className="reel-btn" onClick={() => setPlaying(!on)} aria-pressed={on} aria-label={label} title={label}>{on ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>
+      {/* no pause button while it plays; when it is not playing (reduced motion, Save-Data, slow connection) a play button starts it */}
+      {!on && <button className="reel-btn" onClick={() => setPlaying(true)} aria-label={label} title={label}><Play size={16} aria-hidden="true" /></button>}
     </figure>
   )
 }
@@ -123,7 +123,7 @@ function Name() {
 }
 
 const SECTIONS = ['about', 'work', 'path', 'contact']
-const TOOLPATH = [{ id: 'about', label: 'About' }, { id: 'work', label: 'Work' }, { id: 'path', label: 'Path' }, { id: 'beyond', label: 'Beyond the lab' }, { id: 'contact', label: 'Contact' }]
+const TOOLPATH_IDS = ['about', 'work', 'path', 'beyond', 'contact'] as const
 /** The section nearest the top of the viewport, for the nav underline. */
 function useActiveSection(on: boolean) {
   const [active, setActive] = useState('')
@@ -142,18 +142,6 @@ function useActiveSection(on: boolean) {
   return active
 }
 
-/** Light or dark. The choice is remembered; without one the system setting decides (see public/theme-init.js). */
-function useTheme() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => (document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'))
-  const set = (t: 'light' | 'dark') => {
-    document.documentElement.dataset.theme = t
-    try { localStorage.setItem('theme', t) } catch { /* ignore */ }
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', t === 'dark' ? '#14161a' : '#f4f2ee')
-    setTheme(t)
-  }
-  return [theme, set] as const
-}
-
 export default function App() {
   const { lang, setLang, mode, toggleMode, evicted, setEvicted } = useStore()
   const t = (l: L) => l[lang]
@@ -164,8 +152,8 @@ export default function App() {
   })
   const base = import.meta.env.BASE_URL
   const slug = useRoute()
-  const [theme, setTheme] = useTheme()
   const project = slug ? projects.find((p) => p.slug === slug) ?? null : null
+  const tpPoints = useMemo(() => TOOLPATH_IDS.map((id) => ({ id, label: id === 'beyond' ? ui.beyond[lang] : ui.nav[id][lang] })), [lang])
   const active = useActiveSection(!slug)
   const wasProject = useRef(false)
   // coming back from a project page: the home page is where the reader left it
@@ -182,7 +170,7 @@ export default function App() {
     <>
       <a className="skip" href="#main">{t(ui.skip)}</a>
       <PaperGrid wobble={mode === 'chaos'} />
-      {!project && mode === 'calm' && <Toolpath points={TOOLPATH} />}
+      {!project && mode === 'calm' && <Toolpath key={lang} points={tpPoints} label={lang === 'en' ? 'Page sections' : 'ページの区切り'} />}
       {mode === 'chaos' && <PointField variant="chaos" />}
       <header className="site-header">
         <div className="wrap">
@@ -193,9 +181,6 @@ export default function App() {
           <span style={{ flex: 1 }} />
           <button className="btn" onClick={() => setLang(lang === 'en' ? 'ja' : 'en')} lang={lang === 'en' ? 'ja' : 'en'} title={lang === 'en' ? 'Switch language' : '言語切替'}>
             {lang === 'en' ? '日本語' : 'English'}
-          </button>
-          <button className="btn theme-btn" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label={lang === 'en' ? (theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme') : (theme === 'dark' ? 'ライトテーマに切り替え' : 'ダークテーマに切り替え')} title={lang === 'en' ? 'Light / dark' : 'ライト / ダーク'}>
-            {theme === 'dark' ? <Sun size={16} aria-hidden="true" /> : <Moon size={16} aria-hidden="true" />}
           </button>
           {mode === 'chaos' && <button className="btn chaos-btn" onClick={() => tidyThen(toggleMode)} aria-pressed>{t(ui.chaosOff)}</button>}
         </div>
@@ -226,13 +211,13 @@ export default function App() {
             </div>
             <HeroReel lang={lang} />
           </div>
-          <div className="wrap"><ArmBand /></div>
+          <div className="wrap"><HeroScene /></div>
         </section>
 
         <section id="about" className="sec" aria-labelledby="ab">
           <div className="wrap about-grid">
             <div>
-              <SectionTitle id="ab">{t(ui.about)}</SectionTitle>
+              <h2 id="ab">{t(ui.about)}</h2>
               {aboutText.map((p, i) => <Reveal key={i} delay={i * 50}><p className="about-p">{t(p)}</p></Reveal>)}
             </div>
             <ul className="facts">
@@ -245,9 +230,9 @@ export default function App() {
 
         <Work />
 
-        <section id="path" className="sec has-field" aria-labelledby="pt">
+        <section id="path" className="sec" aria-labelledby="pt">
           <div className="wrap">
-            <SectionTitle id="pt">{t(ui.path)}</SectionTitle>
+            <h2 id="pt">{t(ui.path)}</h2>
             <ol className="path">
               {pathRows.map((r) => <li key={r.when + r.text.en}><span className="when">{r.when}</span><span>{t(r.text)}</span></li>)}
             </ol>
@@ -275,7 +260,7 @@ export default function App() {
 
         <section id="beyond" className="sec" aria-labelledby="bl">
           <div className="wrap">
-            <SectionTitle id="bl">{t(ui.beyond)}</SectionTitle>
+            <h2 id="bl">{t(ui.beyond)}</h2>
             <ul className="photo-strip">
               {strip.map((s) => (
                 <li key={s.media.src}>
@@ -287,9 +272,9 @@ export default function App() {
           </div>
         </section>
 
-        <section id="contact" className="sec contact has-field" aria-labelledby="ct">
+        <section id="contact" className="sec contact" aria-labelledby="ct">
           <div className="wrap">
-            <SectionTitle id="ct">{t(ui.contact)}</SectionTitle>
+            <h2 id="ct">{t(ui.contact)}</h2>
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
               <a className="btn" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
@@ -304,6 +289,7 @@ export default function App() {
       {mode === 'calm' && !project && (
         <section className="sec peek" aria-labelledby="om">
           <div className="wrap peek-grid">
+            <svg className="peek-bot" viewBox="0 0 64 44" aria-hidden="true"><line x1="32" y1="2" x2="32" y2="10" stroke="#26221f" strokeWidth="3" strokeLinecap="round" /><circle cx="32" cy="4" r="4" fill="#ee6a4c" stroke="#26221f" strokeWidth="2.5" /><rect x="8" y="10" width="48" height="34" rx="9" fill="#f2b441" stroke="#26221f" strokeWidth="3" /><rect x="14" y="16" width="36" height="22" rx="6" fill="#3f6fb5" stroke="#26221f" strokeWidth="2.5" /><circle cx="25" cy="27" r="5" fill="#fff8ea" /><circle cx="39" cy="27" r="5" fill="#fff8ea" /><circle cx="26" cy="28" r="2.4" fill="#26221f" /><circle cx="40" cy="28" r="2.4" fill="#26221f" /></svg>
             <PeekReel alt={t(ui.peekAlt)} lang={lang} />
             <div>
               <h2 id="om">{t(ui.peekTitle)}</h2>

@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useStore } from './store'
-import { SectionTitle } from './Dim'
 import { Reveal } from './Reveal'
 import { mediaBase } from './Gallery'
 import { openProject } from './route'
 import { featured, order, projects, tiles, type Project } from './content'
 
 const thumbs = (p: Project) => {
-  const list = (p.media ?? []).map((m) => ({ src: `${mediaBase()}${m.src}-640.webp`, alt: m.alt }))
-  if (!list.length && p.videos?.[0]) list.push({ src: `${mediaBase()}${p.videos[0].poster}-640.webp`, alt: p.videos[0].caption })
+  const list = (p.media ?? []).map((m) => ({ src: `${mediaBase()}${m.src}-640.webp`, alt: m.alt, contain: !!m.label }))
+  if (!list.length && p.videos?.[0]) list.push({ src: `${mediaBase()}${p.videos[0].poster}-640.webp`, alt: p.videos[0].caption, contain: false })
   return list
 }
 
@@ -38,7 +37,7 @@ const clipsAllowed = () => {
 }
 
 /** A featured tile. When the project has several pictures, they change in the tile's own picture spot: arrows, dots, swipe. */
-function FeaturedTile({ p, lang }: { p: Project; lang: 'en' | 'ja' }) {
+function FeaturedTile({ p, lang, tone }: { p: Project; lang: 'en' | 'ja'; tone: number }) {
   const t = (l: { en: string; ja: string }) => l[lang]
   const info = tiles[p.slug]
   const imgs = thumbs(p).slice(0, 5) // the page has the rest
@@ -63,7 +62,7 @@ function FeaturedTile({ p, lang }: { p: Project; lang: 'en' | 'ja' }) {
   const label = lang === 'en' ? 'Picture' : '画像'
 
   return (
-    <div className="tile" onPointerEnter={() => hoverOk && setHover(true)} onPointerLeave={() => setHover(false)}
+    <div className={`tile t${tone}`} onPointerEnter={() => hoverOk && setHover(true)} onPointerLeave={() => setHover(false)}
       onPointerDown={(e) => { if (e.pointerType !== 'mouse') swipe.current = { x: e.clientX, y: e.clientY }; swiped.current = false }}
       onPointerUp={(e) => {
         const s0 = swipe.current; swipe.current = null
@@ -76,7 +75,7 @@ function FeaturedTile({ p, lang }: { p: Project; lang: 'en' | 'ja' }) {
         onFocus={() => setHover(true)} onBlur={() => setHover(false)}>
         {n > 0 && (
           <span className="tile-img" ref={host}>
-            <img ref={imgRef} key={imgs[k].src} src={imgs[k].src} alt="" loading="lazy" decoding="async" width={640} height={400} />
+            <img ref={imgRef} key={imgs[k].src} className={imgs[k].contain ? 'contain' : undefined} src={imgs[k].src} alt="" loading="lazy" decoding="async" width={640} height={400} />
             {ok && info.clip && <TileClip name={info.clip} active={hover || centred} />}
           </span>
         )}
@@ -118,9 +117,9 @@ export default function Work() {
   return (
     <section id="work" className="sec" aria-labelledby="wk">
       <div className="wrap">
-        <SectionTitle id="wk">{lang === 'en' ? 'Work' : '制作'}</SectionTitle>
+        <h2 id="wk">{lang === 'en' ? 'Work' : '制作'}</h2>
         <div className="tiles">
-          {featured.map((s, i) => <Reveal key={s} delay={i * 50}><FeaturedTile p={project(s)} lang={lang} /></Reveal>)}
+          {featured.map((s, i) => <Reveal key={s} delay={i * 50}><FeaturedTile p={project(s)} lang={lang} tone={i} /></Reveal>)}
         </div>
 
         <h3 className="more-h">{lang === 'en' ? 'More builds' : 'ほかの制作'}</h3>

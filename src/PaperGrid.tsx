@@ -35,9 +35,9 @@ export default function PaperGrid({ wobble = false }: { wobble?: boolean }) {
       for (let j = 5; j * step < h; j += 5) { const y = Math.round(j * step) + 0.5; ctx.moveTo(0, y); ctx.lineTo(w, y) }
       ctx.stroke()
       // rulers on the left and top edges: a tick every 2 mm, longer every 10 mm, a label every 50 mm
-      ctx.globalAlpha = 0.3
+      ctx.globalAlpha = 0.42
       ctx.fillStyle = ink
-      ctx.font = '9px "IBM Plex Mono", ui-monospace, monospace'
+      ctx.font = '10px "IBM Plex Mono", ui-monospace, monospace'
       ctx.beginPath()
       for (let i = 0; i * step < w; i++) { const x = Math.round(i * step) + 0.5, len = i % 25 === 0 ? 12 : i % 5 === 0 ? 8 : 4; ctx.moveTo(x, 0); ctx.lineTo(x, len) }
       for (let j = 0; j * step < h; j++) { const y = Math.round(j * step) + 0.5, len = j % 25 === 0 ? 12 : j % 5 === 0 ? 8 : 4; ctx.moveTo(0, y); ctx.lineTo(len, y) }
@@ -52,7 +52,6 @@ export default function PaperGrid({ wobble = false }: { wobble?: boolean }) {
     }
     draw()
     const ro = new ResizeObserver(draw); ro.observe(document.documentElement)
-    const mo = new MutationObserver(draw); mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-mode'] })
 
     // the jog readout (mouse only)
     const el = jog.current
@@ -70,7 +69,7 @@ export default function PaperGrid({ wobble = false }: { wobble?: boolean }) {
       })
     }
     if (fine) addEventListener('pointermove', move, { passive: true })
-    return () => { ro.disconnect(); mo.disconnect(); removeEventListener('pointermove', move); cancelAnimationFrame(raf); clearTimeout(fade) }
+    return () => { ro.disconnect(); removeEventListener('pointermove', move); cancelAnimationFrame(raf); clearTimeout(fade) }
   }, [])
   return (
     <>

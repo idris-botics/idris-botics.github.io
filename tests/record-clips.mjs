@@ -71,7 +71,6 @@ await take('chaos', async (p, now) => {
   const a = now()
   await p.keyboard.type('coffee', { delay: 40 }) // brewing bar, then the flood
   await p.waitForTimeout(4700)
-  { const fab = p.locator('.corner-fab'); if (await fab.isVisible().catch(() => false)) await fab.click() } await p.locator('.mc-btn').click() // a Mission Control window
   await p.waitForTimeout(1100)
   await p.locator('#pid').evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }))
   await p.locator('#pid').click()

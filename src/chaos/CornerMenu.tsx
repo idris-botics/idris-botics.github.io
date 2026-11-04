@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 
 /**
- * Phones only: the sound, Mission Control and achievements buttons fold into one menu button, so only one control sits in the corner.
+ * Phones only: the sound and achievements buttons fold into one menu button, so only one control sits in the corner.
  * (On wider screens this renders nothing and the three buttons stay where they were.)
  */
 export default function CornerMenu({ lang }: { lang: 'en' | 'ja' }) {
@@ -22,12 +22,12 @@ export default function CornerMenu({ lang }: { lang: 'en' | 'ja' }) {
   }, [phone, open])
   useEffect(() => {
     if (!open) return
-    const out = (e: PointerEvent) => { if (!(e.target as HTMLElement).closest('.corner-fab, .sfx-btn, .mc-btn, .ach')) setOpen(false) }
+    const out = (e: PointerEvent) => { if (!(e.target as HTMLElement).closest('.corner-fab, .sfx-btn, .ach')) setOpen(false) }
     addEventListener('pointerdown', out)
     return () => removeEventListener('pointerdown', out)
   }, [open])
   if (!phone) return null
-  const label = lang === 'en' ? (open ? 'Close the menu' : 'Open the menu: sound, hints, achievements') : (open ? 'メニューを閉じる' : 'メニューを開く：音、ミッションコントロール、実績')
+  const label = lang === 'en' ? (open ? 'Close the menu' : 'Open the menu: sound, achievements') : (open ? 'メニューを閉じる' : 'メニューを開く：音、実績')
   return (
     <button className="btn corner-fab" aria-expanded={open} aria-label={label} title={label} onClick={() => setOpen((o) => !o)}>
       {open ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}

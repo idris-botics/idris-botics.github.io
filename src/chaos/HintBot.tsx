@@ -5,15 +5,18 @@ import hints from '../content/jokes/hints.json'
 import { markHelped } from './hintsStore'
 
 type L = { en: string; ja: string }
-type Q = { q: L; a: L; b: L; ra: L; rb: L }
+type Opt = { label: L; reply: L; next?: string; effect?: 'skip' | 'more' | 'refuse' | 'reveal' }
+type Node = { q: L; a: Opt; b: Opt }
 type Taunt = { n: string; en: string; ja: string }
 const ui = data.ui as unknown as Record<string, L>
-const QUESTIONS = data.questions as unknown as Q[]
+const NODES = data.nodes as unknown as Record<string, Node>
+const STARTS = data.starts as unknown as string[]
 const TAUNTS = data.taunts as unknown as Taunt[]
 const HINTS = data.secrets as unknown as Record<string, L[]>
 const SECRETS = hints.secrets as unknown as Record<string, { ach: string }>
 const IDS = Object.keys(HINTS)
 const WAIT = [0, 40, 60] // seconds before the second and third hint of one secret unlock
+const MAX_QUESTIONS = 5
 
 // shuffle bag: nothing repeats until the pool is used up
 const bags = new Map<string, number[]>()
@@ -27,11 +30,12 @@ function draw(key: string, n: number): number {
 const given: Record<string, number> = {}
 const givenAt: Record<string, number> = {}
 let asked = 0
+let refusedUntil = 0 // a refused request: no hint until then
 
 type Step =
-  | { k: 'q'; q: Q; left: number }
-  | { k: 'reply'; text: string; left: number; next: () => void }
-  | { k: 'hint'; text: string; id?: string; more: boolean }
+  | { k: 'q'; id: string; order: ('a' | 'b')[]; left: number }
+  | { k: 'reply'; text: string; then: () => void }
+  | { k: 'hint'; text: string; id?: string }
   | { k: 'msg'; text: string }
 
 type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: number) => boolean; fire: (id: string) => void }
@@ -67,40 +71,58 @@ export default function HintBot({ lang, found, fire }: Props) {
 
   const unfound = () => IDS.filter((id) => !live.current.found.includes(SECRETS[id].ach))
 
-  const reveal = () => {
+  const shown = useRef(0)
+
+  // the next hint for the first secret that has not been found; `force` ignores the timers (the "just tell me" answer)
+  const reveal = (force = false) => {
     const ids = unfound()
     if (!ids.length) { setStep({ k: 'msg', text: ui.none[lang] }); return }
     const id = ids[0]
     const tier = given[id] ?? 0
     const tiers = HINTS[id]
-    if (tier > 0 && (Date.now() - (givenAt[id] ?? 0)) / 1000 < WAIT[tier]) {
-      setStep({ k: 'hint', text: `${ui.soon[lang]} ${tiers[tier - 1][lang]}`, id: undefined, more: false })
+    if (!force && tier > 0 && (Date.now() - (givenAt[id] ?? 0)) / 1000 < WAIT[tier]) {
+      setStep({ k: 'hint', text: `${ui.soon[lang]} ${tiers[tier - 1][lang]}` })
       return
     }
-    given[id] = Math.min(tier + 1, tiers.length)
+    const use = force ? Math.min(tier, tiers.length - 1) : tier
+    given[id] = Math.min(use + 1, tiers.length)
     givenAt[id] = Date.now()
-    if (tier === tiers.length - 1) markHelped(SECRETS[id].ach)
-    setStep({ k: 'hint', text: tiers[tier][lang], id: tier === tiers.length - 1 && id !== 'moon' ? id : undefined, more: tier < tiers.length - 1 })
+    if (use === tiers.length - 1) markHelped(SECRETS[id].ach)
+    setStep({ k: 'hint', text: tiers[use][lang], id: use === tiers.length - 1 && id !== 'moon' ? id : undefined })
   }
 
-  const askNext = (left: number) => {
-    if (left <= 0) { reveal(); return }
-    setStep({ k: 'q', q: QUESTIONS[draw('q', QUESTIONS.length)], left })
+  const refuse = () => { refusedUntil = Date.now() + 30000; setStep({ k: 'msg', text: ui.refused[lang] }) }
+
+  const openNode = (id: string, left: number) => {
+    if (shown.current >= MAX_QUESTIONS) { reveal(); return }
+    shown.current++
+    setStep({ k: 'q', id, order: Math.random() < 0.5 ? ['a', 'b'] : ['b', 'a'], left })
   }
+  const startNode = (left: number) => openNode(STARTS[draw('start', STARTS.length)], left)
 
   const toggle = () => {
     if (open) { setOpen(false); setStep(null); return }
     setBubble('')
     setOpen(true)
+    if (Date.now() < refusedUntil) { setStep({ k: 'msg', text: ui.refused[lang] }); return }
     asked++
-    // the first request gets a few questions, later ones fewer, so it teases without becoming a chore
-    askNext(asked === 1 ? 3 : 2)
+    shown.current = 0
+    // the first request gets a few questions, later ones fewer; the answers decide what comes next
+    startNode(asked === 1 ? 2 : 1)
   }
 
-  const answer = (q: Q, which: 'a' | 'b', left: number) => {
-    const text = q[which === 'a' ? 'ra' : 'rb'][lang]
-    const taunt = Math.random() < 0.5 ? TAUNTS[draw('between', TAUNTS.length)][lang] : ''
-    setStep({ k: 'reply', text: taunt ? `${text} ${taunt}` : text, left: left - 1, next: () => askNext(left - 1) })
+  // what an answer does: a reply (sometimes with a taunt), then a follow-up question, more questions, a refusal, or the hint itself
+  const answer = (id: string, which: 'a' | 'b', left: number) => {
+    const o = NODES[id][which]
+    const taunt = Math.random() < 0.4 ? ` ${TAUNTS[draw('between', TAUNTS.length)][lang]}` : ''
+    let then: () => void
+    if (o.effect === 'refuse') then = refuse
+    else if (o.effect === 'reveal') then = () => reveal(true)
+    else if (o.effect === 'skip') then = () => reveal()
+    else if (o.effect === 'more') then = () => startNode(left + 2)
+    else if (o.next) then = () => openNode(o.next!, left)
+    else then = () => (left > 0 ? startNode(left - 1) : reveal())
+    setStep({ k: 'reply', text: o.reply[lang] + taunt, then })
   }
 
   return (
@@ -117,17 +139,16 @@ export default function HintBot({ lang, found, fire }: Props) {
           </div>
           {step.k === 'q' && (
             <div className="hb-body">
-              <p>{step.q.q[lang]}</p>
+              <p>{NODES[step.id].q[lang]}</p>
               <div className="hb-opts">
-                <button className="btn" onClick={() => answer(step.q, 'a', step.left)}>{step.q.a[lang]}</button>
-                <button className="btn" onClick={() => answer(step.q, 'b', step.left)}>{step.q.b[lang]}</button>
+                {step.order.map((w) => <button key={w} className="btn" onClick={() => answer(step.id, w, step.left)}>{NODES[step.id][w].label[lang]}</button>)}
               </div>
             </div>
           )}
           {step.k === 'reply' && (
             <div className="hb-body">
               <p>{step.text}</p>
-              <div className="hb-opts"><button className="btn" autoFocus onClick={step.next}>{lang === 'en' ? 'Continue' : '続ける'}</button></div>
+              <div className="hb-opts"><button className="btn" autoFocus onClick={step.then}>{ui.cont[lang]}</button></div>
             </div>
           )}
           {step.k === 'hint' && (

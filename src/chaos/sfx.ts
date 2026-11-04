@@ -2,12 +2,16 @@
 // Nothing plays until the visitor has interacted with the page, and the mute switch is remembered for the session.
 let ctx: AudioContext | null = null
 // Sound is off until the visitor turns it on (the choice is remembered for the session).
-let muted = true
-try { muted = sessionStorage.getItem('sfx-muted') !== '0' } catch { /* ignore */ }
+let muted = false // sound is on by default; the speaker button turns it off, and the choice is remembered for the visit
+try { muted = sessionStorage.getItem('sfx-muted') === '1' } catch { /* ignore */ }
 
 export const isMuted = () => muted
+const muteListeners = new Set<() => void>()
+/** Subscribe to the sound switch (the speaker button): the Rick roll and Cena videos follow it too. Returns the unsubscribe function. */
+export const onMuteChange = (f: () => void) => { muteListeners.add(f); return () => { muteListeners.delete(f) } }
 export function setMuted(m: boolean) {
   muted = m
+  muteListeners.forEach((f) => f())
   try { sessionStorage.setItem('sfx-muted', m ? '1' : '0') } catch { /* ignore */ }
 }
 

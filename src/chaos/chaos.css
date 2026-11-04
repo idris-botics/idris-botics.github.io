@@ -196,54 +196,11 @@ html.coffee-steam main h2::after { content: ''; position: absolute; left: 6px; t
 @keyframes coffee-steam { from { transform: translateY(8px); opacity: .9; } to { transform: translateY(-14px); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { html.vibrate main, html.coffee-steam main h2::after, .coffee-wave, .coffee-bubble { animation: none; } }
 
-/* Mission Control: the hint window, styled as a small cartoon OS window */
-.mc-btn { position: fixed; left: 64px; top: 72px; z-index: 600; width: 44px; padding: 0; justify-content: center; }
-.mc { position: fixed; right: 16px; bottom: 16px; z-index: 620; width: min(360px, calc(100vw - 16px)); max-height: min(80vh, 640px); overflow-y: auto; background: var(--card); color: var(--ink); border: 3px solid var(--ink); border-radius: 16px; box-shadow: 5px 5px 0 var(--ink); animation: mc-in 220ms cubic-bezier(0.34, 1.4, 0.64, 1); }
-@keyframes mc-in { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: none; } }
-.mc-bar { position: sticky; top: 0; display: flex; gap: 10px; align-items: center; padding: 8px 10px 8px 14px; background: #ffd45e; border-bottom: 3px solid var(--ink); cursor: grab; touch-action: none; user-select: none; }
-.mc-bar strong { flex: 1; font-family: var(--font-head); }
-.mc-cells { font: 12px var(--font-mono); }
-.mc-x { width: 36px; height: 36px; border: 2px solid var(--ink); border-radius: 50%; background: #fff; font-size: 20px; line-height: 1; cursor: pointer; color: var(--ink); touch-action: manipulation; }
-.mc-list { list-style: none; margin: 0; padding: 8px 14px; display: grid; gap: 12px; }
-.mc-list li { border-bottom: 2px dashed var(--line); padding-bottom: 10px; display: grid; gap: 6px; }
-.mc-list li:last-child { border-bottom: 0; }
-.mc-list li.done strong { color: #1a7a3a; }
-.mc-tag { font: 700 11px var(--font-mono); color: #8a3300; }
-.mc-wait { margin: 0; font: 12px var(--font-mono); color: var(--muted); }
-.mc-clue p { margin: 4px 0 0; }
-.mc-mono { font: 700 18px var(--font-mono); }
-.mc-big { font: 800 28px var(--font-head); }
-.mc-t2 { margin: 0; font-style: italic; }
-.mc-go { justify-self: start; min-height: 44px; }
-.mc-led { display: inline-flex; gap: 10px; align-items: center; min-height: 44px; padding: 0 4px; background: none; border: 0; cursor: pointer; color: var(--ink); font: 12px var(--font-mono); touch-action: manipulation; }
-.mc-led i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--ink); background: #5a2a2a; transition: background-color 60ms linear, box-shadow 60ms linear; }
-.mc-led i.on { background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b; }
-.mc-morse-static { font: 700 24px var(--font-mono); margin: 0; letter-spacing: .2em; }
-.mc-bits { display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 0; }
-.mc-bits span { display: inline-flex; gap: 3px; }
-.mc-bits i { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--ink); background: #ccc; }
-.mc-bits i.on { background: #ffd45e; }
-.mc-res { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.mc-res-pair { display: inline-flex; gap: 2px; padding: 3px; border: 2px solid var(--ink); border-radius: 6px; background: #e9d9b8; }
-.mc-res-pair i { width: 8px; height: 26px; border: 1px solid var(--ink); }
-.mc-res details { flex-basis: 100%; }
-.mc-res summary { cursor: pointer; min-height: 44px; display: inline-flex; align-items: center; font-weight: 700; }
-.mc-cmd { display: flex; gap: 8px; padding: 0 14px 8px; }
-.mc-cmd input { flex: 1; min-width: 0; min-height: 44px; border: 2px solid var(--ink); border-radius: 10px; padding: 0 10px; background: #fff; color: #1e2128; font: 16px var(--font-mono); }
-.mc-msg { margin: 0; padding: 0 14px 8px; font-weight: 700; }
-.mc-set { padding: 0 14px 12px; font-size: 13px; }
-.mc-set summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--muted); }
-.mc-set label { display: inline-flex; gap: 8px; align-items: center; min-height: 44px; }
 .ach-help { font: 700 11px var(--font-mono); color: #8a3300; }
 @media (max-width: 700px) {
-  .mc-btn { left: auto; right: 6px; top: 148px; width: 36px; height: 36px; min-height: 36px; }
-  .mc { right: 8px; left: 8px; bottom: 8px; width: auto; }
 }
-@media (prefers-reduced-motion: reduce) { .mc { animation: none; } }
-
 /* the cookie banner: a small card in the bottom-left corner on desktop, clear of the page text and of the Restore order button */
 @media (min-width: 701px) { .cookie { left: 168px; right: auto; bottom: 12px; margin: 0; max-width: 340px; padding: 8px 12px; font-size: 14px; } }
-
 /* clues inside the project windows (Chaos only), behind-the-scenes cards, the ending, the legendary toast */
 .pw-clue { margin: 0 0 20px; padding: 10px 12px; border: 2px dashed var(--line); border-radius: 12px; display: grid; gap: 6px; }
 .pw-clue small { font: 11px var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
@@ -252,9 +209,6 @@ html.coffee-steam main h2::after { content: ''; position: absolute; left: 6px; t
 .pw-clue-board i { font: normal 10px var(--font-mono); color: #d8f2e2; }
 .pw-clue-out { margin: 0; font: 700 22px var(--font-mono); letter-spacing: .12em; padding: 6px 10px; background: #0b0d12; color: #ff5a3c; border-radius: 6px; display: inline-block; }
 .pw-clue-log { margin: 0; font: 13px var(--font-mono); padding: 6px 10px; background: #0b0d12; color: #7dffb0; border-radius: 6px; display: inline-block; }
-.mc-bts { margin-top: 4px; padding: 8px 10px; border-left: 4px solid #ff7a45; background: color-mix(in srgb, var(--card) 85%, #ffd45e); }
-.mc-bts p { margin: 4px 0; font-size: 14px; }
-.mc-bts a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
 .end-card { position: fixed; left: 50%; top: 50%; z-index: 640; transform: translate(-50%, -50%); width: min(420px, calc(100vw - 24px)); padding: 22px; text-align: center; background: var(--card); color: var(--ink); border: 3px solid var(--ink); border-radius: 20px; box-shadow: 6px 6px 0 var(--ink); animation: end-in 320ms cubic-bezier(0.34, 1.4, 0.64, 1); display: grid; gap: 12px; }
 @keyframes end-in { from { opacity: 0; transform: translate(-50%, -46%) scale(.94); } to { opacity: 1; transform: translate(-50%, -50%); } }
 .end-card h2 { margin: 0; }
@@ -265,21 +219,15 @@ html.coffee-steam main h2::after { content: ''; position: absolute; left: 6px; t
 @keyframes end-fall { to { transform: translateY(105vh) rotate(540deg); opacity: .9; } }
 html.gold-toast .toast { background: #ffd45e; border-color: #8a6a00; box-shadow: 0 0 0 3px #fff3b0, 5px 5px 0 #8a6a00; }
 @media (prefers-reduced-motion: reduce) { .end-card { animation: none; } .end-party i { animation: none; display: none; } }
-
 /* juice: buttons squash when pressed; a hit-stop freezes the running animations for a moment on a big hit */
 :root[data-mode='chaos'] .btn, :root[data-mode='chaos'] .chip, :root[data-mode='chaos'] .tile, :root[data-mode='chaos'] .mini { transition-property: transform, border-color, background-color; }
 :root[data-mode='chaos'] .btn:active, :root[data-mode='chaos'] .chip:active { transform: scale(1.07, .88); transition-duration: 70ms; }
 :root[data-mode='chaos'] .tile:active, :root[data-mode='chaos'] .mini:active { transform: scale(1.02, .96); }
 html.hitstop *, html.hitstop *::before, html.hitstop *::after { animation-play-state: paused !important; }
-
-.mc.wobble { animation: mc-wobble 420ms cubic-bezier(0.23, 1, 0.32, 1); }
 @keyframes mc-wobble { 0% { transform: rotate(0); } 25% { transform: rotate(-2.4deg); } 55% { transform: rotate(1.6deg); } 80% { transform: rotate(-.6deg); } 100% { transform: none; } }
-.mc { touch-action: pan-y; }
-
 /* comments are a readable width on every screen (they used to shrink to a single column of words on phones) */
 .toast { width: max-content; max-width: min(520px, calc(100vw - 24px)); }
 @media (max-width: 700px) { .toast { font-size: 15px; bottom: calc(64px + env(safe-area-inset-bottom)); } }
-
 /* Hint bot: the hint button in the top right corner, with the questions and the hint in a small card under it */
 .hb { position: fixed; right: max(14px, env(safe-area-inset-right)); top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 610; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
 .hb-btn { gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px; justify-content: center; }
@@ -301,10 +249,13 @@ html.hitstop *, html.hitstop *::before, html.hitstop *::after { animation-play-s
 /* phones: one corner menu button; the sound, Mission Control and achievements buttons open from it */
 .corner-fab { position: fixed; left: max(8px, env(safe-area-inset-left)); top: calc(64px + env(safe-area-inset-top, 0px)); z-index: 610; width: 44px; height: 44px; min-height: 44px; padding: 0; justify-content: center; }
 @media (max-width: 700px) {
-  html.has-corner .sfx-btn, html.has-corner .mc-btn, html.has-corner .ach { display: none; }
-  html.corner-open .sfx-btn, html.corner-open .mc-btn, html.corner-open .ach { display: flex; position: fixed; left: max(8px, env(safe-area-inset-left)) !important; right: auto !important; width: 44px !important; height: 44px !important; min-height: 44px !important; z-index: 610; }
+  html.has-corner .sfx-btn, html.has-corner .ach { display: none; }
+  html.corner-open .sfx-btn, html.corner-open .ach { display: flex; position: fixed; left: max(8px, env(safe-area-inset-left)) !important; right: auto !important; width: 44px !important; height: 44px !important; min-height: 44px !important; z-index: 610; }
   html.corner-open .sfx-btn { top: calc(112px + env(safe-area-inset-top, 0px)) !important; }
-  html.corner-open .mc-btn { top: calc(160px + env(safe-area-inset-top, 0px)) !important; }
-  html.corner-open .ach { top: calc(208px + env(safe-area-inset-top, 0px)); bottom: auto; width: auto !important; }
+    html.corner-open .ach { top: calc(160px + env(safe-area-inset-top, 0px)); bottom: auto; width: auto !important; }
   html.corner-open .ach .btn { min-height: 44px; }
 }
+.mc-led { display: inline-flex; gap: 10px; align-items: center; min-height: 44px; padding: 0 4px; background: none; border: 0; cursor: pointer; color: var(--ink); font: 12px var(--font-mono); touch-action: manipulation; }
+.mc-led i { width: 22px; height: 22px; border-radius: 50%; border: 3px solid var(--ink); background: #5a2a2a; transition: background-color 60ms linear, box-shadow 60ms linear; }
+.mc-led i.on { background: #ff3b3b; box-shadow: 0 0 10px #ff3b3b; }
+.mc-morse-static { font: 700 24px var(--font-mono); margin: 0; letter-spacing: .2em; }

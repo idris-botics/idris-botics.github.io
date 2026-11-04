@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Mail, FileText, ExternalLink } from 'lucide-react'
 import hints from '../content/jokes/hints.json'
-import { SECRET_ACH } from './MissionControl'
+import { SECRET_ACH } from './secrets'
 import { links } from '../content'
 import { personal } from '../personal'
 

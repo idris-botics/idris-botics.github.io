@@ -47,15 +47,11 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
   check(/featured project/i.test(list), `${name}: achievement for opening every featured project`)
   check(/PID twin/i.test(list), `${name}: achievement for running the PID twin`)
 
-  // Mission Control (on a phone it opens from the corner menu)
-  { const fab = p.locator('.corner-fab'); if (await fab.isVisible().catch(() => false) && !(await p.locator('html.corner-open').count())) await fab.click() } await p.locator('.mc-btn').click()
-
   // the four secrets, the card, the ending
   await p.evaluate(() => { for (const a of ['coffee', 'roll', 'omae', 'moon']) window.__award(a) })
   await p.waitForSelector('.end-card', { timeout: 5000 })
   const card = await p.locator('.end-card').innerText()
   check(/found everything/i.test(card) && (await p.locator('.end-card a[href^="mailto"]').count()) === 1 && (await p.locator('.end-card a[download]').count()) === 1 && (await p.locator('.end-card a[href*="linkedin"]').count()) === 1, `${name}: contact card with email, CV and LinkedIn`)
-  check((await p.locator('.mc-bts').count()) === 4, `${name}: four behind-the-scenes cards`)
   await p.keyboard.press('Escape'); await p.waitForTimeout(300)
   check((await p.locator('.end-card').count()) === 0 && (await p.evaluate(() => document.documentElement.dataset.mode)) === 'chaos', `${name}: Escape closes the card and stays in Chaos`)
   await p.screenshot({ path: `tests/out/redesign/work-${name}.png` })

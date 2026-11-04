@@ -13,7 +13,6 @@ import { Scheduler, type Tier } from './scheduler'
 import { caption } from './captions'
 import { subscribe } from '../bus'
 import Coffee from './Coffee'
-import MissionControl from './MissionControl'
 import Narrators from './Narrators'
 import WorkAwards from './WorkAwards'
 import { hitStop } from './juice'
@@ -22,7 +21,7 @@ import Ending from './Ending'
 import { isHelped } from './hintsStore'
 import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
 import { X } from 'lucide-react'
-import { angerBeep, fall, impact, sfx, startConstruction } from './sfx'
+import { angerBeep, fall, impact, isMuted, onMuteChange, sfx, startConstruction } from './sfx'
 import MuteButton from './MuteButton'
 import { useStore } from '../store'
 import Scout from '../Scout'
@@ -886,7 +885,6 @@ export default function Chaos() {
       )}
       {taunt && <span key={taunt.id} className={taunt.x > 220 ? 'x-taunt left' : 'x-taunt'} style={{ left: taunt.x + (taunt.x > 220 ? -12 : 60), top: taunt.y + 6 }} aria-hidden="true">{taunt.text}</span>}
       {on('coffee') && <Coffee lang={lang} fire={coffee} say={sayText} award={award} start={() => run('coffee', 'C', true)} end={() => sched.current?.end('coffee')} />}
-      <MissionControl lang={lang} found={ach} say={sayText} fire={fireWord} />
       <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} />
       <CornerMenu lang={lang} />
       <Narrators lang={lang} found={ach} say={sayText} award={award} />
@@ -993,12 +991,16 @@ export default function Chaos() {
 /** A 90 s clip that plays with sound and repeats until the visitor closes the popup. Falls back to muted if the browser blocks sound. */
 function LoopVideo({ className, name, label }: { className: string; name: string; label: string }) {
   const ref = useRef<HTMLVideoElement>(null)
+  // the speaker button controls the sound of these videos too: off by default, and it works while they play
   useEffect(() => {
     const v = ref.current
     if (!v) return
-    v.play().catch(() => { v.muted = true; void v.play().catch(() => {}) })
+    const apply = () => { v.muted = isMuted() }
+    apply()
+    void v.play().catch(() => { v.muted = true; void v.play().catch(() => {}) })
+    return onMuteChange(() => { apply(); if (v.paused) void v.play().catch(() => {}) })
   }, [])
-  return <video ref={ref} className={className} src={`${import.meta.env.BASE_URL}media/vid/${name}.mp4`} aria-label={label} autoPlay loop playsInline preload="auto" />
+  return <video ref={ref} className={className} src={`${import.meta.env.BASE_URL}media/vid/${name}.mp4`} aria-label={label} autoPlay loop muted playsInline preload="auto" />
 }
 
 /**

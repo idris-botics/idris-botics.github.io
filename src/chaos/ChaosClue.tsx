@@ -1,5 +1,5 @@
 import hints from '../content/jokes/hints.json'
-import { Morse } from './MissionControl'
+import { Morse } from './secrets'
 
 type L = { en: string; ja: string }
 const ui = hints.ui as unknown as Record<string, L>
