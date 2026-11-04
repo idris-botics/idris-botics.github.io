@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { IDLE_MS, MAX_EVENTS, REPEAT_MIN_MS, createActiveClock, newInterval, repeatDue } from './activeTime'
+import { IDLE_MS, MAX_EVENTS, REPEAT_MIN_MS, REPEAT_SPAN_MS, createActiveClock, newInterval, repeatDue } from './activeTime'
 
 describe('active-time clock (fake timers)', () => {
   beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(0) })
@@ -27,9 +27,9 @@ describe('active-time clock (fake timers)', () => {
     c.touch(); c.setFocused(false); vi.advanceTimersByTime(10_000); c.setFocused(true)
     expect(c.activeMs()).toBe(7000)
   })
-  it('a repeat event is due after 3 to 5 minutes of ACTIVE time, never while busy, and at most 4 per visit', () => {
+  it('a repeat event is due after 6 to 10 minutes of ACTIVE time, never while busy, and at most 6 per visit', () => {
     expect(newInterval(() => 0)).toBe(REPEAT_MIN_MS)
-    expect(newInterval(() => 1)).toBe(REPEAT_MIN_MS + 120_000)
+    expect(newInterval(() => 1)).toBe(REPEAT_MIN_MS + REPEAT_SPAN_MS)
     const st = { count: 1, lastAt: 0, interval: 200_000 }
     expect(repeatDue(st, 199_999, false)).toBe(false)
     expect(repeatDue(st, 200_000, false)).toBe(true)

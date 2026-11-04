@@ -1,11 +1,11 @@
 import { useSyncExternalStore } from 'react'
 
-// After a coffee run the pet robot is CAFFEINATED for about 90 seconds (each further run adds 90 s, capped at 5 minutes from now),
-// then it crashes for a few seconds and is itself again. The deadline is kept in sessionStorage, so a visit remembers it:
+// After a coffee run the pet robot is CAFFEINATED for about 30 seconds (each further run adds 30 s, capped at 90 s from now),
+// then the coffee wears off: it crashes for a few seconds and is itself again. The deadline is kept in sessionStorage, so a visit remembers it:
 // leaving Chaos and coming back, or typing coffee again, does not start the whole show from zero.
 export type CaffeineState = 'off' | 'wired' | 'crashed'
 const KEY = 'caffeine'
-export const WIRED_MS = 90_000, MAX_MS = 300_000, CRASH_MS = 14_000
+export const WIRED_MS = 30_000, MAX_MS = 90_000, CRASH_MS = 8_000
 
 type Saved = { until: number; runs: number }
 const load = (): Saved => { try { const s = JSON.parse(sessionStorage.getItem(KEY) ?? 'null') as Saved | null; if (s && typeof s.until === 'number' && typeof s.runs === 'number') return s } catch { /* ignore */ } return { until: 0, runs: 0 } }

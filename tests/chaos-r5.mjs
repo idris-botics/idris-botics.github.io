@@ -45,9 +45,13 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
   await type(p, 'cat'); await p.waitForTimeout(1200)
   const v = p.locator('.clip video')
   check(await v.isVisible(), '"cat" opens the cat video')
-  check(await v.evaluate((el) => el.controls && !el.muted && el.src.endsWith('/cat.mp4') || [...el.querySelectorAll('source')].some((s) => /cat\.mp4$/.test(s.src))), 'it has controls and is not muted')
+  check(await v.evaluate((el) => !el.muted && !el.controls && el.loop), 'it has sound on, loops, and has no controls (so no pause button or scrubber)')
+  check(await p.locator('.clip-mute').isVisible(), 'only a mute button is offered')
+  await v.evaluate((el) => el.pause()); await p.waitForTimeout(400)
+  check(await v.evaluate((el) => !el.paused), 'pausing it does nothing: it plays on')
   const dur = await v.evaluate((el) => el.duration)
   check(dur > 58 && dur < 60, `it is the full clip (${dur?.toFixed(1)} s)`)
+  await p.locator('.clip-mute').click(); check(await v.evaluate((el) => el.muted), 'the mute button mutes it'); await p.locator('.clip-mute').click()
   await p.keyboard.press('Escape'); await p.waitForTimeout(300)
   check((await p.locator('.clip').count()) === 1, 'Escape does not close it during the first 60 s')
   const x = p.locator('.clip-x'); const b0 = await x.boundingBox()
@@ -94,24 +98,33 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
     await p.evaluate(() => { document.querySelectorAll('.cookie .btn, .rick-x, .cena-x').forEach((e) => e.click()) })
     await p.keyboard.press('Escape'); await p.waitForTimeout(3200)
   }
-  check(fired <= 4, `at most 4 events in one visit (${fired} fired)`)
+  check(fired <= 6, `at most 6 events in one visit (${fired} fired)`)
   await ctx.close()
 }
 
 // --- caffeinated: wired, then crashes with "I have regrets"-style line, then back to normal
 {
   const until = 5000
-  const { ctx, p, errs } = await open(() => { try { sessionStorage.setItem('rolled', '1'); sessionStorage.setItem('cena', '1'); sessionStorage.setItem('cookie', '1'); sessionStorage.setItem('caffeine', JSON.stringify({ until: Date.now() + 15000, runs: 1 })) } catch { /* ignore */ } })
+  const { ctx, p, errs } = await open(() => { try { sessionStorage.setItem('rolled', '1'); sessionStorage.setItem('cena', '1'); sessionStorage.setItem('cookie', '1'); sessionStorage.setItem('caffeine', JSON.stringify({ until: Date.now() + 9000, runs: 1 })) } catch { /* ignore */ } })
   void until
   check(await p.evaluate(() => document.querySelector('.scout-dock')?.classList.contains('wired')), 'after a coffee run the pet robot is caffeinated (wired)')
   check((await p.locator('.scout-dock .spiral').count()) === 2, 'with wide spiral eyes')
-  await p.waitForTimeout(2600)
+  // it buzzes around the screen, bounces at the edges, and the speech bubble travels with it
+  const samples = []
+  for (let i = 0; i < 10; i++) { await p.waitForTimeout(400); samples.push(await p.evaluate(() => { const d = document.querySelector('.scout-dock')?.getBoundingClientRect(), t = document.querySelector('.toast')?.getBoundingClientRect(); return { d: d && [d.left, d.top, d.right, d.bottom], t: t && [t.left, t.top, t.right, t.bottom], w: innerWidth, h: innerHeight } })) }
+  const xs = samples.map((s) => s.d[0]), ys = samples.map((s) => s.d[1])
+  check(Math.max(...xs) - Math.min(...xs) > 120 && Math.max(...ys) - Math.min(...ys) > 80, 'the pet robot buzzes around the screen in both directions')
+  check(samples.every((s) => s.d[0] >= -2 && s.d[1] >= -2 && s.d[2] <= s.w + 2 && s.d[3] <= s.h + 2), 'and never leaves the window (it bounces)')
+  const withBubble = samples.filter((s) => s.t)
+  check(withBubble.length > 0 && withBubble.every((s) => s.t[0] >= 0 && s.t[1] >= 0 && s.t[2] <= s.w && s.t[3] <= s.h), 'the speech bubble stays inside the window while the robot buzzes')
+  check(withBubble.some((s) => Math.hypot((s.t[0] + s.t[2]) / 2 - (s.d[0] + s.d[2]) / 2, (s.t[1] + s.t[3]) / 2 - (s.d[1] + s.d[3]) / 2) < 320), 'and the bubble follows the robot')
+  await p.waitForTimeout(600)
   const line = await p.locator('.toast').first().innerText().catch(() => '')
   check(line.length > 10, `and talks: "${line.slice(0, 50)}"`)
   await p.waitForSelector('.scout-dock.crashed', { timeout: 20000 })
   check(true, 'when it wears off it crashes')
   await p.waitForTimeout(1500)
-  check(/regrets|beans|heavy|mistake/i.test(await p.locator('.toast').first().innerText().catch(() => '')), 'with a crash line')
+  check(/coffee wore off/i.test(await p.locator('.toast').first().innerText().catch(() => '')), 'with an "oh, the coffee wore off" line')
   await p.waitForFunction(() => !document.querySelector('.scout-dock.crashed, .scout-dock.wired'), null, { timeout: 20000 })
   check(true, 'then it is itself again')
   check(errs.length === 0, 'no page errors ' + errs.join('|'))

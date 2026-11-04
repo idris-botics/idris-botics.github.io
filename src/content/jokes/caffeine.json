@@ -76,20 +76,20 @@
   ],
   "crash": [
     {
-      "en": "I have regrets.",
-      "ja": "後悔しています。"
+      "en": "Oh. The coffee wore off. I have regrets.",
+      "ja": "あ。コーヒーの効果が切れました。後悔しています。"
     },
     {
-      "en": "Wake me when the beans are back.",
-      "ja": "豆が戻ってきたら起こしてください。"
+      "en": "Oh no. The coffee wore off. Wake me when the beans are back.",
+      "ja": "あれ。コーヒーが切れました。豆が戻ってきたら起こしてください。"
     },
     {
-      "en": "Everything is heavy. Even my antenna.",
-      "ja": "全部が重い。アンテナまで。"
+      "en": "Oh... the coffee wore off. Everything is heavy. Even my antenna.",
+      "ja": "あぁ……コーヒーが切れました。全部が重い。アンテナまで。"
     },
     {
-      "en": "That was a mistake. A delicious one.",
-      "ja": "あれは間違いでした。おいしい間違いでした。"
+      "en": "Oh. The coffee wore off. That was a mistake. A delicious one.",
+      "ja": "あ。コーヒーが切れました。あれは間違いでした。おいしい間違いでした。"
     }
   ]
 }

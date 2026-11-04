@@ -30,6 +30,7 @@ import { breakName, isBroken, reassembleName } from './nameBreak'
 import { MAX_EVENTS, newInterval, repeatDue, watchPage, type ActiveClock } from './activeTime'
 import Scout from '../Scout'
 import Conjure from './Conjure'
+import Clip from './Clip'
 import CommandBox from './CommandBox'
 import { ACH_NAMES, ACH_TOTAL } from './secretsRegistry'
 
@@ -171,6 +172,7 @@ export default function Chaos() {
   const bubbleTimer = useRef(0)
   const setEvicted = useStore((s) => s.setEvicted)
   const [omae, setOmae] = useState(0)
+  const [omaeClip, setOmaeClip] = useState(false)
   const [coffee, setCoffee] = useState({ n: 0 }) // each "coffee" typed (or run from the command box) bumps n
   const [cena, setCena] = useState(0)
   const [pileStage, setPileStage] = useState(0)
@@ -267,14 +269,51 @@ export default function Chaos() {
     return text ? sayText(text, ms) : false
   }, [sayText])
 
-  // caffeinated: the pet robot talks about every 8 to 13 s, in its own voice; when it wears off it crashes with a sigh
+  // caffeinated: the pet robot buzzes around the whole screen and bounces off the edges, and its speech bubble travels with it (kept inside the screen)
+  useEffect(() => {
+    const d = dock.current
+    if (caf !== 'wired' || !d || reduced()) return
+    let x = 0, y = 0, tx = 0, ty = 0, raf = 0, last = 0, lastToast: Element | null = null
+    const sp = 230 + Math.random() * 110, a = (Math.PI / 6 + Math.random() * (Math.PI / 6)) + Math.floor(Math.random() * 4) * (Math.PI / 2) // always diagonal, so it covers the whole screen
+    let vx = Math.cos(a) * sp, vy = Math.sin(a) * sp
+    const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v))
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - (last || now)) / 1000); last = now
+      const w = d.offsetWidth, h = d.offsetHeight, r = d.getBoundingClientRect()
+      const homeL = r.left - x, homeT = r.top - y
+      const minX = 8 - homeL, maxX = innerWidth - 8 - w - homeL, minY = 8 - homeT, maxY = innerHeight - 8 - h - homeT
+      x += vx * dt; y += vy * dt
+      if (x < minX) { x = minX; vx = Math.abs(vx) } else if (x > maxX) { x = maxX; vx = -Math.abs(vx) }
+      if (y < minY) { y = minY; vy = Math.abs(vy) } else if (y > maxY) { y = maxY; vy = -Math.abs(vy) }
+      if (Math.random() < dt * 1.5) { vx += (Math.random() - 0.5) * 180; vy += (Math.random() - 0.5) * 180; const m = Math.hypot(vx, vy) || 1, k = clamp(m, 200, 380) / m; vx *= k; vy *= k }
+      d.style.translate = `${x}px ${y}px`
+      const t = document.querySelector<HTMLElement>('.toast')
+      if (t) {
+        if (t !== lastToast) { tx = 0; ty = 0; lastToast = t }
+        const br = t.getBoundingClientRect(), nl = br.left - tx, nt = br.top - ty
+        tx = clamp(x, 8 - nl, innerWidth - 8 - br.width - nl); ty = clamp(y, 8 - nt, innerHeight - 8 - br.height - nt)
+        t.style.translate = `${tx}px ${ty}px`
+      }
+      raf = requestAnimationFrame(frame)
+    }
+    raf = requestAnimationFrame(frame)
+    return () => {
+      cancelAnimationFrame(raf)
+      // home again: the robot glides back to its corner
+      d.style.transition = 'translate .9s ease-out'; d.style.translate = '0 0'
+      window.setTimeout(() => { d.style.transition = ''; d.style.translate = '' }, 1000)
+      const t = document.querySelector<HTMLElement>('.toast'); if (t) { t.style.transition = 'translate .9s ease-out'; t.style.translate = '0 0' }
+    }
+  }, [caf])
+
+  // caffeinated: the pet robot talks every 5 to 8 s, in its own voice; when it wears off it says so and crashes with a sigh
   useEffect(() => {
     if (caf === 'off') return
     let t = 0, last = -1
     const pick = (pool: { en: string; ja: string }[]) => { let i = Math.floor(Math.random() * pool.length); if (i === last) i = (i + 1) % pool.length; last = i; return pool[i][langRef.current] }
     if (caf === 'crashed') { t = window.setTimeout(() => { sayText(pick(cafLines.crash), 6000) }, 400); return () => clearTimeout(t) }
-    const loop = (ms: number) => { t = window.setTimeout(() => { if (!document.hidden) sayText(pick(cafLines.wired), 5200); loop(8000 + Math.random() * 5000) }, ms) }
-    loop(1800)
+    const loop = (ms: number) => { t = window.setTimeout(() => { if (!document.hidden) sayText(pick(cafLines.wired), 3800); loop(4500 + Math.random() * 3000) }, ms) }
+    loop(1200)
     return () => clearTimeout(t)
   }, [caf, sayText])
 
@@ -439,8 +478,8 @@ export default function Chaos() {
   }, [])
 
   // Random events can come back if the visitor stays: the cookie, the Rick roll and the John Cena jumpscare. Only ACTIVE time counts
-  // (tab visible, window focused, input in the last 20 s). A repeat comes 3 to 5 minutes after the last event, never while a project window,
-  // a video or another event is open, at most 4 events a visit, and each repeat has different lines.
+  // (tab visible, window focused, input in the last 20 s). A repeat comes 6 to 10 minutes after the last event, never while a project window,
+  // a video or another event is open, at most 4 events a visit, and each repeat has different lines. The first Rick roll and Cena are likely; the repeats are rarer (weighted 1 to 6 against the cookie).
   const events = useRef({ count: 0, lastAt: 0, interval: newInterval(), last: '' })
   const clockRef = useRef<ActiveClock | null>(null)
   const noteEvent = useCallback(() => { events.current.count++; events.current.lastAt = clockRef.current?.activeMs() ?? 0; events.current.interval = newInterval() }, [])
@@ -469,7 +508,11 @@ export default function Chaos() {
       const ev = events.current
       if (busy() || ev.count >= MAX_EVENTS) return
       const kinds = ['cookie', 'rick', 'cena'].filter((k) => k !== ev.last)
-      const kind = force && kinds.includes(force) ? force : kinds[Math.floor(Math.random() * kinds.length)]
+      // the cookie is the gentle one; the Rick roll and the Cena jumpscare come up much less often
+      const weights: Record<string, number> = { cookie: 6, rick: 1, cena: 1 }
+      let roll = Math.random() * kinds.reduce((n, k) => n + weights[k], 0)
+      const picked = kinds.find((k) => (roll -= weights[k]) < 0) ?? kinds[0]
+      const kind = force && kinds.includes(force) ? force : picked
       const variant = ev.count
       ev.last = kind
       noteEvent()
@@ -560,7 +603,7 @@ export default function Chaos() {
   useEffect(() => {
     if (!on('rickRoll')) return
     try { if (sessionStorage.getItem('rolled')) return } catch { /* ignore */ }
-    const goal = 1500 + Math.random() * 2700 // everyone gets it, after a random amount of scrolling
+    const goal = 2000 + Math.random() * 3000 // nearly everyone gets it the first time, after a random amount of scrolling
     let travelled = 0, last = scrollY, done = false
     const onScroll = () => {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return } // the page falling is not reading
@@ -606,13 +649,15 @@ export default function Chaos() {
   useEffect(() => {
     if (!on('cena')) return
     try { if (sessionStorage.getItem('cena')) return } catch { /* ignore */ }
-    if (Math.random() > 0.9) return
-    const goal = 3500 + Math.random() * 4500
+    if (Math.random() > 0.9) return // most visitors get it the first time
+    const goal = 4500 + Math.random() * 4500
     let travelled = 0, last = scrollY, done = false
     const onScroll = () => {
       if (document.documentElement.classList.contains('all-visible')) { last = scrollY; return }
       travelled += Math.abs(scrollY - last); last = scrollY
-      if (done || travelled < goal * pageScale() || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae')) return
+      if (done || travelled < goal * pageScale() || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae, .clip')) return
+      // never right after another event (the Rick roll): wait until a little active time has passed since it
+      if (events.current.count > 0 && (clockRef.current?.activeMs() ?? 0) - events.current.lastAt < 75_000) return
       if (!run('cena', 'C', true)) return
       done = true
       noteEvent()
@@ -645,6 +690,8 @@ export default function Chaos() {
       buf = ''
       showing = true
       award('omae')
+      // the video (a clip Idris chose to host) plays on a loop; with clips switched off, the old text and sting stand in
+      if (HOST_THIRD_PARTY_CLIPS) { setOmaeClip(true); showing = false; return }
       setOmae(1); sfx('sting')
       setTimeout(() => { setOmae(2); sfx('nani') }, 1700)
       setTimeout(() => { setOmae(0); showing = false }, 4200)
@@ -967,6 +1014,7 @@ export default function Chaos() {
       <Narrators lang={lang} found={ach} say={sayText} award={award} />
       <WorkAwards award={award} />
       <Ending lang={lang} found={ach} award={award} />
+      {omaeClip && <Clip name="omae" closeAfter={20_000} lang={lang} label={lang === 'en' ? 'You are already dead' : 'お前はもう死んでいる'} onClose={() => setOmaeClip(false)} />}
       {omae > 0 && (
         <div className="omae" role="status" aria-label={lang === 'en' ? 'You are already dead. What?!' : 'お前はもう死んでいる。なに？！'}>
           <div className="omae-bar" aria-hidden="true" />

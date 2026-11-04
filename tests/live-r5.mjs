@@ -25,6 +25,7 @@ for (const slug of ['vehicles', 'robosoccer']) {
 // the arena: Calm connects first try and arrows drive without navigating away
 await p.goto(U + '#work/vehicles', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(1500)
 await p.locator('.sim-poster').click(); await p.waitForTimeout(1500)
+await p.locator('.sim canvas').first().evaluate((el) => el.scrollIntoView({ block: 'center' })); await p.waitForTimeout(800)
 await p.getByRole('button', { name: /Connect Bluetooth/ }).dispatchEvent('click')
 await p.getByText(/Connected to HC-05/).first().waitFor({ timeout: 4000 }); ok(true, 'Calm Bluetooth connects first try')
 await p.keyboard.down('ArrowRight'); await p.waitForTimeout(500)

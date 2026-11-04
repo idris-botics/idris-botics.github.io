@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import Clip from './Clip'
+import { fanfare } from './sfx'
 
 type L = { en: string; ja: string }
 type Props = {
@@ -48,6 +49,7 @@ export default function Conjure({ lang, say, award }: Props) {
     setSummon(true)
     live.current.award('idris')
     dispatchEvent(new Event('portfolio:bow'))
+    fanfare()
     window.setTimeout(() => live.current.say(pickLine()[live.current.lang], 6500), 500)
   }, [])
   const openCat = useCallback(() => {
@@ -79,8 +81,8 @@ export default function Conjure({ lang, say, award }: Props) {
   }, [summon])
 
   const base = import.meta.env.BASE_URL
-  const confetti = useRef(Array.from({ length: 56 }, (_, i) => ({ x: (i * 53) % 100, d: 2.2 + ((i * 7) % 18) / 10, dl: ((i * 11) % 14) / 10, c: ['#ee6a4c', '#f2b441', '#9ed9cb', '#afcbea', '#fff8ea'][i % 5], r: (i * 47) % 360 }))).current
-  const bursts = [{ x: 18, y: 26 }, { x: 80, y: 20 }, { x: 50, y: 12 }, { x: 12, y: 62 }, { x: 88, y: 58 }]
+  const confetti = useRef(Array.from({ length: 150 }, (_, i) => ({ x: (i * 53) % 100, d: 2.2 + ((i * 7) % 18) / 10, dl: ((i * 11) % 30) / 10, c: ['#ee6a4c', '#f2b441', '#9ed9cb', '#afcbea', '#fff8ea'][i % 5], r: (i * 47) % 360 }))).current
+  const bursts = [{ x: 18, y: 26 }, { x: 80, y: 20 }, { x: 50, y: 12 }, { x: 12, y: 62 }, { x: 88, y: 58 }, { x: 30, y: 44 }, { x: 70, y: 40 }, { x: 8, y: 14 }, { x: 92, y: 12 }, { x: 50, y: 78 }]
   const label = lang === 'en' ? 'The supreme one' : '至高の存在'
 
   return (
@@ -89,14 +91,17 @@ export default function Conjure({ lang, say, award }: Props) {
         <div className="summon" role="dialog" aria-modal="true" aria-label={label} onClick={() => setSummon(false)}>
           {!reduced() && (
             <div className="summon-fx" aria-hidden="true">
+              <div className="rays" />
+              {Array.from({ length: 14 }, (_, i) => <i key={`s${i}`} className="streamer" style={{ left: `${(i * 7.3) % 100}%`, animationDelay: `${(i % 7) * 0.25}s`, background: ['#ee6a4c', '#f2b441', '#9ed9cb', '#afcbea'][i % 4] }} />)}
               {confetti.map((c, i) => <i key={i} className="confetti" style={{ left: `${c.x}%`, background: c.c, animationDuration: `${c.d}s`, animationDelay: `${c.dl}s`, ['--r' as string]: `${c.r}deg` }} />)}
               {bursts.map((b, i) => (
-                <span key={i} className="firework" style={{ left: `${b.x}%`, top: `${b.y}%`, animationDelay: `${0.3 + i * 0.35}s` }}>
-                  {Array.from({ length: 12 }, (_, j) => <b key={j} style={{ ['--a' as string]: `${j * 30}deg`, background: ['#ee6a4c', '#f2b441', '#afcbea'][(i + j) % 3] }} />)}
+                <span key={i} className="firework" style={{ left: `${b.x}%`, top: `${b.y}%`, animationDelay: `${0.3 + i * 0.33}s` }}>
+                  {Array.from({ length: 18 }, (_, j) => <b key={j} style={{ ['--a' as string]: `${j * 20}deg`, background: ['#ee6a4c', '#f2b441', '#afcbea'][(i + j) % 3] }} />)}
                 </span>
               ))}
             </div>
           )}
+          <p className="tada" aria-hidden="true">{lang === 'en' ? 'TA-DA!' : 'じゃじゃーん！'}</p>
           <figure className="royal">
             <div className="royal-frame">
               <picture>
@@ -113,8 +118,8 @@ export default function Conjure({ lang, say, award }: Props) {
       )}
       {cat && (
         <Clip
-          name="cat" lang={lang} label={lang === 'en' ? 'A cat video' : '猫の動画'} plays={2} runaway={60_000}
-          taunt={(n) => { if (n % 3 === 1) live.current.say(CAT_TAUNTS[Math.floor(n / 3) % CAT_TAUNTS.length][live.current.lang], 2500) }}
+          name="cat" lang={lang} label={lang === 'en' ? 'A cat video' : '猫の動画'} runaway={60_000}
+          taunts={CAT_TAUNTS}
           onClose={() => setCat(false)}
         />
       )}

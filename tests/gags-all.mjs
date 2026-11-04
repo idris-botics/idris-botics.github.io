@@ -123,9 +123,13 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   }
   for (let n = 1; n <= 3; n++) {
     await p.keyboard.type('omae'); await sleep(1200)
-    out((await p.locator('.omae').count()) === 1, `typing omae shows the verdict (time ${n})`)
-    await sleep(3600)
-    out((await p.locator('.omae').count()) === 0, `the omae screen goes away by itself (time ${n})`)
+    out((await p.locator('.clip video').count()) === 1, `typing omae plays the verdict video (time ${n})`)
+    out((await p.locator('.clip-x').count()) === 0, `no close button for the first 20 s (time ${n})`)
+    await p.keyboard.press('Escape'); await sleep(300)
+    out((await p.locator('.clip').count()) === 1, `Escape does nothing in the first 20 s (time ${n})`)
+    await p.evaluate(() => { performance.now = ((o) => () => o() + 21000)(performance.now.bind(performance)) })
+    await p.keyboard.press('Escape'); await sleep(500)
+    out((await p.locator('.clip').count()) === 0, `after 20 s Escape closes the omae video (time ${n})`)
   }
   for (let n = 1; n <= 2; n++) {
     await p.keyboard.type('cookie'); await sleep(500)

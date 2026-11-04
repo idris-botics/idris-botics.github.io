@@ -15,13 +15,14 @@ await p.waitForTimeout(2200)
 
 // omae
 await p.keyboard.type('omae')
-await p.waitForSelector('.omae-line', { timeout: 2000 }).catch(() => {})
-check('omae line', (await p.locator('.omae-line').count()) === 1)
-await p.waitForSelector('.omae-nani', { timeout: 3000 }).catch(() => {})
-check('nani', (await p.locator('.omae-nani').count()) === 1)
+await p.waitForSelector('.clip video', { timeout: 3000 }).catch(() => {})
+check('omae plays its video, looping, with only a mute button', (await p.locator('.clip video').evaluate((v) => v.loop && !v.controls).catch(() => false)) && (await p.locator('.clip-mute').count()) === 1)
+check('and the hint button is hidden while it plays', !(await p.locator('.hb-btn').isVisible()))
 await p.screenshot({ path: 'tests/out/omae.png' })
-await p.waitForTimeout(2800)
-check('omae gone', (await p.locator('.omae').count()) === 0)
+check('the omae video has no close button for the first 20 s', (await p.locator('.clip-x').count()) === 0)
+await p.evaluate(() => { performance.now = ((o) => () => o() + 21000)(performance.now.bind(performance)) })
+await p.keyboard.press('Escape'); await p.waitForTimeout(400)
+check('omae gone', (await p.locator('.clip').count()) === 0)
 
 // shatter
 const para = p.locator('.about-p').first()

@@ -263,3 +263,33 @@ export function talk(text: string, wordMs = 280) {
     tone(c, 'square', f, f * (i % 2 ? 1.25 : 0.82), 0.07, 0.3, i * gap)
   })
 }
+
+/**
+ * A royal fanfare for the "idris" secret (about 7 seconds, only when sound is on): drum roll, a brass call, a rising victory run with chords,
+ * a cymbal crash, a bouncy little tune and sparkle chimes. Everything is synthesised, no audio file.
+ */
+export function fanfare() {
+  const c = ac()
+  if (!c) return
+  const N = (n: number) => 440 * Math.pow(2, (n - 9) / 12) // semitones above middle C
+  const brass = (n: number, at: number, dur: number, peak = 0.7) => { for (const d of [0, 7, 12]) tone(c, 'sawtooth', N(n + d), N(n + d), dur, peak * (d ? 0.5 : 1), at) }
+  // 1. a timpani roll
+  for (let i = 0; i < 12; i++) tone(c, 'sine', 120, 70, 0.14, 0.5 + i * 0.03, i * 0.075)
+  // 2. the call: G C E G, then a held C chord with a crash
+  const call: [number, number, number][] = [[-5, 0.95, 0.16], [0, 1.1, 0.16], [4, 1.25, 0.16], [7, 1.4, 0.7]]
+  for (const [n, at, d] of call) brass(n, at, d)
+  for (const n of [0, 4, 7, 12]) tone(c, 'square', N(n + 12), N(n + 12), 1.3, 0.35, 1.4)
+  noise(c, 1.6, 9000, 2500, 0.8, 1.4, 'highpass')
+  tone(c, 'sine', 110, 40, 0.5, 1, 1.4)
+  // 3. a rising victory run
+  ;[0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19].forEach((n, i) => tone(c, 'square', N(n + 12), N(n + 12), 0.12, 0.4, 3.0 + i * 0.085))
+  // 4. a bouncy tune over a bass line
+  const tune = [12, 16, 19, 16, 17, 14, 17, 14, 12, 16, 19, 24]
+  tune.forEach((n, i) => { tone(c, 'triangle', N(n + 12), N(n + 12), 0.2, 0.7, 4.1 + i * 0.22); if (i % 2 === 0) tone(c, 'sawtooth', N(n - 12), N(n - 12), 0.2, 0.3, 4.1 + i * 0.22) })
+  for (let i = 0; i < 6; i++) { tone(c, 'sine', 100, 55, 0.18, 0.7, 4.1 + i * 0.44) }
+  // 5. the last chord
+  brass(0, 6.8, 1.0, 0.8); brass(12, 6.8, 1.0, 0.5)
+  noise(c, 1.2, 8000, 3000, 0.6, 6.8, 'highpass')
+  // 6. sparkle chimes all the way through
+  for (let i = 0; i < 26; i++) tone(c, 'triangle', N(24 + [0, 4, 7, 12][i % 4] + (i % 8 > 4 ? 12 : 0)), N(24 + [0, 4, 7, 12][i % 4]), 0.35, 0.18, 1.4 + i * 0.22)
+}

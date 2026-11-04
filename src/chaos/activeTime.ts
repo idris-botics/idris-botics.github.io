@@ -1,8 +1,8 @@
 // "Active time": how long the visitor has really been here. It only counts while the tab is visible, the window has focus,
 // and there has been some input (mouse, touch, key, scroll) in the last IDLE_MS. Used to space out repeat events.
 export const IDLE_MS = 20_000
-export const REPEAT_MIN_MS = 180_000, REPEAT_SPAN_MS = 120_000 // a repeat comes 3 to 5 minutes of active time after the last event
-export const MAX_EVENTS = 4
+export const REPEAT_MIN_MS = 360_000, REPEAT_SPAN_MS = 240_000 // a repeat comes 6 to 10 minutes of active time after the last event
+export const MAX_EVENTS = 6
 
 export type ActiveClock = {
   /** Active milliseconds so far. */
