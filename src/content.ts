@@ -22,11 +22,11 @@ export const statusLabel: Record<Status, L> = {
 export const hero = {
   name: 'Idris Sadiq',
   line: {
-    en: 'I build robots from circuit to code. I want one in space.',
-    ja: '回路からコードまで、ロボットを自分で作っています。いつか宇宙で動くロボットを作りたいです。',
+    en: 'I build robots from circuit to code, with outer space in mind.',
+    ja: '回路からコードまで、ロボットを作っています。いつか宇宙で活躍するロボットを夢見ています。',
   },
   sub: {
-    en: 'Final-year B.E. student, SRM Easwari Engineering College, Chennai.',
+    en: 'Final-year B.E. EEE student, SRM Easwari Engineering College, Chennai.',
     ja: 'SRM Easwari 工科大学（チェンナイ）電気電子工学科 学部4年。',
   },
 }
