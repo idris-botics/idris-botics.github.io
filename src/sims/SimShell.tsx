@@ -108,7 +108,7 @@ export default function SimShell(p: Props) {
   void reduced
   return (
     <div className="sim-slot" style={full ? { minHeight: slotH.current } : undefined}>
-    <figure ref={host} className={full ? 'sim sim-full' : 'sim'} aria-labelledby={id + 't'} aria-describedby={id + 'd'} role={full ? 'dialog' : undefined} aria-modal={full || undefined}>
+    <figure ref={host} onPointerDownCapture={() => setScrolled(true)} onKeyDownCapture={() => setScrolled(true)} className={full ? 'sim sim-full' : 'sim'} aria-labelledby={id + 't'} aria-describedby={id + 'd'} role={full ? 'dialog' : undefined} aria-modal={full || undefined}>
       <div className="sim-head">
         <figcaption id={id + 't'} className="sim-title">{t(p.title)}</figcaption>
         <button className="btn sim-enlarge" onClick={toggleFull} aria-expanded={full} >

@@ -12,7 +12,7 @@ async function open(p) {
   await p.goto(url + '#work/vehicles', { waitUntil: 'networkidle' })
   await p.locator('.sim-poster').click()
   await p.locator('.sim canvas').first().evaluate((el) => el.scrollIntoView({ block: 'center' }))
-  await p.mouse.wheel(0, 60); await p.waitForTimeout(1200)
+  await p.waitForTimeout(1200) // no scrolling first: pressing Connect is what starts the sim
 }
 const speed = (p) => p.evaluate(() => /speed (\d+)/.exec(document.querySelector('.sim')?.textContent ?? '')?.[1] ?? null)
 const nowText = (p) => p.locator('.sim [role=status]', { hasText: /Now:/ }).first().innerText()
