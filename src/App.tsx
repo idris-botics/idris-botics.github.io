@@ -220,8 +220,8 @@ export default function App() {
 
         <section id="about" className="sec" aria-labelledby="ab">
           <div className="wrap about-grid">
+            <h2 id="ab">{t(ui.about)}</h2>
             <div>
-              <h2 id="ab">{t(ui.about)}</h2>
               <div className="surface">
                 {aboutText.map((p, i) => <Reveal key={i} delay={i * 50}><p className="about-p">{t(p)}</p></Reveal>)}
               </div>

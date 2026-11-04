@@ -414,7 +414,7 @@ p, li, figcaption { text-wrap: pretty; }
 /* hero */
 .hero { padding: 56px 0 32px; }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 40px; align-items: center; }
-.hero h1 { font-size: clamp(2.6rem, 8vw, 4.6rem); margin: 0 0 16px; letter-spacing: -0.01em; }
+.hero h1 { font-size: clamp(2.2rem, 6vw, 3.4rem); margin: 0 0 16px; letter-spacing: -0.01em; }
 .ltr { display: inline-block; animation: ltr-in 360ms var(--ease-out) both; }
 @keyframes ltr-in { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: blur(0); } }
 .hero-line { font-size: clamp(1.15rem, 2.6vw, 1.5rem); line-height: 1.4; max-width: 28ch; margin: 0 0 14px; }
@@ -799,7 +799,7 @@ canvas.scene-chaos { position: absolute; inset: 0; width: 100%; height: 100%; po
 body { font-size: 19px; font-weight: 500; line-height: 1.7; color: var(--ink); }
 @media (max-width: 700px) { body { font-size: 18px; } }
 h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
-.hero-line { font-size: clamp(1.3rem, 2.9vw, 1.7rem); }
+.hero-line { font-size: clamp(1.1rem, 2.2vw, 1.4rem); }
 .pw-lead { font-size: 1.22rem; }
 .page-title { font-size: clamp(1.8rem, 4.8vw, 2.5rem); }
 .hero-sub, .facts li, .certs-body ul, .photo-strip p, .also, .tools, .one-more p, .peek p, .media figcaption, .gallery figcaption, .quiet, .pw-credit, .muted, .tile-text span, .mini span { color: var(--ink); }
@@ -815,7 +815,7 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 .surface { background: var(--card); border: 2px solid rgba(38, 34, 31, .32); border-radius: 16px; padding: clamp(16px, 2.4vw, 28px); }
 .hero-text.surface { padding: clamp(18px, 3vw, 34px); }
 .hero-text.surface .hero-actions { margin-top: 4px; }
-.facts.surface { border-left: 2px solid rgba(38, 34, 31, .32); margin: 8px 0 0; display: grid; gap: 10px; }
+.facts.surface { border-left: 2px solid rgba(38, 34, 31, .32); margin: 0; display: grid; gap: 10px; }
 .facts .nb { white-space: nowrap; }
 .facts li { font-size: 1rem; line-height: 1.5; }
 .certs.surface { padding: 4px 20px; }
@@ -848,3 +848,7 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 .interest .btn { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .award-more summary::before { transition: none; } }
 @media (max-width: 380px) { .contact-row { grid-template-columns: 1fr; } .contact-row .btn, .interest .btn { white-space: normal; overflow-wrap: anywhere; min-width: 0; } }
+.about-grid > h2 { grid-column: 1 / -1; margin: 0 0 -24px; }
+@media (max-width: 800px) { .about-grid > h2 { margin-bottom: -8px; } }
+.facts.surface { margin-top: 4px; }
+.hero-line { text-wrap: balance; }

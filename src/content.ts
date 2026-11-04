@@ -22,8 +22,8 @@ export const statusLabel: Record<Status, L> = {
 export const hero = {
   name: 'Idris Sadiq',
   line: {
-    en: 'I build robots end to end. I want to build them for space.',
-    ja: 'ロボットを最初から最後まで自分で作っています。いつか宇宙で使われるロボットを作りたいです。',
+    en: 'I build robots from circuit to code. I want one in space.',
+    ja: '回路からコードまで、ロボットを自分で作っています。いつか宇宙で動くロボットを作りたいです。',
   },
   sub: {
     en: 'Final-year B.E. student, SRM Easwari Engineering College, Chennai.',
