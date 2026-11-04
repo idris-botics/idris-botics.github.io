@@ -100,7 +100,6 @@ const ui = {
     en: 'I also built a second version of this site, just for fun. It has a physics engine, a synthesizer and secrets. It took longer than some of my robots.',
     ja: 'このサイトの別バージョンも、遊びで作りました。物理エンジン、シンセサイザー、隠し要素があります。ロボットのいくつかより時間がかかりました。',
   },
-  peekShows: { en: 'Physics simulation · sound synthesis · state machines · accessibility · Japanese localisation', ja: '物理シミュレーション · 音の合成 · 状態機械 · アクセシビリティ · 日本語対応' },
   peekAlt: { en: 'A still from Chaos mode: the same portfolio with a bright cartoon skin.', ja: 'カオスモードの一場面：同じポートフォリオに明るいマンガ調の見た目をつけたもの。' },
   footer: { en: 'Designed and built by Idris Sadiq, with help from a few AI tools, and mostly powered by coffee.', ja: '設計と制作はIdris Sadiq。いくつかのAIツールの助けを借り、動力はほとんどコーヒーです。' },
   lite: { en: 'Lite mode: simulations start paused.', ja: '軽量モード：シミュレーションは停止状態で始まります。' },
@@ -300,7 +299,6 @@ export default function App() {
             <div>
               <h2 id="om">{t(ui.peekTitle)}</h2>
               <p>{t(ui.peekBody)}</p>
-              <p className="peek-shows">{t(ui.peekShows)}</p>
               <button className="btn" onClick={openGate} onMouseEnter={warm} onFocus={warm}>{t(ui.chaosOn)}</button>
             </div>
           </div>

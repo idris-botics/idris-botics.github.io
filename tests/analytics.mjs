@@ -1,0 +1,11 @@
+import { chromium } from '@playwright/test'
+const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+const reqs = []; p.on('request', (r) => { if (r.url().includes('googletagmanager')) reqs.push(r.url()) })
+await p.route('**/googletagmanager.com/**', (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }))
+await p.goto('http://localhost:4180/', { waitUntil: 'load' }); await p.waitForTimeout(1500)
+await p.evaluate(() => { location.hash = '#work/robodog' }); await p.waitForTimeout(500)
+await p.evaluate(() => { document.body.insertAdjacentHTML('beforeend', '<a id="t" href="https://github.com/x">g</a>'); const a = document.getElementById('t'); a.addEventListener('click', (e) => e.preventDefault()); a.click() })
+const dl = await p.evaluate(() => (window.dataLayer || []).map((a) => Array.from(a).slice(0, 3)).map((a) => JSON.stringify(a)))
+console.log(dl.filter((x) => /page_view|outbound|section_view|config/.test(x)).join('\n'))
+console.log('gtag script requested:', reqs.length > 0)
+await b.close()

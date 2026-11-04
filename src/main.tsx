@@ -7,6 +7,8 @@ import '@fontsource/ibm-plex-mono/latin-400.css'
 import '@fontsource-variable/space-grotesk'
 import './index.css'
 import App from './App'
+import { initAnalytics } from './analytics'
 
 document.documentElement.dataset.mode = 'calm'
 createRoot(document.getElementById('root')!).render(<StrictMode><App /></StrictMode>)
+initAnalytics()

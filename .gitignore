@@ -22,3 +22,6 @@ docs/audits/
 docs/*GUIDE*.md
 docs/archive/
 .claude/skills/
+.env
+.env.local
+.env.*.local

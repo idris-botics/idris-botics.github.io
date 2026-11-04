@@ -22,8 +22,8 @@ export const statusLabel: Record<Status, L> = {
 export const hero = {
   name: 'Idris Sadiq',
   line: {
-    en: 'I build robots from circuit to code, with outer space in mind.',
-    ja: '回路からコードまで、ロボットを作っています。いつか宇宙で活躍するロボットを夢見ています。',
+    en: 'I build robots from circuit to code, hoping one day to reach outer space.',
+    ja: '回路からコードまで、ロボットを作っています。いつか宇宙に届くことを夢見ています。',
   },
   sub: {
     en: 'Final-year B.E. EEE student, SRM Easwari Engineering College, Chennai.',
@@ -475,7 +475,7 @@ export const learning: { theme: L; items: L[] }[] = [
 /** Publications and awards: their own section on the home page, after About. Newest or most important first inside each group. */
 export type Honour = { group: 'pub' | 'award'; year: string; title: L; line: L; link?: { href: string; label: L } }
 export const honours: Honour[] = [
-  { group: 'pub', year: '2026', title: { en: 'Swarm-actuated net for space debris', ja: '宇宙デブリ捕獲のスウォーム作動ネット' }, line: { en: 'ICCORSE 2026, conceptual, not yet tested.', ja: 'ICCORSE 2026。概念検討で、未検証です。' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' } } },
+  { group: 'pub', year: '2026', title: { en: 'Swarm-actuated net for space debris', ja: '宇宙デブリ捕獲のスウォーム作動ネット' }, line: { en: 'ICCORSE 2026, conceptual, untested.', ja: 'ICCORSE 2026。概念検討で、未検証です。' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' } } },
   { group: 'pub', year: '2025', title: { en: 'Rare-earth-free reluctance motor', ja: 'レアアースフリーのリラクタンスモータ' }, line: { en: 'ICUMSAT 2025, third author.', ja: 'ICUMSAT 2025、第3著者。' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'Abstract (PDF)', ja: 'アブストラクト（PDF）' } } },
   { group: 'award', year: '2026', title: { en: 'IEEE EPICS grant', ja: 'IEEE EPICS 助成' }, line: { en: 'USD 3,000, awarded. Hardware Team Lead.', ja: '3,000米ドルを獲得。ハードウェアチームリーダー。' } },
   { group: 'award', year: '2025', title: { en: 'InnovateX 2025', ja: 'InnovateX 2025' }, line: { en: 'IEEE hackathon, runner-up.', ja: 'IEEEハッカソン、準優勝。' } },

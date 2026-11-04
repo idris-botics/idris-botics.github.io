@@ -3,20 +3,21 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // Production-only Content-Security-Policy meta tag (static hosting cannot set headers).
-// Everything is self-hosted: no third-party scripts, fonts, images or analytics.
+// Everything is self-hosted. The one exception: when VITE_GA_MEASUREMENT_ID is set at build time, Google Analytics hosts are allowed (and only then).
+const ga = !!process.env.VITE_GA_MEASUREMENT_ID
 const csp = (): Plugin => ({
   name: 'csp-meta',
   apply: 'build',
   transformIndexHtml(html) {
     const policy = [
       "default-src 'self'",
-      "script-src 'self'",
+      `script-src 'self'${ga ? ' https://www.googletagmanager.com' : ''}`,
       "style-src 'self' 'unsafe-inline'", // React inline style attributes
-      "img-src 'self' data:",
+      `img-src 'self' data:${ga ? ' https://*.google-analytics.com https://*.googletagmanager.com' : ''}`,
       "media-src 'self'",
       "frame-src 'none'",
       "font-src 'self' data:",
-      "connect-src 'self'",
+      `connect-src 'self'${ga ? ' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com' : ''}`,
       "worker-src 'self' blob:",
       "object-src 'none'",
       "base-uri 'self'",
