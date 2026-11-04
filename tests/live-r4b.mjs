@@ -1,0 +1,27 @@
+import { chromium } from '@playwright/test'
+import { enterChaos } from './enter-chaos.mjs'
+const url = 'https://idris900323.github.io/'
+const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
+const log = (ok, m) => console.log(ok ? 'ok  ' : 'FAIL', m)
+const p = await b.newPage({ viewport: { width: 1440, height: 900 } })
+const errs = []; p.on('console', (m) => { if (m.type() === 'error') errs.push(m.text()) }); p.on('pageerror', (e) => errs.push(String(e)))
+await p.goto(url, { waitUntil: 'networkidle' }); await p.waitForTimeout(800)
+log(await p.locator('.scene .mascot').count() === 1 && await p.locator('.tile.t0').count() === 1, 'hero scene with the mascot, sticker tiles')
+log(await p.locator('.theme-btn').count() === 0 && (await p.evaluate(() => document.documentElement.dataset.theme)) === undefined, 'no theme switch, no dark theme')
+const eye = async () => p.locator('.scene .pupil').first().evaluate((e) => e.style.transform)
+await p.mouse.move(50, 800); await p.waitForTimeout(400); const a = await eye()
+await p.mouse.move(1400, 100); await p.waitForTimeout(400); const c = await eye()
+log(a !== c && !!a && !!c, `eyes follow the cursor (${a} -> ${c})`)
+await p.locator('.scene .mascot').click(); await p.waitForTimeout(200)
+log(await p.locator('.arm-r.waving').count() === 1, 'clicking the mascot makes it wave')
+await p.screenshot({ path: 'tests/out/live-r4b-home.png' })
+for (const s of ['pid', 'cpu8']) { await p.goto(url + '#work/' + s); await p.reload({ waitUntil: 'networkidle' }); await p.waitForTimeout(600); log(await p.locator('.page .spec').count() === 1, `hard refresh #work/${s}`); await p.screenshot({ path: `tests/out/live-r4b-${s}.png` }) }
+await p.goto(url, { waitUntil: 'networkidle' })
+await enterChaos(p).then(() => log(true, 'Chaos entry'), (e) => log(false, 'Chaos ' + e.message.slice(0, 80)))
+await p.waitForTimeout(3500); log(await p.locator('canvas.scene-chaos').count() === 1, 'Chaos scene canvas present'); await p.screenshot({ path: 'tests/out/live-r4b-chaos.png' })
+console.log('console errors:', errs.filter((e) => !/postMessage|frame-shell/.test(e)).slice(0, 4))
+const m = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+await m.goto(url, { waitUntil: 'networkidle' }); await m.waitForTimeout(1200)
+log(!(await m.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)), 'phone: no horizontal scroll')
+await m.screenshot({ path: 'tests/out/live-r4b-phone.png' })
+await b.close()

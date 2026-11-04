@@ -81,7 +81,7 @@ export default function HeroScene() {
         </g>
         <g className="lay l-moon" onClick={onMoon} role={chaos ? 'button' : undefined} tabIndex={chaos ? 0 : undefined} aria-label={chaos ? (lang === 'en' ? 'The moon' : '月') : undefined} onKeyDown={(e) => { if (chaos && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onMoon() } }} style={chaos ? { cursor: 'pointer' } : undefined}>
           <circle cx="170" cy="78" r="38" fill="#fff8ea" stroke="#26221f" strokeWidth="3" />
-          <clipPath id="m o o n c l i p"><circle cx="170" cy="78" r="36.5" /></clipPath>
+          <clipPath id="moon-clip"><circle cx="170" cy="78" r="36.5" /></clipPath>
           <circle cx="152" cy="86" r="34" fill="#afcbea" clipPath="url(#moon-clip)" opacity=".75" />
           <circle cx="186" cy="64" r="5" fill="#e6d9b8" /><circle cx="160" cy="96" r="3.5" fill="#e6d9b8" /><circle cx="190" cy="92" r="2.8" fill="#e6d9b8" />
         </g>
