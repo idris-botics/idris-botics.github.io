@@ -852,3 +852,8 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 @media (max-width: 800px) { .about-grid > h2 { margin-bottom: -8px; } }
 .facts.surface { margin-top: 4px; }
 .hero-line { text-wrap: balance; }
+@media (min-width: 801px) {
+  .hero-grid { align-items: stretch; }
+  .hero-photo { display: flex; margin-bottom: 6px; }
+  .hero-photo video, .hero-photo img { height: 100%; aspect-ratio: auto; flex: 1; min-height: 0; object-fit: cover; }
+}
