@@ -64,7 +64,7 @@ There are no audio files in the repository or in the build. Every sound is gener
 - Sound is muted from the speaker button, remembered for the visit, and never plays before the visitor has interacted with the page.
 
 ## Hosted video clips (Chaos mode)
-- **Rick roll** (`public/media/vid/rick-90.mp4`) and the **John Cena entrance** (`public/media/vid/cena-90.mp4`): 90 second cuts of copyrighted clips supplied by Idris, hosted with this site and played in a loop until the popup is closed. Idris chose to host them instead of embedding YouTube. They are not licensed to this site, so a rights holder could ask for their removal; if that happens, delete the two files and the popups fall back to showing nothing.
+- **Rick roll** (`public/media/vid/rick.mp4`), the **John Cena entrance** (`public/media/vid/cena.mp4`) and the **King Julien "tell me, tell me" clip** (`public/media/vid/tell-me.mp4`): full-length, re-encoded (not cut) copies of copyrighted clips supplied by Idris, hosted with this site and played in a loop until the popup is closed. Idris chose to host them instead of embedding YouTube. They are not licensed to this site, so a rights holder could ask for their removal; if that happens, delete the two files and the popups fall back to showing nothing.
 - The Content Security Policy allows no frames (`frame-src 'none'`) and `media-src 'self'`.
 
 ## Links only (not hosted by this site)

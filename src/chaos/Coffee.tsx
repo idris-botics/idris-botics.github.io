@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { caption } from './captions'
 import { sfx } from './sfx'
 import { hitStop } from './juice'
+import { coffeeRuns, extendCaffeine } from './caffeine'
 
 type Props = {
   lang: 'en' | 'ja'
@@ -59,11 +60,13 @@ export default function Coffee({ lang, say, award, start, end, fire }: Props & {
   // each time "coffee" is typed or run from the command box, `fire.n` goes up
   useEffect(() => {
     if (!fire.n) return
-    const n = ++times.current
+    const n = coffeeRuns() + 1 // kept for the whole visit: a second run never repeats the first show
+    times.current = n
     if (n === 1) award('coffee')
     dispatchEvent(new Event('portfolio:coffee')) // the workbench arm drops a cup
-    if (reduced()) { setRings((r) => Math.max(r, 1)); cap('coffee-r', 5000); return }
-    if (n === 1) { if (start()) brew(); else times.current-- ; return }
+    if (reduced()) { setRings((r) => Math.max(r, 1)); cap('coffee-r', 5000); extendCaffeine(); return }
+    if (n === 1) { if (start()) { brew(); later(() => extendCaffeine(), 4800) } else times.current--; return }
+    extendCaffeine() // every later run adds about 90 more seconds, up to five minutes in total
     if (n === 2) { sfx('boing'); cap('coffee-c2') }
     else if (n === 3) { sfx('error'); cap('coffee-c3') }
     else if (n === 4) { setMug(true); sfx('boing'); cap('coffee-c4'); later(() => setMug(false), 4200) }

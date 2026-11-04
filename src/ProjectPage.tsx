@@ -159,7 +159,7 @@ export default function ProjectPage({ project }: { project: Project }) {
   // arrow keys step through the projects (not while typing, on a slider, or with the image viewer open)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (document.querySelector('.lightbox')) return
+      if (e.defaultPrevented || document.querySelector('.lightbox')) return // a simulation that is driving with the arrow keys has already claimed them
       const typing = !!(e.target as HTMLElement).closest?.('input, select, textarea, [role="slider"], [role="tab"], .gallery')
       if (typing || e.altKey || e.metaKey || e.ctrlKey) return
       if (e.key === 'ArrowRight') gotoProject(next.slug)

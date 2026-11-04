@@ -24,7 +24,7 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
   check((await p.locator('.coffee-ring').count()) >= 2, `${name}: stains stay`)
   await p.waitForTimeout(500)
   const txt = await p.locator('.ach').innerText()
-  check(/[12]\/19/.test(txt), `${name}: achievements read 1/19 (${txt.replace(/\s+/g, ' ')})`)
+  check(/[12]\/23/.test(txt), `${name}: achievements read 1/23 (${txt.replace(/\s+/g, ' ')})`)
   for (let i = 0; i < 4; i++) { await p.keyboard.type('coffee', { delay: 20 }); await p.waitForTimeout(300) }
   await p.waitForTimeout(500)
   check(errs.length === 0, `${name}: no page errors ${errs.join('|')}`)

@@ -25,3 +25,9 @@ export const chaosConfig = {
   },
 } as const
 export type GagId = keyof typeof chaosConfig.gags
+
+/**
+ * The Rick Astley, John Cena and King Julien clips are third-party videos that Idris has downloaded and chose to host himself (his decision and risk, see docs/REVIEW.md).
+ * To take them down quickly if a takedown ever arrives: set this to false. The clips are hidden, nothing is loaded, and the pet robot says its text lines instead.
+ */
+export const HOST_THIRD_PARTY_CLIPS = true

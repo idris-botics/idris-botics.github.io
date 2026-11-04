@@ -246,3 +246,20 @@ export function impact(level: number, wall: boolean) {
   else if (pick < 0.8) { tone(c, 'sine', 200 * r, 70, 0.14, 0.45 + 0.5 * level); noise(c, 0.08, 700, 150, 0.3 * level) } // thud
   else { tone(c, 'square', 880 * r, 840 * r, 0.22, 0.18 + 0.25 * level); noise(c, 0.05, 6000, 2000, 0.25 * level, 0, 'highpass') } // clang
 }
+
+/** The pet robot's mood changes how it sounds: caffeinated is high and quick, crashed is low and slow. */
+export type VoiceMood = 'normal' | 'caffeinated' | 'crashed'
+let mood: VoiceMood = 'normal'
+export const setVoiceMood = (m: VoiceMood) => { mood = m }
+/** Bleep-bloop talking: one short blip per word, spread over the time the bubble stays up. Only plays when sound is on. */
+export function talk(text: string, wordMs = 280) {
+  const c = ac()
+  if (!c) return
+  const words = text.split(/\s+/).filter(Boolean).slice(0, 36)
+  const base = mood === 'caffeinated' ? 640 : mood === 'crashed' ? 170 : 340
+  const gap = (mood === 'caffeinated' ? 0.7 : mood === 'crashed' ? 1.6 : 1) * (wordMs / 1000)
+  words.forEach((w, i) => {
+    const f = base * (1 + ((w.length * 37 + i * 11) % 9) / 14)
+    tone(c, 'square', f, f * (i % 2 ? 1.25 : 0.82), 0.07, 0.3, i * gap)
+  })
+}

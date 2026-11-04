@@ -345,6 +345,31 @@ export const projects: Project[] = [
     tags: ['Bluetooth', 'drivetrain', 'ESP32'],
   },
   {
+    slug: 'robosoccer',
+    tier: 'foundation',
+    eyebrow: { en: 'Robot soccer event', ja: 'ロボットサッカーの大会' },
+    title: { en: 'Robo Soccer', ja: 'ロボサッカー' },
+    status: 'BUILT',
+    loops: ['act', 'sense'],
+    // TODO(idris): the year, the event name and what exactly failed on the bot. Hidden until filled in; the text below does not depend on them.
+    blurb: {
+      en: 'A small two-wheeled robot with a castor, sent to play robot soccer. It lost, badly, and taught me more than a win would have.',
+      ja: '小さなキャスター付き二輪ロボットで、ロボットサッカーに出場しました。大敗でしたが、勝つよりも多くを教えてくれました。',
+    },
+    summary: {
+      status: {
+        en: 'I lost badly. The people there were kind and took pity on my bot, and I am grateful. The other teams went easy on it, and it still lost. It ran fine on my desk, and a desk does not push back. Next time I test it on a real pitch against something that fights back, and I ask the other teams how they did it.',
+        ja: '大敗しました。会場の皆さんは親切で、私のロボットを気の毒に思って手加減してくれました。感謝しています。それでも負けました。机の上では問題なく動きましたが、机は押し返してきません。次は本物のピッチで、手強い相手を想定してテストし、他のチームにやり方を聞きます。',
+      },
+    },
+    media: [
+      IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280], caption: { en: 'Robo Soccer, second attempt', ja: 'ロボサッカー、2回目の挑戦' } }),
+    ],
+    videos: [{ src: 'soccer-run', poster: 'soccer-run-poster', caption: { en: 'The full run. It does not go well.', ja: '試合の全記録。うまくはいきません。' } }],
+    leadVideo: true,
+    tags: ['robot soccer', 'ESP32', 'two-wheel'],
+  },
+  {
     slug: 'pipe',
     tier: 'foundation',
     eyebrow: { en: 'Hackathon idea proposal', ja: 'ハッカソン提案' },
@@ -537,7 +562,8 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   spider: { short: { en: 'Spider quadruped', ja: 'クモ型四足ロボット' }, strip: { en: 'Eight servos', ja: 'サーボ8個' } },
   stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
   vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
-  pipe: { short: { en: 'In-pipe inspection robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
+  robosoccer: { short: { en: 'Robo Soccer', ja: 'ロボサッカー' }, strip: { en: 'A hard loss, honestly told', ja: '大敗の正直な記録' } },
+  pipe: { short: { en: 'Pipe robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
   stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 coming', ja: 'AI向けCAD、v2開発中' } },
   subtlebotic: { short: { en: 'Neuro-robotics internship', ja: 'ニューロロボティクスのインターン' }, strip: { en: 'Electronics for BCI', ja: 'BCI向け電子回路' } },
 }

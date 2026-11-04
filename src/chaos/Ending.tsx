@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Mail, FileText, ExternalLink } from 'lucide-react'
 import hints from '../content/jokes/hints.json'
-import { SECRET_ACH } from './secrets'
+import { CORE_ACH } from './secretsRegistry'
 import { links } from '../content'
 import { personal } from '../personal'
 
@@ -16,7 +16,7 @@ export default function Ending({ lang, found, award }: { lang: 'en' | 'ja'; foun
   const [open, setOpen] = useState(false)
   const [party, setParty] = useState(false)
   const shown = useRef(false)
-  const all = SECRET_ACH.every((a) => found.includes(a))
+  const all = CORE_ACH.every((a) => found.includes(a))
   const base = import.meta.env.BASE_URL
 
   useEffect(() => {

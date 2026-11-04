@@ -1,4 +1,4 @@
-// A returning visitor with achievements saved by an older build must start at 0/19, not at a stale count. Usage: node tests/achievements-version.mjs [url]
+// A returning visitor with achievements saved by an older build must start at 0/23, not at a stale count. Usage: node tests/achievements-version.mjs [url]
 import { chromium } from '@playwright/test'
 import { enterChaos } from './enter-chaos.mjs'
 
@@ -19,11 +19,11 @@ for (const [name, seed] of [
   await p.goto(url, { waitUntil: 'networkidle' })
   await enterChaos(p)
   await p.waitForTimeout(2500)
-  check((await p.locator('.ach').count()) === 0, `${name}: starts with no achievements (0/19)`)
+  check((await p.locator('.ach').count()) === 0, `${name}: starts with no achievements (0/23)`)
   await p.keyboard.type('coffee', { delay: 40 })
   await p.waitForTimeout(800)
   const txt = await p.locator('.ach').innerText()
-  check(/[12]\/19/.test(txt), `${name}: first achievement reads 1/19 (${txt.replace(/\s+/g, ' ')})`)
+  check(/[12]\/23/.test(txt), `${name}: first achievement reads 1/23 (${txt.replace(/\s+/g, ' ')})`)
   await ctx.close()
 }
 await b.close()

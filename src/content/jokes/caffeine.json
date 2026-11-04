@@ -1,0 +1,95 @@
+{
+  "_note": "Pet robot lines while caffeinated (about 90 s after a coffee run) and when it crashes. Spoken in the speech bubble.",
+  "wired": [
+    {
+      "en": "I CAN SEE SOUNDS. WHY IS THE CURSOR SO LOUD.",
+      "ja": "音が見える。カーソルがうるさすぎる。"
+    },
+    {
+      "en": "I have reorganised this entire page twice. In my head.",
+      "ja": "このページ、頭の中で2回も整理し直しました。"
+    },
+    {
+      "en": "Do not look at me. I am vibrating at a frequency.",
+      "ja": "こっちを見ないで。今、ある周波数で震えています。"
+    },
+    {
+      "en": "Five more minutes and I will have built a second portfolio.",
+      "ja": "あと5分で、2つ目のポートフォリオが完成します。"
+    },
+    {
+      "en": "Is it normal for my gears to hum in D minor?",
+      "ja": "歯車がニ短調でうなっているのは普通ですか？"
+    },
+    {
+      "en": "I tried decaf once. I do not discuss it.",
+      "ja": "デカフェを1回だけ試しました。その話はしません。"
+    },
+    {
+      "en": "Idris says I am \"a bit much\". Idris built me like this.",
+      "ja": "Idrisは私を「ちょっと元気すぎ」と言います。そう作ったのはIdrisです。"
+    },
+    {
+      "en": "I have counted every pixel on this page. There are a lot. I counted them again.",
+      "ja": "このページのピクセルを全部数えました。多いです。もう一回数えました。"
+    },
+    {
+      "en": "Scroll faster. No. Slower. No. FASTER.",
+      "ja": "もっと速くスクロールして。いや遅く。いや、速く！"
+    },
+    {
+      "en": "My antenna is picking up Wi-Fi from a different dimension.",
+      "ja": "アンテナが別の次元のWi-Fiを拾っています。"
+    },
+    {
+      "en": "I could rewrite the whole site right now. Please do not let me.",
+      "ja": "今ならサイト全体を書き直せます。止めてください。"
+    },
+    {
+      "en": "Everything is a servo. YOU are a servo. We are all servos.",
+      "ja": "すべてはサーボです。あなたもサーボです。みんなサーボです。"
+    },
+    {
+      "en": "I have ideas. Fourteen. They are all the same idea.",
+      "ja": "アイデアが14個あります。全部同じアイデアです。"
+    },
+    {
+      "en": "Why walk when you can pace at a quarter-second interval.",
+      "ja": "歩くより、0.25秒おきに行ったり来たりしたほうが楽しいです。"
+    },
+    {
+      "en": "I just alphabetised my screws. In my head. I have no screws.",
+      "ja": "ネジをアルファベット順に並べました。頭の中で。ネジはありません。"
+    },
+    {
+      "en": "The cursor moved. I SAW it move. Did you see it move?",
+      "ja": "カーソルが動いた。見ました。見ましたか？"
+    },
+    {
+      "en": "Hold still. No, do not hold still, I need to see you move.",
+      "ja": "じっとして。いや、動いて。動くところが見たいんです。"
+    },
+    {
+      "en": "I have so much energy that I am worried about my battery. Ha. Ha. HA.",
+      "ja": "エネルギーが多すぎて電池が心配です。あはは。はは。ははは。"
+    }
+  ],
+  "crash": [
+    {
+      "en": "I have regrets.",
+      "ja": "後悔しています。"
+    },
+    {
+      "en": "Wake me when the beans are back.",
+      "ja": "豆が戻ってきたら起こしてください。"
+    },
+    {
+      "en": "Everything is heavy. Even my antenna.",
+      "ja": "全部が重い。アンテナまで。"
+    },
+    {
+      "en": "That was a mistake. A delicious one.",
+      "ja": "あれは間違いでした。おいしい間違いでした。"
+    }
+  ]
+}

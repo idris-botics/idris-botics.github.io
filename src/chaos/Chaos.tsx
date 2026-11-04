@@ -8,7 +8,7 @@ import '@fontsource/m-plus-rounded-1c/latin-500.css'
 import '@fontsource/m-plus-rounded-1c/latin-800.css'
 import '@fontsource/m-plus-rounded-1c/japanese-500.css'
 import './chaos.css'
-import { chaosConfig, type GagId } from './config'
+import { chaosConfig, HOST_THIRD_PARTY_CLIPS, type GagId } from './config'
 import { Scheduler, type Tier } from './scheduler'
 import { caption } from './captions'
 import { subscribe } from '../bus'
@@ -21,10 +21,17 @@ import Ending from './Ending'
 import { isHelped } from './hintsStore'
 import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
 import { X } from 'lucide-react'
-import { angerBeep, fall, impact, isMuted, onMuteChange, sfx, startConstruction } from './sfx'
+import { angerBeep, fall, impact, isMuted, onMuteChange, setVoiceMood, sfx, startConstruction, talk } from './sfx'
+import { resumeCaffeine, useCaffeine } from './caffeine'
+import cafLines from '../content/jokes/caffeine.json'
 import MuteButton from './MuteButton'
 import { useStore } from '../store'
+import { breakName, isBroken, reassembleName } from './nameBreak'
+import { MAX_EVENTS, newInterval, repeatDue, watchPage, type ActiveClock } from './activeTime'
 import Scout from '../Scout'
+import Conjure from './Conjure'
+import CommandBox from './CommandBox'
+import { ACH_NAMES, ACH_TOTAL } from './secretsRegistry'
 
 const on = (g: GagId) => chaosConfig.gags[g]
 /** The scroll goals for the roll and the jumpscare were set for a page of about 9000 px; the redesigned page is much shorter, so they shrink with it (never below a quarter). */
@@ -32,27 +39,17 @@ const pageScale = () => Math.max(0.25, Math.min(1, (document.documentElement.scr
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 const SIM_EVENTS = new Set(['p2a', 'p2b', 'p2c', 'p3', 'p5', 'p6a', 'p6b', 'p8a', 'p8d', 'p8e', 'p9a', 'p9b'])
 const FLYERS = ['🚀', '🛸', '☄️', '🛰️']
-const ACH: Record<string, { en: string; ja: string }> = {
-  moon: { en: 'Broke the Moon', ja: '月を壊した' },
-  roll: { en: 'Rolled the barrel', ja: 'バレルロールをした' },
-  letters: { en: 'Scattered the name', ja: '名前を散らかした' },
-  sim: { en: 'Poked a simulation', ja: 'シミュレーションを動かした' },
-  finale: { en: 'Read all the way down', ja: '最後まで読んだ' },
-  rick: { en: 'Got rolled', ja: 'ロールされた' },
-  moonup: { en: 'Fell upwards', ja: '上に落ちた' },
-  crash: { en: 'Shot down a rocket', ja: 'ロケットを撃墜した' },
-  moon3: { en: 'Pressed it a third time', ja: '3回目を押した' },
-  evicted: { en: 'Evicted by the robot', ja: 'ロボットに追い出された' },
-  cena: { en: 'Heard a name', ja: '名前を聞いた' },
-  omae: { en: 'Heard the verdict', ja: '宣告を聞いた' },
-  coffee: { en: 'Caffeinated', ja: 'カフェイン注入' },
-  featured: { en: 'Opened every featured project', ja: '主な3件をすべて開いた' },
-  twin: { en: 'Ran the PID twin', ja: 'PIDツインを動かした' },
-  about: { en: 'Read the About story', ja: '自己紹介を読んだ' },
-  cv: { en: 'Found the CV', ja: '履歴書を見つけた' },
-  everything: { en: 'Found everything', ja: 'すべて見つけた' },
-  legend: { en: 'Saw a legendary line', ja: '伝説の一言を見た' },
-}
+const ACH = ACH_NAMES // achievements come from the secrets registry (secretsRegistry.ts)
+const RICK_AGAIN: { en: string; ja: string }[] = [
+  { en: 'You stayed. So did the song.', ja: 'あなたが残ったので、あの曲も残りました。' },
+  { en: 'Did you really think it was only once?', ja: '1回だけだと思っていましたか？' },
+  { en: 'I tried to stop it. I did not try very hard.', ja: '止めようとしました。あまり本気ではありませんでしたが。' },
+]
+const CENA_AGAIN: { en: string; ja: string }[] = [
+  { en: 'You cannot see me. Still true.', ja: '見えません。今回もです。' },
+  { en: 'I told you he would be back.', ja: '戻ってくると言ったでしょう。' },
+  { en: 'Every few minutes. It is a schedule. Please do not tell Idris.', ja: '数分おきです。予定です。Idrisには内緒で。' },
+]
 const GUILT: { en: string; ja: string }[] = [
   { en: 'That was Captain Pip. He had a family, a goldfish, and a lifelong dream of reaching the Moon. He was nearly there.', ja: 'あれはピップ船長でした。家族も金魚もいて、月に行くのが夢でした。もう少しだったのに。' },
   { en: 'It was only on its way to a birthday party. There was a cake. The cake is now alone.', ja: 'ただ誕生日パーティーに向かっていただけなのに。ケーキは、今ひとりぼっちです。' },
@@ -203,6 +200,12 @@ export default function Chaos() {
     })
     return () => { clearInterval(id); clearTimeout(wait); setForgot(false) }
   }, [restoring])
+  // the pet robot is caffeinated for about 90 s after a coffee run (more if run again), then crashes: see caffeine.ts
+  const caf = useCaffeine()
+  useEffect(() => { resumeCaffeine() }, [])
+  useEffect(() => { setVoiceMood(caf === 'wired' ? 'caffeinated' : caf === 'crashed' ? 'crashed' : 'normal'); return () => setVoiceMood('normal') }, [caf])
+  const [bow, setBow] = useState(false)
+  useEffect(() => { let t = 0; const f = () => { setBow(true); clearTimeout(t); t = window.setTimeout(() => setBow(false), 1800) }; addEventListener('portfolio:bow', f); return () => { removeEventListener('portfolio:bow', f); clearTimeout(t) } }, [])
   const [noteUp, setNoteUp] = useState(false)
   const noteTimer = useRef(0)
   const xBtn = useRef<HTMLButtonElement>(null)
@@ -235,19 +238,45 @@ export default function Chaos() {
 
   const quietRef = useRef(false) // no comments, stamps or banners while the page is falling or being put back
   const lastSay = useRef<{ text: string; at: number; replayed: boolean } | null>(null)
+  // The pet robot speaks every comment, one at a time, in a speech bubble. Each stays up for at least 0.5 s plus 0.3 s per word
+  // (the caller's time if longer); the next one waits its turn. A tap dismisses the current one, which skips to the next.
+  const speechQ = useRef<{ text: string; ms: number }[]>([])
+  const speaking = useRef(false)
+  const showNext = useCallback(() => {
+    clearTimeout(toastTimer.current)
+    const n = speechQ.current.shift()
+    if (!n) { speaking.current = false; setToast(null); return }
+    speaking.current = true
+    setToast(n.text)
+    sfx('ding'); talk(n.text)
+    const words = n.text.split(/\s+/).filter(Boolean).length
+    toastTimer.current = window.setTimeout(() => showNextRef.current(), Math.max(n.ms, 500 + 300 * words))
+  }, [])
+  const showNextRef = useRef(showNext)
+  useEffect(() => { showNextRef.current = showNext })
   const sayText = useCallback((text: string, ms = 8000) => {
     if (quietRef.current) return false
-    setToast(text)
-    sfx('ding')
     lastSay.current = { text, at: performance.now(), replayed: false }
-    clearTimeout(toastTimer.current)
-    toastTimer.current = window.setTimeout(() => setToast(null), ms)
+    if (speaking.current) { speechQ.current = [...speechQ.current.filter((q) => q.text !== text), { text, ms }].slice(-2); return true }
+    speechQ.current = [{ text, ms }]
+    showNext()
     return true
-  }, [])
+  }, [showNext])
   const say = useCallback((slot: string, ms = 8000) => {
     const text = caption(slot, langRef.current)
     return text ? sayText(text, ms) : false
   }, [sayText])
+
+  // caffeinated: the pet robot talks about every 8 to 13 s, in its own voice; when it wears off it crashes with a sigh
+  useEffect(() => {
+    if (caf === 'off') return
+    let t = 0, last = -1
+    const pick = (pool: { en: string; ja: string }[]) => { let i = Math.floor(Math.random() * pool.length); if (i === last) i = (i + 1) % pool.length; last = i; return pool[i][langRef.current] }
+    if (caf === 'crashed') { t = window.setTimeout(() => { sayText(pick(cafLines.crash), 6000) }, 400); return () => clearTimeout(t) }
+    const loop = (ms: number) => { t = window.setTimeout(() => { if (!document.hidden) sayText(pick(cafLines.wired), 5200); loop(8000 + Math.random() * 5000) }, ms) }
+    loop(1800)
+    return () => clearTimeout(t)
+  }, [caf, sayText])
 
   // scheduler + transformation intro + console banner
   useEffect(() => {
@@ -409,13 +438,58 @@ export default function Chaos() {
     }
   }, [])
 
+  // Random events can come back if the visitor stays: the cookie, the Rick roll and the John Cena jumpscare. Only ACTIVE time counts
+  // (tab visible, window focused, input in the last 20 s). A repeat comes 3 to 5 minutes after the last event, never while a project window,
+  // a video or another event is open, at most 4 events a visit, and each repeat has different lines.
+  const events = useRef({ count: 0, lastAt: 0, interval: newInterval(), last: '' })
+  const clockRef = useRef<ActiveClock | null>(null)
+  const noteEvent = useCallback(() => { events.current.count++; events.current.lastAt = clockRef.current?.activeMs() ?? 0; events.current.interval = newInterval() }, [])
+  const startRick = useCallback((variant: number) => {
+    const root = document.documentElement
+    if (variant > 0) sayText(RICK_AGAIN[(variant - 1) % RICK_AGAIN.length][langRef.current], 3500)
+    if (!reduced()) root.classList.add('shake')
+    award('rick'); sfx('shake')
+    window.setTimeout(() => { root.classList.remove('shake'); setRick(true) }, reduced() ? 0 : 1700)
+  }, [award, sayText])
+  const startCena = useCallback((variant: number) => {
+    if (variant > 0) sayText(CENA_AGAIN[(variant - 1) % CENA_AGAIN.length][langRef.current], 3000)
+    award('cena')
+    hitStop(60)
+    setCena(1)
+    setTimeout(() => setCena(2), 1050)
+    setTimeout(() => setCena(3), 2600)
+    if (!reduced()) { document.documentElement.classList.add('shake'); setTimeout(() => document.documentElement.classList.remove('shake'), 2300) }
+    setTimeout(() => { setCena((c) => (c === 3 ? c : 0)); if (!document.querySelector('.cena-video')) sched.current?.end('cena') }, 2700)
+  }, [award, sayText])
+  useEffect(() => {
+    const { clock, stop } = watchPage()
+    clockRef.current = clock
+    const busy = () => quietRef.current || document.hidden || !!document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site')
+    const fire = (force?: string) => {
+      const ev = events.current
+      if (busy() || ev.count >= MAX_EVENTS) return
+      const kinds = ['cookie', 'rick', 'cena'].filter((k) => k !== ev.last)
+      const kind = force && kinds.includes(force) ? force : kinds[Math.floor(Math.random() * kinds.length)]
+      const variant = ev.count
+      ev.last = kind
+      noteEvent()
+      if (kind === 'cookie') { cookieVariant.current = variant; setBites(0); setCookie(true) }
+      else if (kind === 'rick') startRick(variant)
+      else startCena(variant)
+    }
+    const id = window.setInterval(() => { if (repeatDue({ count: events.current.count, lastAt: events.current.lastAt, interval: events.current.interval }, clock.activeMs(), busy())) fire() }, 5000)
+    const forced = (e: Event) => fire((e as CustomEvent<string>).detail) // lets a test run a repeat without waiting minutes
+    addEventListener('portfolio:repeat-event', forced)
+    return () => { clearInterval(id); stop(); removeEventListener('portfolio:repeat-event', forced) }
+  }, [noteEvent, startRick, startCena])
+
   // cookie banner (once per session, after a pause)
   useEffect(() => {
     if (!on('cookieBanner')) return
     try { if (sessionStorage.getItem('cookie')) return } catch { /* ignore */ }
-    const id = setTimeout(() => setCookie(true), 14000)
+    const id = setTimeout(() => { cookieVariant.current = 0; setCookie(true); noteEvent() }, 20000 + Math.random() * 70000) // on its own, no first press needed
     return () => clearTimeout(id)
-  }, [])
+  }, [noteEvent])
   const closeCookie = () => { setCookie(false); setBites(0); try { sessionStorage.setItem('cookie', '1') } catch { /* ignore */ } }
   const cookieStorm = () => {
     sfx('chomp')
@@ -436,11 +510,20 @@ export default function Chaos() {
     }, 1500)
     return () => clearInterval(id)
   }, [cookie])
+  // the pet robot deals with the cookie: it sneaks over and eats the crumbs (or tries to press "accept"), chokes, coughs crumbs up and apologises
+  const [cough, setCough] = useState(false)
+  const cookieVariant = useRef(0)
   useEffect(() => {
     if (bites < 5) return
-    const id = window.setTimeout(closeCookie, 1400) // nothing left to eat: the banner leaves with it
-    return () => clearTimeout(id)
-  }, [bites])
+    setCough(true)
+    sfx('boing')
+    award('cookie')
+    const v = cookieVariant.current
+    sayText(v % 2 === 0 ? (langRef.current === 'en' ? 'Sorry. It was delicious.' : 'ごめんなさい。おいしかったです。') : (langRef.current === 'en' ? 'I pressed accept. Then I ate the accept. Sorry. Delicious.' : '「同意する」を押して、そのまま食べました。ごめんなさい。おいしかったです。'), 4500)
+    const a = window.setTimeout(() => setCough(false), 1700)
+    const id = window.setTimeout(closeCookie, 1500) // nothing left to eat: the banner leaves with it
+    return () => { clearTimeout(id); clearTimeout(a) }
+  }, [bites, award, sayText])
 
   // finale (C): when the contact section is reached, once
   useEffect(() => {
@@ -486,14 +569,12 @@ export default function Chaos() {
       if (done || travelled < goal * pageScale()) return
       if (!run('rick', 'C', true)) return
       done = true
-      const root = document.documentElement
-      if (!reduced()) root.classList.add('shake')
-      award('rick'); sfx('shake')
-      setTimeout(() => { root.classList.remove('shake'); setRick(true) }, reduced() ? 0 : 1700)
+      noteEvent()
+      startRick(0)
     }
     addEventListener('scroll', onScroll, { passive: true })
     return () => { removeEventListener('scroll', onScroll); document.documentElement.classList.remove('shake') }
-  }, [run, award])
+  }, [run, noteEvent, startRick])
 
   // buttons in the page body step away from the cursor, at most twice each; never the controls that matter
   useEffect(() => {
@@ -534,17 +615,12 @@ export default function Chaos() {
       if (done || travelled < goal * pageScale() || document.documentElement.classList.contains('shake') || document.querySelector('.rick, .omae')) return
       if (!run('cena', 'C', true)) return
       done = true
-      award('cena')
-      hitStop(60)
-      setCena(1)
-      setTimeout(() => setCena(2), 1050)
-      setTimeout(() => setCena(3), 2600)
-      if (!reduced()) { document.documentElement.classList.add('shake'); setTimeout(() => document.documentElement.classList.remove('shake'), 2300) }
-      setTimeout(() => { setCena((c) => (c === 3 ? c : 0)); if (!document.querySelector('.cena-video')) sched.current?.end('cena') }, 2700)
+      noteEvent()
+      startCena(0)
     }
     addEventListener('scroll', onScroll, { passive: true })
     return () => { removeEventListener('scroll', onScroll); document.documentElement.classList.remove('shake') }
-  }, [run, award])
+  }, [run, noteEvent, startCena])
 
   // cookie: type "cookie" anywhere to bring the cookie banner back, every time
   useEffect(() => {
@@ -743,27 +819,28 @@ export default function Chaos() {
     sched.current?.end(moonId.current)
   }, [])
 
-  // title prank (G2): click the name
+  // the name (G2): it breaks into letters that tumble in a physics world on entering Chaos, on hover and on a tap, then settles back
   useEffect(() => {
     if (!on('moon')) return
     const h = document.querySelector<HTMLElement>('h1[data-name]')
     if (!h) return
-    const c = () => {
-      if (reduced() || !run('prank', 'C', true)) return
-      h.querySelectorAll<HTMLElement>('.ltr').forEach((l) => {
-        l.style.setProperty('--tx', `${(Math.random() - 0.5) * 220}px`)
-        l.style.setProperty('--ty', `${Math.random() * 160 + 20}px`)
-        l.style.setProperty('--rot', `${(Math.random() - 0.5) * 160}deg`)
-      })
-      h.dataset.prank = '1'
+    let lastAuto = -Infinity
+    const auto = () => { if (performance.now() - lastAuto > 20000 && breakName(h)) lastAuto = performance.now() }
+    const click = () => {
+      if (isBroken(h)) { reassembleName(h); return }
+      if (!breakName(h)) return
+      lastAuto = performance.now()
       sfx('crack')
       award('letters')
-      say('g2', 6000)
-      setTimeout(() => { delete h.dataset.prank; sched.current?.end('prank') }, 2800)
+      if (!namedOnce.current) { namedOnce.current = true; say('g2', 6000) }
     }
-    h.addEventListener('click', c)
-    return () => h.removeEventListener('click', c)
-  }, [run, say, award])
+    const hover = (e: PointerEvent) => { if (e.pointerType === 'mouse') auto() }
+    const enter = window.setTimeout(auto, reduced() ? 600 : 2200)
+    h.addEventListener('click', click)
+    h.addEventListener('pointerenter', hover)
+    return () => { clearTimeout(enter); h.removeEventListener('click', click); h.removeEventListener('pointerenter', hover); reassembleName(h) }
+  }, [say, award])
+  const namedOnce = useRef(false)
 
   // Scout clicks: every click gets a short remark and the robot gets angrier; too many and the site explodes and evicts you
   const clicks = useRef(0)
@@ -874,7 +951,7 @@ export default function Chaos() {
           <p className="cena-a" aria-hidden="true">{lang === 'en' ? 'AND HIS NAME IS' : 'そして彼の名は'}</p>
           {cena > 1 && <p className="cena-b" aria-hidden="true">JOHN CENA</p>}
           {cena > 2 && (
-            <LoopVideo className="cena-video" name="cena-90" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
+            <LoopVideo className="cena-video" name="cena" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
           )}
           {cena > 2 && (
             <button ref={cenaX} className="btn cena-x" autoFocus aria-label={lang === 'en' ? 'Close' : '閉じる'}
@@ -885,7 +962,7 @@ export default function Chaos() {
       )}
       {taunt && <span key={taunt.id} className={taunt.x > 220 ? 'x-taunt left' : 'x-taunt'} style={{ left: taunt.x + (taunt.x > 220 ? -12 : 60), top: taunt.y + 6 }} aria-hidden="true">{taunt.text}</span>}
       {on('coffee') && <Coffee lang={lang} fire={coffee} say={sayText} award={award} start={() => run('coffee', 'C', true)} end={() => sched.current?.end('coffee')} />}
-      <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} />
+      <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} award={award} />
       <CornerMenu lang={lang} />
       <Narrators lang={lang} found={ach} say={sayText} award={award} />
       <WorkAwards award={award} />
@@ -920,7 +997,7 @@ export default function Chaos() {
             <X size={22} aria-hidden="true" />
           </button>
           <div className="rick-box">
-            <LoopVideo className="rick-video" name="rick-90" label={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'} />
+            <LoopVideo className="rick-video" name="rick" label={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'} />
           </div>
         </div>
       )}
@@ -946,24 +1023,28 @@ export default function Chaos() {
         </div>
       )}
       <MuteButton lang={lang} />
+      <CommandBox lang={lang} run={fireWord} />
+      <Conjure lang={lang} say={sayText} award={award} />
       {ach.length > 0 && (
         <div className="ach">
           <button className="btn" aria-expanded={achOpen} onClick={() => setAchOpen((o) => !o)}>
-            <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{Object.keys(ACH).length}
+            <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{ACH_TOTAL}
           </button>
-          {achOpen && <ul>{ach.map((a) => <li key={a}>{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
+          {achOpen && <ul>{ach.map((a) => <li key={a}>{a === 'idris' && <img className="ach-thumb" src={`${import.meta.env.BASE_URL}media/img/idris-whimsy-480.jpg`} alt="" width={28} height={28} />}{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
         </div>
       )}
-      <div ref={dock} className={anger > 6 ? 'scout-dock mad' : 'scout-dock'} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length }}>
+      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${cookie && bites < 5 ? ' eating' : ''}${cough ? ' cough' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length }}>
         {bubble && <span className="bubble">{bubble}</span>}
         {nap && <span className="zzz">Zzz</span>}
-        <Scout size={84} />
+        {cough && <span className="crumbs" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
+        {caf === 'wired' && <span className="speedlines" aria-hidden="true"><i /><i /><i /></span>}
+        <Scout size={84} mood={caf} />
       </div>
       {stamps.map((s) => <span key={s.id} className="stamp" style={{ left: s.x, top: s.y }} aria-hidden="true">{s.text}</span>)}
       {toast && (
-        <div className="toast" role="status" onClick={() => { setToast(null); sched.current?.noteDismiss() }}>
+        <div className="toast" role="status" onClick={() => { showNext(); sched.current?.noteDismiss() }}>
           <span>{toast}</span>
-          <button className="toast-x" onClick={(e) => { e.stopPropagation(); setToast(null); sched.current?.noteDismiss() }} aria-label={lang === 'en' ? 'Close comment' : 'コメントを閉じる'}><X size={16} aria-hidden="true" /></button>
+          <button className="toast-x" onClick={(e) => { e.stopPropagation(); showNext(); sched.current?.noteDismiss() }} aria-label={lang === 'en' ? 'Close comment' : 'コメントを閉じる'}><X size={16} aria-hidden="true" /></button>
         </div>
       )}
       {cookie && !pile && !restoring && (
@@ -991,16 +1072,29 @@ export default function Chaos() {
 /** A 90 s clip that plays with sound and repeats until the visitor closes the popup. Falls back to muted if the browser blocks sound. */
 function LoopVideo({ className, name, label }: { className: string; name: string; label: string }) {
   const ref = useRef<HTMLVideoElement>(null)
-  // the speaker button controls the sound of these videos too: off by default, and it works while they play
+  const [needTap, setNeedTap] = useState(false)
+  // the speaker button controls the sound of these videos too: on by default, and it works while they play.
+  // These open after a click or a typed word, so sound is allowed; if a browser still blocks it, a visible "tap to play" button appears.
   useEffect(() => {
     const v = ref.current
     if (!v) return
     const apply = () => { v.muted = isMuted() }
     apply()
-    void v.play().catch(() => { v.muted = true; void v.play().catch(() => {}) })
-    return onMuteChange(() => { apply(); if (v.paused) void v.play().catch(() => {}) })
+    void v.play().catch(() => setNeedTap(true))
+    const vis = () => { if (document.hidden) v.pause(); else if (v.paused && !needTap) void v.play().catch(() => undefined) }
+    document.addEventListener('visibilitychange', vis)
+    const off = onMuteChange(() => { apply(); if (v.paused) void v.play().catch(() => undefined) })
+    return () => { off(); document.removeEventListener('visibilitychange', vis) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  return <video ref={ref} className={className} src={`${import.meta.env.BASE_URL}media/vid/${name}.mp4`} aria-label={label} autoPlay loop muted playsInline preload="auto" />
+  // switched off in config.ts (HOST_THIRD_PARTY_CLIPS): nothing is loaded, the pet robot's line stands in
+  if (!HOST_THIRD_PARTY_CLIPS) return <p className="clip-fallback">{label}</p>
+  return (
+    <>
+      <video ref={ref} className={className} src={`${import.meta.env.BASE_URL}media/vid/${name}.mp4`} poster={`${import.meta.env.BASE_URL}media/img/${name}-poster.webp`} aria-label={label} autoPlay loop playsInline preload="auto" />
+      {needTap && <button className="btn clip-tap" onClick={() => { void ref.current?.play().catch(() => undefined); setNeedTap(false) }}>{'▶'} Tap to play</button>}
+    </>
+  )
 }
 
 /**

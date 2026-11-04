@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Lightbulb, X } from 'lucide-react'
 import data from '../content/jokes/hintbot.json'
-import hints from '../content/jokes/hints.json'
 import { markHelped } from './hintsStore'
+import { lastLeft, nextToHint } from './secretsRegistry'
+import Clip from './Clip'
+import { HOST_THIRD_PARTY_CLIPS } from './config'
 
 type L = { en: string; ja: string }
 type Opt = { label: L; reply: L; next?: string; effect?: 'skip' | 'more' | 'refuse' | 'reveal' }
@@ -12,9 +14,6 @@ const ui = data.ui as unknown as Record<string, L>
 const NODES = data.nodes as unknown as Record<string, Node>
 const STARTS = data.starts as unknown as string[]
 const TAUNTS = data.taunts as unknown as Taunt[]
-const HINTS = data.secrets as unknown as Record<string, L[]>
-const SECRETS = hints.secrets as unknown as Record<string, { ach: string }>
-const IDS = Object.keys(HINTS)
 const WAIT = [0, 40, 60] // seconds before the second and third hint of one secret unlock
 const MAX_QUESTIONS = 5
 
@@ -31,23 +30,25 @@ const given: Record<string, number> = {}
 const givenAt: Record<string, number> = {}
 let asked = 0
 let refusedUntil = 0 // a refused request: no hint until then
+let clipShown = false // the "tell me, tell me" clip plays once per visit
 
 type Step =
   | { k: 'q'; id: string; order: ('a' | 'b')[]; left: number }
   | { k: 'reply'; text: string; then: () => void }
-  | { k: 'hint'; text: string; id?: string }
+  | { k: 'hint'; text: string; word?: string }
   | { k: 'msg'; text: string }
 
-type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: number) => boolean; fire: (id: string) => void }
+type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: number) => boolean; fire: (word: string) => void; award: (id: string) => void }
 
 /**
  * The hint button, top right. Pressing it starts a few questionable questions and a taunt or two. Only then does it give a hint:
  * first what to do, then a clearer nudge, then the answer. Each next hint unlocks on a timer, so pressing early shows the last hint again.
  */
-export default function HintBot({ lang, found, fire }: Props) {
+export default function HintBot({ lang, found, fire, award }: Props) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step | null>(null)
   const [bubble, setBubble] = useState('')
+  const [clip, setClip] = useState(false)
   const live = useRef({ found })
   useEffect(() => { live.current = { found } })
 
@@ -69,26 +70,31 @@ export default function HintBot({ lang, found, fire }: Props) {
     return () => { clearTimeout(t); clearTimeout(hide) }
   }, [lang])
 
-  const unfound = () => IDS.filter((id) => !live.current.found.includes(SECRETS[id].ach))
-
   const shown = useRef(0)
 
-  // the next hint for the first secret that has not been found; `force` ignores the timers (the "just tell me" answer)
+  // the next hint for the first secret that has not been found; `force` ignores the timers (the "just tell me" answer).
+  // When exactly one achievement is left, the first request plays the "tell me, tell me" clip as a joke before the normal hint tiers.
   const reveal = (force = false) => {
-    const ids = unfound()
-    if (!ids.length) { setStep({ k: 'msg', text: ui.none[lang] }); return }
-    const id = ids[0]
-    const tier = given[id] ?? 0
-    const tiers = HINTS[id]
-    if (!force && tier > 0 && (Date.now() - (givenAt[id] ?? 0)) / 1000 < WAIT[tier]) {
+    const e = nextToHint(live.current.found)
+    if (!e) { setStep({ k: 'msg', text: ui.none[lang] }); return }
+    const last = lastLeft(live.current.found)
+    const wantsClip = !clipShown && ((last && last.finalHintClip !== false) || e.rewardsClip)
+    if (wantsClip) {
+      clipShown = true
+      setStep({ k: 'reply', text: ui.nicely[lang], then: () => { if (HOST_THIRD_PARTY_CLIPS) setClip(true); else reveal(true) } })
+      return
+    }
+    const tier = given[e.id] ?? 0
+    const tiers = e.hints
+    if (!force && tier > 0 && (Date.now() - (givenAt[e.id] ?? 0)) / 1000 < WAIT[tier]) {
       setStep({ k: 'hint', text: `${ui.soon[lang]} ${tiers[tier - 1][lang]}` })
       return
     }
     const use = force ? Math.min(tier, tiers.length - 1) : tier
-    given[id] = Math.min(use + 1, tiers.length)
-    givenAt[id] = Date.now()
-    if (use === tiers.length - 1) markHelped(SECRETS[id].ach)
-    setStep({ k: 'hint', text: tiers[use][lang], id: use === tiers.length - 1 && id !== 'moon' ? id : undefined })
+    given[e.id] = Math.min(use + 1, tiers.length)
+    givenAt[e.id] = Date.now()
+    if (use === tiers.length - 1) markHelped(e.ach)
+    setStep({ k: 'hint', text: tiers[use][lang], word: use === tiers.length - 1 ? e.word : undefined })
   }
 
   const refuse = () => { refusedUntil = Date.now() + 30000; setStep({ k: 'msg', text: ui.refused[lang] }) }
@@ -154,11 +160,17 @@ export default function HintBot({ lang, found, fire }: Props) {
           {step.k === 'hint' && (
             <div className="hb-body">
               <p className="hb-hint">{step.text}</p>
-              {step.id && <div className="hb-opts"><button className="btn" onClick={() => { const id = step.id!; setOpen(false); setStep(null); fire(id) }}>{ui.fire[lang]}</button></div>}
+              {step.word && <div className="hb-opts"><button className="btn" onClick={() => { const w = step.word!; setOpen(false); setStep(null); fire(w) }}>{ui.fire[lang]}</button></div>}
             </div>
           )}
           {step.k === 'msg' && <div className="hb-body"><p>{step.text}</p></div>}
         </div>
+      )}
+      {clip && (
+        <Clip
+          name="tell-me" label={ui.clipLabel[lang]} lang={lang}
+          onClose={(sec) => { setClip(false); if (sec >= 3) award('asked'); reveal(true) }}
+        />
       )}
     </div>
   )

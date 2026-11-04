@@ -45,7 +45,7 @@ for (const [name, viewport] of [['desktop', { width: 1280, height: 800 }], ['pho
   const has = await p.locator('.rick-video').count()
   if (has) {
     const info = await p.locator('.rick-video').evaluate((v) => ({ tag: v.tagName, loop: v.loop, src: v.currentSrc || v.src }))
-    check(info.tag === 'VIDEO' && info.loop && /rick-90\.mp4$/.test(info.src), `rick roll is the local ${info.src}, looping`)
+    check(info.tag === 'VIDEO' && info.loop && /rick\.mp4$/.test(info.src), `rick roll is the local ${info.src}, looping`)
     check(reqs.length === 0, 'no request to YouTube')
   } else console.log('skip rick: did not fire in this run')
   await p.close()

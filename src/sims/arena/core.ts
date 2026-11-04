@@ -194,7 +194,7 @@ export function runTest(kind: Chassis, test: TestKind): { result: TestResult; pa
 export type PairPhase = 'idle' | 'scanning' | 'pairing' | 'connected' | 'failed'
 export type Pairing = { phase: PairPhase; t: number; attempts: number; failMsg: number }
 export const initPairing = (): Pairing => ({ phase: 'idle', t: 0, attempts: 0, failMsg: -1 })
-export const SCAN_S = 1.2, PAIR_S = 1.3
+export const SCAN_S = 0.5, PAIR_S = 0.5
 export const FAILURE_MESSAGE_COUNT = 5
 
 export function startPairing(p: Pairing): Pairing {

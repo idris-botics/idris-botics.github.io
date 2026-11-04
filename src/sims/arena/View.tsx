@@ -59,9 +59,20 @@ const T = {
   connect: { en: 'Connect Bluetooth (simulated)', ja: 'Bluetooth接続（模擬）' },
   disconnect: { en: 'Disconnect (simulated)', ja: '切断（模擬）' },
   idle: { en: 'Not connected. Press Connect to drive, or run a test below.', ja: '未接続です。操縦するには接続してください（下のテストは接続なしで実行できます）。' },
-  scanning: { en: 'Scanning for HC-05 ...', ja: 'HC-05を検索中...' },
-  pairing: { en: 'Pairing ...', ja: 'ペアリング中...' },
-  connected: { en: 'Connected (simulated). Click the arena, then use WASD or arrows.', ja: '接続しました（模擬）。アリーナをクリックしてWASDまたは矢印キーで操縦。' },
+  scanning: { en: 'Searching...', ja: '検索中...' },
+  pairing: { en: 'Found HC-05... connecting...', ja: 'HC-05を発見... 接続中...' },
+  connected: { en: 'Connected to HC-05. Drive with the arrow keys, WASD or the pad.', ja: 'HC-05に接続しました。矢印キー・WASD・パッドで操縦できます。' },
+  tryAgain: { en: 'Try again', ja: 'もう一度' },
+  howTitle: { en: 'How to drive', ja: '操縦のしかた' },
+  how1: { en: 'Connect: press the Bluetooth button.', ja: '接続：Bluetoothボタンを押します。' },
+  how2: { en: 'Choose a vehicle: 2-wheel, 4-wheel or tank.', ja: '車両を選ぶ：2輪、4輪、クローラーから。' },
+  how3: { en: 'Drive: arrow keys, WASD or the on-screen pad.', ja: '操縦：矢印キー、WASD、または画面のパッド。' },
+  holding: { en: 'Now', ja: '操作中' },
+  noInput: { en: 'no input', ja: '入力なし' },
+  fwd: { en: 'forward', ja: '前進' }, back: { en: 'reverse', ja: '後退' }, left2: { en: 'left', ja: '左' }, right2: { en: 'right', ja: '右' },
+  pad: { en: 'Drive pad', ja: '操縦パッド' },
+  stop: { en: 'Stop', ja: '停止' },
+  vehicles: { en: 'The three vehicles', ja: '3つの車両' },
   stick: { en: 'Virtual joystick', ja: '仮想ジョイスティック' },
   arena: { en: 'Drive arena. Focus here and use WASD or arrow keys.', ja: 'ドライブ・アリーナ。ここにフォーカスしてWASDまたは矢印キーで操縦。' },
   left: { en: 'Left motor PWM', ja: '左モーターPWM' },
@@ -79,6 +90,11 @@ const T = {
   hudTurn: { en: 'turn', ja: '旋回' },
   hudSlide: { en: 'slide', ja: '横滑り' },
   rubble: { en: 'rubble', ja: 'がれき' },
+}
+const VEHICLE_LINES: Record<Chassis, L> = {
+  castor: { en: 'Two driven wheels and a free castor. Turns on the spot, quickest to accelerate. Best on smooth floor, stopped by rubble.', ja: '駆動輪2つと自由キャスター。その場で回転でき、加速が最速。平らな床向きで、がれきには弱い。' },
+  fourwd: { en: 'Four driven wheels. Turns by scrubbing sideways, so wide turns with some slide. Steady and grippy in a straight line.', ja: '駆動輪4つ。横にこすって曲がるため旋回は大回りで少し滑る。直進は安定してグリップが良い。' },
+  tank: { en: 'Two tracks, steered by running one faster. Slowest, but climbs over small rubble. Best on rough ground.', ja: 'クローラー2本。片側を速くして曲がる。最も遅いが小さながれきを越える。不整地向き。' },
 }
 const PROFILE_LABEL: Record<keyof (typeof PROFILE)['castor'], L> = {
   agility: { en: 'Agility', ja: '機敏さ' },
@@ -160,6 +176,10 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
   const keys = useRef(new Set<string>())
   const stick = useRef<Input>({ throttle: 0, turn: 0 })
   const knob = useRef<HTMLDivElement>(null)
+  const pad = useRef(new Set<string>())
+  const activeRef = useRef(false)
+  const arena = useRef<HTMLDivElement>(null)
+  const [ctl, setCtl] = useState('')
   const lastUi = useRef(0)
   const trail = useRef<{ x: number; y: number }[]>([])
   const trailTick = useRef(0)
@@ -169,7 +189,9 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
 
   useEffect(() => {
     if (pair.phase !== 'scanning' && pair.phase !== 'pairing') return
-    const id = setInterval(() => setPair((p) => stepPairing(p, 0.05, pairingFailures)), 50)
+    // real elapsed time, so a busy page still pairs in about a second
+    let last = performance.now()
+    const id = setInterval(() => { const now = performance.now(); const dt = Math.min(0.5, (now - last) / 1000); last = now; setPair((p) => stepPairing(p, dt, pairingFailures)) }, 50)
     return () => clearInterval(id)
   }, [pair.phase, pairingFailures])
 
@@ -177,7 +199,7 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
     const ts = test.current
     if (ts) return testInput(ts.kind)
     if (!connected) return { throttle: 0, turn: 0 }
-    const k = keysToInput(keys.current), s = stick.current
+    const k = keysToInput(new Set([...keys.current, ...pad.current])), s = stick.current
     return { throttle: Math.max(-1, Math.min(1, k.throttle + s.throttle)), turn: Math.max(-1, Math.min(1, k.turn + s.turn)) }
   }
 
@@ -245,6 +267,10 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
       lastUi.current = now
       const m = mix(currentInput())
       setPwmL(pwm(m.l) * Math.sign(m.l || 1)); setPwmR(pwm(m.r) * Math.sign(m.r || 1))
+      const ci = currentInput(), parts: string[] = []
+      if (ci.throttle > 0.2) parts.push(tt(T.fwd)); else if (ci.throttle < -0.2) parts.push(tt(T.back))
+      if (ci.turn < -0.2) parts.push(tt(T.left2)); else if (ci.turn > 0.2) parts.push(tt(T.right2))
+      setCtl(parts.join(' + '))
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kind, lang, connected])
@@ -268,13 +294,26 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
   }
   const switchKind = (k: Chassis) => { setKind(k); bot.current = initBot(); trail.current = []; test.current = null; setResult(null) }
 
+  // Arrow keys and WASD drive the bot wherever the focus is, while connected and the sim is on screen; the page does not scroll for them
+  useEffect(() => {
+    const KEYS = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright']
+    const typing = (el: EventTarget | null) => el instanceof HTMLElement && (el.isContentEditable || /^(input|textarea|select)$/i.test(el.tagName))
+    const down = (e: KeyboardEvent) => {
+      const k = e.key.toLowerCase()
+      if (!KEYS.includes(k) || e.ctrlKey || e.metaKey || e.altKey || typing(e.target) || !connected || !activeRef.current) return
+      e.preventDefault(); keys.current.add(k)
+    }
+    const up = (e: KeyboardEvent) => { const k = e.key.toLowerCase(); if (KEYS.includes(k) && keys.current.delete(k) && connected && activeRef.current) e.preventDefault() }
+    const clear = () => keys.current.clear()
+    addEventListener('keydown', down, true); addEventListener('keyup', up, true); addEventListener('blur', clear)
+    return () => { removeEventListener('keydown', down, true); removeEventListener('keyup', up, true); removeEventListener('blur', clear); keys.current.clear() }
+  }, [connected])
+  useEffect(() => { if (connected) arena.current?.focus({ preventScroll: true }) }, [connected])
+  const hold = (k: string) => ({
+    onPointerDown: (e: React.PointerEvent) => { e.preventDefault(); (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId); if (connected) pad.current.add(k) },
+    onPointerUp: () => { pad.current.delete(k) }, onPointerCancel: () => { pad.current.delete(k) }, onLostPointerCapture: () => { pad.current.delete(k) },
+  })
   const status = pair.phase === 'failed' ? t(FAIL_MSG[pair.failMsg]) : t(T[pair.phase === 'idle' ? 'idle' : pair.phase])
-  const onKey = (down: boolean) => (e: React.KeyboardEvent) => {
-    const k = e.key.toLowerCase()
-    if (!['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(k)) return
-    e.preventDefault()
-    if (down) keys.current.add(k); else keys.current.delete(k)
-  }
   const moveStick = (e: React.PointerEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect()
     const dx = ((e.clientX - r.left) / r.width - 0.5) * 2, dy = ((e.clientY - r.top) / r.height - 0.5) * 2
@@ -295,7 +334,11 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
   )
   const prof = PROFILE[kind]
 
-  return (
+  return (<>
+    <details className="howto surface" open>
+      <summary>{t(T.howTitle)}</summary>
+      <ol><li>{t(T.how1)}</li><li>{t(T.how2)}</li><li>{t(T.how3)}</li></ol>
+    </details>
     <SimShell
       title={T.title} lang={lang} summary={T.summary} note={T.note}
       running={running} onToggle={() => setRunning((r) => !r)}
@@ -309,13 +352,13 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
             ))}
           </div>
           <button className="btn" disabled={pair.phase === 'scanning' || pair.phase === 'pairing'} onClick={() => setPair((p) => (p.phase === 'connected' ? disconnect(p) : startPairing(p)))}>
-            {connected ? t(T.disconnect) : t(T.connect)}
+            {connected ? t(T.disconnect) : pair.phase === 'failed' ? t(T.tryAgain) : t(T.connect)}
           </button>
         </>
       }
     >
       {(active) => (
-        <ArenaLoop active={active && running} running={running} step={step} draw={draw}>
+        <ArenaLoop active={active && running} running={running} step={step} draw={draw} activeRef={activeRef}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: 8, color: '#e8ecf8' }}>
             <img src={`${BASE}media/img/${PHOTO[kind]}-640.webp`} alt="" width={120} height={84} loading="lazy" style={{ width: 120, height: 84, objectFit: 'cover', borderRadius: 8, border: '1px solid #3a3f47', flex: 'none' }} />
             <div style={{ flex: 1, minWidth: 220, fontSize: 13, lineHeight: 1.5 }}>
@@ -333,7 +376,7 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
               ))}
             </div>
           </div>
-          <div tabIndex={0} role="group" aria-label={t(T.arena)} onKeyDown={onKey(true)} onKeyUp={onKey(false)} onBlur={() => keys.current.clear()} style={{ outlineOffset: 2 }}>
+          <div ref={arena} tabIndex={0} role="group" aria-label={t(T.arena)} style={{ outlineOffset: 2 }}>
             <canvas ref={cv} width={ARENA.w} height={ARENA.h} role="img" aria-label={t(T.arena)} />
           </div>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
@@ -346,10 +389,16 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
             >
               <div ref={knob} style={{ position: 'absolute', left: 38, top: 38, width: 44, height: 44, borderRadius: '50%', background: ORANGE, opacity: connected ? 1 : 0.4 }} />
             </div>
+            <div role="group" aria-label={t(T.pad)} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 44px)', gridTemplateRows: 'repeat(3, 44px)', gap: 4, flex: 'none', touchAction: 'none', opacity: connected ? 1 : 0.5 }}>
+              {([['arrowup', '▲', '1 / 2', T.fwd], ['arrowleft', '◀', '2 / 1', T.left2], ['arrowright', '▶', '2 / 3', T.right2], ['arrowdown', '▼', '3 / 2', T.back]] as const).map(([k, g, area, lab]) => (
+                <button key={k} className="btn dpad" aria-label={t(lab)} {...hold(k)} style={{ gridArea: area, padding: 0, minHeight: 44, minWidth: 44, justifyContent: 'center', touchAction: 'none' }}>{g}</button>
+              ))}
+              <button className="btn dpad" aria-label={t(T.stop)} onClick={() => pad.current.clear()} style={{ gridArea: '2 / 2', padding: 0, minHeight: 44, minWidth: 44, justifyContent: 'center' }}>■</button>
+            </div>
             <div style={{ flex: 1, minWidth: 200, display: 'grid', gap: 6 }}>
               {bar(pwmL, t(T.left))}
               {bar(pwmR, t(T.right))}
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: '#9fb0c4' }}>{t(T.steps)}</div>
+              <div role="status" aria-live="off" style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: '#e8ecf8' }}>{t(T.holding)}: {ctl || t(T.noInput)}</div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 8, flexWrap: 'wrap' }}>
@@ -367,10 +416,15 @@ export default function ArenaView({ lang, pairingFailures = 0 }: { lang: Lang; p
         </ArenaLoop>
       )}
     </SimShell>
-  )
+    <div className="vehicles surface">
+      <h4>{t(T.vehicles)}</h4>
+      <ul>{(Object.keys(CHASSIS) as Chassis[]).map((k) => <li key={k}><strong>{t(CHASSIS_LABEL[k])}.</strong> {t(VEHICLE_LINES[k])}</li>)}</ul>
+    </div>
+  </>)
 }
 
-function ArenaLoop(p: { active: boolean; running: boolean; step: (dt: number) => void; draw: () => void; children: React.ReactNode }) {
+function ArenaLoop(p: { active: boolean; running: boolean; step: (dt: number) => void; draw: () => void; activeRef: React.RefObject<boolean>; children: React.ReactNode }) {
+  p.activeRef.current = p.active
   useSimLoop({ running: p.running, active: p.active, step: p.step, draw: p.draw })
   return <>{p.children}</>
 }

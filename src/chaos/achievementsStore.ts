@@ -2,7 +2,7 @@
 // They survive two things: being evicted by the pet robot, and Chaos crashing and the page falling back to Calm.
 // That hand-over is kept in sessionStorage as { v, list, keep }. When the achievement list changes (a new secret, a renamed id), bump VERSION:
 // state saved by an older build is then thrown away, so a visitor never sees a stale count such as 10/12.
-export const ACH_VERSION = 3
+export const ACH_VERSION = 4
 export const ACH_KEY = 'achievements-state'
 const LEGACY_KEYS = ['achievements'] // an older build kept the list in localStorage forever
 

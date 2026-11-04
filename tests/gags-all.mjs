@@ -102,6 +102,7 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
 // 6. cookie banner: appears, is eaten bite by bite, leaves; the Eat it button works
 {
   const p = await fresh({ rand: 0.99, skip: ['rolled', 'cena'] })
+  await p.evaluate(() => dispatchEvent(new CustomEvent('portfolio:repeat-event', { detail: 'cookie' }))) // it now comes by itself after 20 to 90 s; force it for the test
   await p.waitForSelector('.cookie', { timeout: 20000 }).catch(() => {})
   out((await p.locator('.cookie').count()) === 1, 'cookie banner appears')
   await sleep(4000)

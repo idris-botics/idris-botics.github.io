@@ -858,3 +858,23 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
   .hero-photo video, .hero-photo img { height: 100%; aspect-ratio: auto; flex: 1; min-height: 0; object-fit: cover; }
 }
 @media (min-width: 801px) { .hero-grid { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.3fr); } }
+.howto { margin: 0 0 14px; }
+.howto summary { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.howto ol { margin: 6px 0 4px; padding-left: 1.5em; display: grid; gap: 4px; list-style: decimal; }
+.howto li::marker { font-weight: 700; color: var(--accent-text); }
+.vehicles { margin: 14px 0 0; }
+.vehicles h4 { margin: 0 0 8px; font-size: 1.05rem; }
+.vehicles ul { margin: 0; padding-left: 1.2em; display: grid; gap: 8px; list-style: disc; }
+.dpad { background: #11151f; color: #e8ecf8; border: 2px solid #00B4D8; }
+
+/* phones: no text under 14 px anywhere (labels, nav, buttons, small print) */
+@media (max-width: 767px) {
+  .site-header nav a, .site-header .btn, .btn, .chip, .tile-spec, .tile-text .tile-spec, .award-year, .when, .award-group h3, .quiet, .tag, .mono, .eyebrow, .kicker, .photo-strip p, .also, .tools, figcaption, .sim-caption, .sim-readout { font-size: max(14px, 1em); }
+  .site-header nav { gap: 8px; }
+  .site-header nav a { letter-spacing: 0; }
+}
+@media (max-width: 480px) {
+  /* five links and the language button must fit at 360 px with 14 px text: use the narrower body face, no capitals */
+  .site-header nav a { font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 14px; padding: 0 4px; min-width: 44px; }
+  .site-header nav { gap: 2px; }
+}
