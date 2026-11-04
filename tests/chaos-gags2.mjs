@@ -33,8 +33,11 @@ await p.waitForTimeout(3600)
 check('text re-forms', (await p.locator('.shard').count()) === 0)
 
 // dodge
+for (let i = 0; i < 3 && (await p.locator('.rick, .cena').count()); i++) { await p.keyboard.press('Escape'); await p.waitForTimeout(500) } // the rick roll or Cena may have fired while scrolling: Esc closes them
+await p.waitForSelector('.omae', { state: 'detached', timeout: 10000 }).catch(() => {})
 const chip = p.locator('.hero-actions a.btn').first()
-await chip.scrollIntoViewIfNeeded()
+await p.mouse.move(5, 5); await p.waitForTimeout(300)
+await p.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await p.waitForTimeout(600)
 const before = await chip.boundingBox()
 await chip.hover({ force: true })
 await p.waitForTimeout(450)

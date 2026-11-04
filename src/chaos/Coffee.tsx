@@ -61,6 +61,7 @@ export default function Coffee({ lang, say, award, start, end, fire }: Props & {
     if (!fire.n) return
     const n = ++times.current
     if (n === 1) award('coffee')
+    dispatchEvent(new Event('portfolio:coffee')) // the workbench arm drops a cup
     if (reduced()) { setRings((r) => Math.max(r, 1)); cap('coffee-r', 5000); return }
     if (n === 1) { if (start()) brew(); else times.current-- ; return }
     if (n === 2) { sfx('boing'); cap('coffee-c2') }

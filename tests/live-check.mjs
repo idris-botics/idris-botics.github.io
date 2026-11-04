@@ -27,4 +27,6 @@ const m = await b.newPage({ viewport: { width: 390, height: 844 }, isMobile: tru
 await m.goto(url, { waitUntil: 'networkidle' })
 log(!(await m.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1)), 'phone: no horizontal scroll')
 await m.screenshot({ path: 'tests/out/live-phone.png' })
+for (const s of ['cpu8', 'swarm']) { await p.goto(url + '#work/' + s, { waitUntil: 'networkidle' }); await p.waitForTimeout(800); await p.screenshot({ path: `tests/out/live-${s}.png` }) }
+log((await p.locator('text=1,239').count()) >= 0, 'screenshots saved')
 await b.close()

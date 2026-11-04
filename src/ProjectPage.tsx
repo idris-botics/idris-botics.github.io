@@ -35,6 +35,10 @@ const ui = {
   whatsNew: { en: 'New in v2', ja: 'v2の新機能' },
   changelog: { en: 'Changelog', ja: '変更履歴' },
   noSound: { en: 'no sound', ja: '音声なし' },
+  specStatus: { en: 'Status', ja: '状態' },
+  specKind: { en: 'Kind', ja: '種類' },
+  specStack: { en: 'Stack', ja: '技術' },
+  specDesign: { en: 'Design', ja: '設計' },
 }
 
 const thumbOf = (p: Project) => {
@@ -195,9 +199,15 @@ export default function ProjectPage({ project }: { project: Project }) {
             </div>
           )}
           <div className="page-intro">
-            <p className="pw-status">{String(idx + 1).padStart(2, '0')} / {String(order.length).padStart(2, '0')} · {statusLabel[project.status][lang]}</p>
+            <p className="pw-status">{String(idx + 1).padStart(2, '0')} / {String(order.length).padStart(2, '0')}</p>
             <h1 id="pg-h" className="page-title">{t(project.title)}</h1>
             <p className="pw-lead">{info?.line ? t(info.line) : t(project.blurb)}</p>
+            <dl className="spec">
+              <div><dt>{t(ui.specStatus)}</dt><dd>{statusLabel[project.status][lang]}</dd></div>
+              <div><dt>{t(ui.specKind)}</dt><dd>{t(project.eyebrow)}</dd></div>
+              {project.tags.length > 0 && <div><dt>{t(ui.specStack)}</dt><dd>{project.tags.join(' · ')}</dd></div>}
+              {project.credit && <div><dt>{t(ui.specDesign)}</dt><dd>{t(project.credit).replace(/^[^:：]*[:：]\s*/, '')}</dd></div>}
+            </dl>
             {project.summary.mine && <section className="pw-sec"><h2>{t(ui.mine)}</h2><p>{t(project.summary.mine)}</p></section>}
             {rows.map((k) => <section className="pw-sec" key={k}><h2>{t(ui[k])}</h2><p>{t(project.summary[k]!)}</p></section>)}
             {project.paper && (

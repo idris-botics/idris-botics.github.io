@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useStore } from './store'
+import { SectionTitle } from './Dim'
 import { Reveal } from './Reveal'
 import { mediaBase } from './Gallery'
 import { openProject } from './route'
@@ -82,7 +83,7 @@ function FeaturedTile({ p, lang }: { p: Project; lang: 'en' | 'ja' }) {
         <span className="tile-text">
           {info.tag && <span className="tile-tag">{t(info.tag)}</span>}
           <strong>{t(info.short)}</strong>
-          <span>{info.line && t(info.line)}</span>
+          <span className="tile-spec">{p.tags.join(' · ')}</span>
           {info.did && <span className="tile-did">{t(info.did)}</span>}
         </span>
         <ArrowUpRight className="tile-go" size={18} aria-hidden="true" />
@@ -117,7 +118,7 @@ export default function Work() {
   return (
     <section id="work" className="sec" aria-labelledby="wk">
       <div className="wrap">
-        <h2 id="wk">{lang === 'en' ? 'Work' : '制作'}</h2>
+        <SectionTitle id="wk">{lang === 'en' ? 'Work' : '制作'}</SectionTitle>
         <div className="tiles">
           {featured.map((s, i) => <Reveal key={s} delay={i * 50}><FeaturedTile p={project(s)} lang={lang} /></Reveal>)}
         </div>

@@ -144,6 +144,7 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   out((await p.locator('.pile-note').count()) === 1, 'gravity: the notice is on screen')
   await p.mouse.click(700, 300); await p.mouse.click(300, 500); await sleep(500)
   out((await p.locator('.toast, .stamp, .cookie').count()) === 0, 'gravity: no comments, stamps or banners pop up on top')
+  if (await p.locator('.lightbox').count()) await p.keyboard.press('Escape') // a stray click can land on a picture
   await p.locator('.pile-x').click()
   await sleep(1500)
   out((await p.locator('.moon').count()) === 0, 'no second press while the page is still being put back')
