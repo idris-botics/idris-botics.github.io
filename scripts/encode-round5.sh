@@ -11,8 +11,7 @@ mp4() { # name src width crf audio-kbps
 }
 mp4 cat "cat.mp4" 480 36 56
 mp4 soccer-run "robosoccer vid.mp4" 720 32 64
-mp4 cena "HIS NAME IS JOHN CENA.mp4" 512 36 56
-mp4 rick "Rick_Astley_Never_Gonna_Give_You_Up.avi" 512 36 56
+# Rick and Cena stay as the earlier 90-second cuts (public/media/vid/rick-90.mp4 and cena-90.mp4): Idris asked to keep them, so they are not re-encoded here
 ffmpeg -y -v error -i "hint video.mp4" -map_metadata -1 -c copy -movflags +faststart "$OUT/tell-me.mp4" # 0.9 MB already: only the metadata is stripped
 ffmpeg -y -v error -ss 1 -i "hint video.mp4" -frames:v 1 -q:v 4 -map_metadata -1 "$IMG/tell-me-poster.jpg"
 

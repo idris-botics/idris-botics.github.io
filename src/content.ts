@@ -345,31 +345,6 @@ export const projects: Project[] = [
     tags: ['Bluetooth', 'drivetrain', 'ESP32'],
   },
   {
-    slug: 'robosoccer',
-    tier: 'foundation',
-    eyebrow: { en: 'Robot soccer event', ja: 'ロボットサッカーの大会' },
-    title: { en: 'Robo Soccer', ja: 'ロボサッカー' },
-    status: 'BUILT',
-    loops: ['act', 'sense'],
-    // TODO(idris): the year, the event name and what exactly failed on the bot. Hidden until filled in; the text below does not depend on them.
-    blurb: {
-      en: 'A small two-wheeled robot with a castor, sent to play robot soccer. It lost, badly, and taught me more than a win would have.',
-      ja: '小さなキャスター付き二輪ロボットで、ロボットサッカーに出場しました。大敗でしたが、勝つよりも多くを教えてくれました。',
-    },
-    summary: {
-      status: {
-        en: 'I lost badly. The people there were kind and took pity on my bot, and I am grateful. The other teams went easy on it, and it still lost. It ran fine on my desk, and a desk does not push back. Next time I test it on a real pitch against something that fights back, and I ask the other teams how they did it.',
-        ja: '大敗しました。会場の皆さんは親切で、私のロボットを気の毒に思って手加減してくれました。感謝しています。それでも負けました。机の上では問題なく動きましたが、机は押し返してきません。次は本物のピッチで、手強い相手を想定してテストし、他のチームにやり方を聞きます。',
-      },
-    },
-    media: [
-      IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280], caption: { en: 'Robo Soccer, second attempt', ja: 'ロボサッカー、2回目の挑戦' } }),
-    ],
-    videos: [{ src: 'soccer-run', poster: 'soccer-run-poster', caption: { en: 'The full run. It does not go well.', ja: '試合の全記録。うまくはいきません。' } }],
-    leadVideo: true,
-    tags: ['robot soccer', 'ESP32', 'two-wheel'],
-  },
-  {
     slug: 'pipe',
     tier: 'foundation',
     eyebrow: { en: 'Hackathon idea proposal', ja: 'ハッカソン提案' },
@@ -562,7 +537,6 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   spider: { short: { en: 'Spider quadruped', ja: 'クモ型四足ロボット' }, strip: { en: 'Eight servos', ja: 'サーボ8個' } },
   stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
   vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
-  robosoccer: { short: { en: 'Robo Soccer', ja: 'ロボサッカー' }, strip: { en: 'A hard loss, honestly told', ja: '大敗の正直な記録' } },
   pipe: { short: { en: 'Pipe robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
   stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 coming', ja: 'AI向けCAD、v2開発中' } },
   subtlebotic: { short: { en: 'Neuro-robotics internship', ja: 'ニューロロボティクスのインターン' }, strip: { en: 'Electronics for BCI', ja: 'BCI向け電子回路' } },
@@ -579,11 +553,13 @@ export const pathRows: { when: string; text: L }[] = [
 ]
 
 /** Beyond the lab: a photo strip with short captions. Only photos already published on the site. */
-export const strip: { media: Media; caption: L; link?: { href: string; label: L } }[] = [
+export const strip: { media: Media; caption: L; link?: { href: string; label: L }; video?: { src: string; poster: string; label: L } }[] = [
   { media: IMG('li-emcee', 624, 360, { en: 'The author on stage at the lectern during the First-Year Inauguration of Easwari Engineering College.', ja: 'Easwari Engineering Collegeの新入生歓迎式典で、演台に立つ本人。' }, { widths: [640] }), caption: { en: 'Emcee, first-year inauguration', ja: '新入生歓迎式典の司会' }, link: { href: 'https://www.youtube.com/watch?v=mXb8H1wp9NQ', label: { en: 'Watch the recording on YouTube', ja: 'YouTubeで録画を見る' } } },
   { media: IMG('li-podcast-logo', 1280, 720, { en: 'The Elite Encounters set: the author and a guest at the desk, with the show logo on the screen behind them.', ja: 'Elite Encountersの収録風景：机を挟んで座る本人とゲスト、背後のスクリーンに番組ロゴ。' }, { widths: [640, 1280] }), caption: { en: 'Hosting a college podcast', ja: '大学のポッドキャスト司会' }, link: { href: 'https://youtu.be/Q-IukgMDHOI', label: { en: 'Watch the episode on YouTube', ja: 'YouTubeでエピソードを見る' } } },
   { media: IMG('li-print-result', 480, 640, { en: 'The printed dragon keychain in orange and blue on a tiled table.', ja: 'オレンジと青で印刷されたドラゴンのキーホルダー。' }, { widths: [640] }), caption: { en: 'My first 3D print', ja: '初めての3Dプリント' } },
-  { media: IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280] }), caption: { en: 'Robo Soccer, second attempt', ja: 'ロボサッカー、2回目の挑戦' } },
+  { media: IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280] }), caption: { en: 'Robo Soccer: a hard loss', ja: 'ロボサッカー：大敗' },
+    // the full run; the label is the honest version of the story. TODO(idris): the year, the event and what failed on the bot (hidden until given).
+    video: { src: 'soccer-run', poster: 'soccer-run-poster', label: { en: 'The full Robo Soccer run. I lost badly, and the people there were kind and took pity on my bot.', ja: 'ロボサッカーの試合の全記録。大敗でした。会場の皆さんは親切で、私のロボットを気の毒に思ってくれました。' } } },
 ]
 
 // TODO(idris): the new podcast (name, date, link). Hidden until filled in; add it to `strip` above when known (docs/ANSWERS-NEEDED.md).

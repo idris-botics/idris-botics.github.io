@@ -998,7 +998,7 @@ export default function Chaos() {
           <p className="cena-a" aria-hidden="true">{lang === 'en' ? 'AND HIS NAME IS' : 'そして彼の名は'}</p>
           {cena > 1 && <p className="cena-b" aria-hidden="true">JOHN CENA</p>}
           {cena > 2 && (
-            <LoopVideo className="cena-video" name="cena" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
+            <LoopVideo className="cena-video" name="cena-90" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
           )}
           {cena > 2 && (
             <button ref={cenaX} className="btn cena-x" autoFocus aria-label={lang === 'en' ? 'Close' : '閉じる'}
@@ -1045,7 +1045,7 @@ export default function Chaos() {
             <X size={22} aria-hidden="true" />
           </button>
           <div className="rick-box">
-            <LoopVideo className="rick-video" name="rick" label={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'} />
+            <LoopVideo className="rick-video" name="rick-90" label={lang === 'en' ? 'Never Gonna Give You Up' : '定番の一曲'} />
           </div>
         </div>
       )}

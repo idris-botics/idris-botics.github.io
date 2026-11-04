@@ -267,7 +267,11 @@ export default function App() {
             <ul className="photo-strip">
               {strip.map((s) => (
                 <li key={s.media.src}>
-                  <Gallery items={[s.media]} lang={lang} />
+                  {s.video ? (
+                    <video className="strip-video" controls playsInline preload="none" width={1280} height={600} poster={`${import.meta.env.BASE_URL}media/img/${s.video.poster}-640.webp`} aria-label={t(s.video.label)}>
+                      <source src={`${import.meta.env.BASE_URL}media/vid/${s.video.src}.mp4`} type="video/mp4" />
+                    </video>
+                  ) : <Gallery items={[s.media]} lang={lang} />}
                   <p>{s.link ? <a href={s.link.href} target="_blank" rel="noopener noreferrer" aria-label={t(s.link.label)}>{t(s.caption)} <ExternalLink size={12} aria-hidden="true" /></a> : t(s.caption)}</p>
                 </li>
               ))}

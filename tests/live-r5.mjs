@@ -6,10 +6,8 @@ const b = await chromium.launch({ args: ['--autoplay-policy=no-user-gesture-requ
 let bad = 0
 const ok = (c, m) => { console.log(c ? 'PASS' : 'FAIL', m); if (!c) bad++ }
 const SKIP = () => { try { sessionStorage.setItem('rolled', '1'); sessionStorage.setItem('cena', '1'); sessionStorage.setItem('cookie', '1') } catch { /* ignore */ } }
-for (const f of ['cat.mp4', 'rick.mp4', 'cena.mp4', 'tell-me.mp4', 'soccer-run.mp4']) { const r = await fetch(U + 'media/vid/' + f, { method: 'HEAD' }); ok(r.ok, `${f} served (${r.headers.get('content-length')} bytes)`) }
+for (const f of ['cat.mp4', 'rick-90.mp4', 'cena-90.mp4', 'tell-me.mp4', 'soccer-run.mp4']) { const r = await fetch(U + 'media/vid/' + f, { method: 'HEAD' }); ok(r.ok, `${f} served (${r.headers.get('content-length')} bytes)`) }
 for (const f of ['idris-whimsy-960.jpg', 'idris-whimsy-960.avif', 'cat-poster.webp']) { const r = await fetch(U + 'media/img/' + f, { method: 'HEAD' }); ok(r.ok, `${f} served`) }
-const share = await (await fetch(U + 'work/robosoccer/')).text()
-ok(/og:title" content="Robo Soccer/.test(share) && /og\/robosoccer\.png/.test(share), 'the Robo Soccer share page has its own title and image')
 
 const ctx = await b.newContext({ viewport: { width: 1440, height: 900 } })
 await ctx.addInitScript(SKIP)
@@ -17,7 +15,7 @@ const p = await ctx.newPage(); const errs = []; p.on('pageerror', (e) => errs.pu
 await p.goto(U, { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(3000)
 ok((await p.locator('main h2').allInnerTexts()).join('|') === 'Work|About|Publications and awards|Path|Beyond the lab|Contact', 'home sections in order')
 await p.screenshot({ path: 'tests/out/live-r5-home.png' })
-for (const slug of ['vehicles', 'robosoccer']) {
+for (const slug of ['vehicles']) {
   await p.goto(U + '#work/' + slug, { waitUntil: 'domcontentloaded' }); await p.reload({ waitUntil: 'domcontentloaded' }); await p.waitForTimeout(2500)
   ok(await p.locator('.interest').count() === 1, `#work/${slug} after a hard refresh shows the project`)
   await p.screenshot({ path: `tests/out/live-r5-${slug}.png`, fullPage: false })

@@ -16,7 +16,7 @@ for (const s of ['pid', 'robodog']) {
   await p.screenshot({ path: `tests/out/live-${s}.png` })
 }
 await p.goto(url + '#work/swarm', { waitUntil: 'networkidle' }); await p.waitForSelector('.iso-figure', { timeout: 8000 }).then(() => log(true, 'swarm figure renders'), () => log(false, 'swarm figure'))
-const v = await p.request.get(url + 'media/vid/rick.mp4'); log(v.ok(), 'rick.mp4 served')
+const v = await p.request.get(url + 'media/vid/rick-90.mp4'); log(v.ok(), 'rick-90.mp4 served')
 const pdf = await p.request.get(url + 'papers/ASANS-ICCORSE-2026.pdf'); log(pdf.ok(), 'paper PDF served')
 await p.goto(url, { waitUntil: 'networkidle' })
 await enterChaos(p).then(() => log(true, 'Chaos entry works'), (e) => log(false, 'Chaos entry ' + e.message.slice(0, 80)))
