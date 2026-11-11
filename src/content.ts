@@ -373,14 +373,15 @@ export const projects: Project[] = [
     status: 'BUILT',
     loops: ['decide'],
     blurb: {
-      en: 'Reads a STEP file and extracts its real geometry (holes, assemblies, kinematics) so an AI assistant can reason about a CAD model. Built to avoid re-describing the same model in every conversation. Existing tools may cover parts of this; the aim was a small offline tool that fits my own workflow.',
-      ja: 'STEPファイルから実際の形状情報（穴、アセンブリ、運動学）を抽出し、AIアシスタントがCADモデルを理解できるようにするツールです。毎回同じモデルを説明し直す手間をなくすために作りました。既存のツールが一部を担える可能性もありますが、自分の作業に合う小さなオフラインツールを目指しました。',
+      en: 'Reads a STEP file and extracts its real geometry (holes, assemblies, joints and kinematics, with a URDF for robots) so an AI assistant can reason about a CAD model. Built to avoid re-describing the same model in every conversation. Existing tools may cover parts of this; the aim was a small offline tool that fits my own workflow.',
+      ja: 'STEPファイルから実際の形状情報（穴、アセンブリ、関節と運動学、ロボットはURDF付き）を抽出し、AIアシスタントがCADモデルを理解できるようにするツールです。毎回同じモデルを説明し直す手間をなくすために作りました。既存のツールが一部を担える可能性もありますが、自分の作業に合う小さなオフラインツールを目指しました。',
     },
     summary: {
       method: { en: 'Runs offline, with a command line, a local web page, an MCP server and a Claude Code plugin. Published on PyPI as stepscribe-cad.', ja: 'オフラインで動作。コマンドライン、ローカルWebページ、MCPサーバ、Claude Codeプラグインを備え、PyPIに stepscribe-cad として公開。' },
       status: { en: 'Not yet checked against a CAD system for accuracy; verify important numbers there.', ja: 'CADシステムとの精度照合は未実施のため、重要な数値は別途確認してください。' },
     },
-    videos: [{ src: 'stepscribe', poster: 'stepscribe-poster', caption: { en: 'Short demo: a STEP file in, a readable description out', ja: '短い紹介：STEPファイルを入力し、読みやすい説明を出力' } }],
+    leadVideo: true,
+    videos: [{ src: 'stepscribe-v2', poster: 'stepscribe-poster', caption: { en: 'stepscribe 2.0: one STEP file of a six-axis arm in, joints, URDF and drawings out', ja: 'stepscribe 2.0：6軸アームのSTEPファイル1つから、関節、URDF、図面を出力' } }],
     link: { href: 'https://github.com/idris-botics/stepscribe-cad', label: { en: 'Source on GitHub', ja: 'GitHubのソース' } },
     tags: ['CAD', 'MCP', 'Python'],
   },
@@ -538,7 +539,7 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
   vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
   pipe: { short: { en: 'Pipe robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
-  stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 coming', ja: 'AI向けCAD、v2開発中' } },
+  stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 out', ja: 'AI向けCAD、v2公開' } },
   subtlebotic: { short: { en: 'Neuro-robotics internship', ja: 'ニューロロボティクスのインターン' }, strip: { en: 'Electronics for BCI', ja: 'BCI向け電子回路' } },
 }
 

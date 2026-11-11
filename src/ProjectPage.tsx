@@ -32,7 +32,7 @@ const ui = {
   sim: { en: 'Simulation', ja: 'シミュレーション' },
   abstract: { en: 'Abstract', ja: '要旨' },
   versions: { en: 'Versions', ja: 'バージョン' },
-  whatsNew: { en: 'New in v2', ja: 'v2の新機能' },
+  whatsNew: { en: 'New in v2.0', ja: 'v2.0の新機能' },
   changelog: { en: 'Changelog', ja: '変更履歴' },
   noSound: { en: 'no sound', ja: '音声なし' },
   interested: { en: 'Interested in this project? Email me.', ja: 'このプロジェクトに興味がありますか？ メールでご連絡ください。' },
