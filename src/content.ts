@@ -377,9 +377,7 @@ export const projects: Project[] = [
       ja: 'STEPファイルから実際の形状情報（穴、アセンブリ、関節と運動学、ロボットはURDF付き）を抽出し、AIアシスタントがCADモデルを理解できるようにするツールです。毎回同じモデルを説明し直す手間をなくすために作りました。既存のツールが一部を担える可能性もありますが、自分の作業に合う小さなオフラインツールを目指しました。',
     },
     summary: {
-      method: { en: 'Runs offline, with a command line, a local web page, an MCP server and a Claude Code plugin. Published on PyPI as stepscribe-cad.', ja: 'オフラインで動作。コマンドライン、ローカルWebページ、MCPサーバ、Claude Codeプラグインを備え、PyPIに stepscribe-cad として公開。' },
-      status: { en: 'Not yet checked against a CAD system for accuracy; verify important numbers there.', ja: 'CADシステムとの精度照合は未実施のため、重要な数値は別途確認してください。' },
-    },
+      method: { en: 'Runs offline. Use it as a plugin for your AI assistant (MCP), from the terminal, or in a local web page when you would rather click. Published on PyPI as stepscribe-cad.', ja: 'オフラインで動作。AIアシスタントのプラグイン（MCP）としても、ターミナルからも、クリックで使えるローカルWebページでも利用できます。PyPIに stepscribe-cad として公開。' },    },
     leadVideo: true,
     videos: [
       { src: 'stepscribe-v2', poster: 'stepscribe-poster', caption: { en: 'v2.0: one STEP file of a six-axis arm in, joints, URDF and drawings out', ja: 'v2.0：6軸アームのSTEPファイル1つから、関節、URDF、図面を出力' } },

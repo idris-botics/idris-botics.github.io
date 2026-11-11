@@ -20,8 +20,8 @@ export const stepscribe: {
   releases: [
     {
       version: 'v2.1',
-      state: 'in development',
-      note: { en: 'Next: measured mass per part, density ranges on torque, and a check against an existing robot URDF.', ja: '次回：部品ごとの実測質量、トルクの密度レンジ、既存ロボットURDFとの照合。' },
+      state: 'released',
+      note: { en: 'Measured mass per part, density ranges on torque, and a check against an existing robot URDF. On PyPI as stepscribe-cad.', ja: '部品ごとの実測質量、トルクの密度レンジ、既存ロボットURDFとの照合。PyPIに stepscribe-cad として公開済み。' },
     },
     {
       version: 'v2.0',
