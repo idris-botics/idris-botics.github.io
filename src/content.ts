@@ -381,7 +381,10 @@ export const projects: Project[] = [
       status: { en: 'Not yet checked against a CAD system for accuracy; verify important numbers there.', ja: 'CADシステムとの精度照合は未実施のため、重要な数値は別途確認してください。' },
     },
     leadVideo: true,
-    videos: [{ src: 'stepscribe-v2', poster: 'stepscribe-poster', caption: { en: 'stepscribe 2.0: one STEP file of a six-axis arm in, joints, URDF and drawings out', ja: 'stepscribe 2.0：6軸アームのSTEPファイル1つから、関節、URDF、図面を出力' } }],
+    videos: [
+      { src: 'stepscribe-v2', poster: 'stepscribe-poster', caption: { en: 'v2.0: one STEP file of a six-axis arm in, joints, URDF and drawings out', ja: 'v2.0：6軸アームのSTEPファイル1つから、関節、URDF、図面を出力' } },
+      { src: 'stepscribe', poster: 'stepscribe-v1-poster', caption: { en: 'v1: a STEP file in, a readable description out', ja: 'v1：STEPファイルを入力し、読みやすい説明を出力' } },
+    ],
     link: { href: 'https://github.com/idris-botics/stepscribe-cad', label: { en: 'Source on GitHub', ja: 'GitHubのソース' } },
     tags: ['CAD', 'MCP', 'Python'],
   },
@@ -495,8 +498,8 @@ export const fieldEvents: L[] = [
 ]
 
 /** The Calm home page shows three featured builds as image-first tiles and the rest as a strip. Everything else lives in the project window. */
-// Featured: Idris's three proudest builds (answer 6): the 8-bit computer, RoboDog and the self-balancing swarm.
-export const featured = ['cpu8', 'robodog', 'swarm']
+// Featured: Idris's three proudest builds (answer 6): the 8-bit computer, RoboDog and stepscribe-cad (it replaced the self-balancing swarm in November 2026).
+export const featured = ['cpu8', 'robodog', 'stepscribe']
 /** The order of the project pages: the featured three first, then the rest. Previous and next follow it. */
 export const order = [...featured, ...projects.map((p) => p.slug).filter((x) => !featured.includes(x))]
 
@@ -539,7 +542,11 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
   vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
   pipe: { short: { en: 'Pipe robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
-  stepscribe: { short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' }, strip: { en: 'CAD for AI, v2 out', ja: 'AI向けCAD、v2公開' } },
+  stepscribe: {
+    short: { en: 'stepscribe-cad', ja: 'stepscribe-cad' },
+    line: { en: 'Reads a robot STEP file and writes its joints, a URDF and drawings.', ja: 'ロボットのSTEPファイルから、関節、URDF、図面を出力。' },
+    did: { en: 'Designed and built it; v2 is out on PyPI.', ja: '設計から実装まで自作。v2はPyPIで公開中。' },
+    strip: { en: 'CAD for AI, v2 out', ja: 'AI向けCAD、v2公開' } },
   subtlebotic: { short: { en: 'Neuro-robotics internship', ja: 'ニューロロボティクスのインターン' }, strip: { en: 'Electronics for BCI', ja: 'BCI向け電子回路' } },
 }
 
