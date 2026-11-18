@@ -572,8 +572,8 @@ export const strip: { media: Media; caption: L; link?: { href: string; label: L 
 
 // Update `asOf` whenever these numbers are re-checked in the apps (guide §24.10).
 export const habits = {
-  asOf: '2026-11-04',
-  duolingoDays: 1239,
+  asOf: '2026-11-18',
+  duolingoDays: 1252,
   leetcode: { solved: 587, activeDays: 276, maxStreak: 74 },
 }
 

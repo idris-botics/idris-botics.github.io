@@ -4,6 +4,7 @@ import { useStore } from './store'
 import { SimView } from './sims/registry'
 import { Gallery, mediaBase } from './Gallery'
 import { ProjectOpen } from './Extras'
+import { LoadGuard } from './LoadGuard'
 import { backToWork, gotoProject } from './route'
 import { stepscribe } from './content/stepscribe'
 import { links, order, projects, statusLabel, tiles, type Project } from './content'
@@ -80,7 +81,7 @@ function SimPanel({ project, lang }: { project: Project; lang: 'en' | 'ja' }) {
             <button className="btn" onClick={() => setOpen(false)}><Minimize2 size={14} aria-hidden="true" /> {t(ui.minimise)}</button>
           </div>
           {visible
-            ? <Suspense fallback={<p className="tag">{t(ui.loading)}</p>}><S lang={lang} /></Suspense>
+            ? <LoadGuard key={project.slug} lang={lang}><Suspense fallback={<p className="tag">{t(ui.loading)}</p>}><S lang={lang} /></Suspense></LoadGuard>
             : <div style={{ height: held.current }} aria-hidden="true" />}
         </>
       ) : (
@@ -232,7 +233,7 @@ export default function ProjectPage({ project }: { project: Project }) {
                 <button role="tab" className="chip" aria-selected={view === 'sim'} aria-pressed={view === 'sim'} onClick={() => setView('sim')}>{t(ui.sim)}</button>
               </div>
             )}
-            {view === 'rig' || !S ? <Suspense fallback={null}><Fig lang={lang} /></Suspense> : <SimPanel project={project} lang={lang} />}
+            {view === 'rig' || !S ? <LoadGuard key={project.slug} lang={lang}><Suspense fallback={null}><Fig lang={lang} /></Suspense></LoadGuard> : <SimPanel project={project} lang={lang} />}
           </div>
         ) : S && <SimPanel project={project} lang={lang} />}
 

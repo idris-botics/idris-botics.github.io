@@ -6,7 +6,11 @@ import { projects } from './content'
 export const PREFIX = '#work/'
 export const slugFromHash = (): string | null => {
   const h = location.hash
-  const s = h.startsWith(PREFIX) ? decodeURIComponent(h.slice(PREFIX.length)) : ''
+  let s = ''
+  if (h.startsWith(PREFIX)) {
+    // A link cut short by an email client or chat app can end in a bare "%": that is not a project, so it opens the home page.
+    try { s = decodeURIComponent(h.slice(PREFIX.length)) } catch { s = '' }
+  }
   return projects.some((p) => p.slug === s) ? s : null
 }
 
@@ -70,8 +74,14 @@ export function backToWork() {
 /** Called once the home page is on screen again: put the scroll position back, or fall back to the Work section. */
 export function restoreHome() {
   const y = (history.state as { y?: number } | null)?.y ?? homeY
+  // The header links stay on a project page; the one the reader clicked (#contact, #about ...) wins over the saved position.
+  let id = ''
+  try { id = decodeURIComponent(location.hash.slice(1)) } catch { id = '' }
+  const target = id && id !== 'work' && !id.startsWith('work/') ? id : ''
   requestAnimationFrame(() => {
-    if (y > 0) scrollTo({ top: y, behavior: 'instant' })
+    const el = target ? document.getElementById(target) : null
+    if (el) el.scrollIntoView({ block: 'start' })
+    else if (y > 0) scrollTo({ top: y, behavior: 'instant' })
     else document.getElementById('work')?.scrollIntoView({ block: 'start' })
   })
 }

@@ -104,12 +104,17 @@ const ui = {
   footer: { en: 'Designed and built by Idris Sadiq, with help from a few AI tools, and mostly powered by coffee.', ja: '設計と制作はIdris Sadiq。いくつかのAIツールの助けを借り、動力はほとんどコーヒーです。' },
   lite: { en: 'Lite mode: simulations start paused.', ja: '軽量モード：シミュレーションは停止状態で始まります。' },
   streak: { en: 'day Duolingo streak', ja: '日連続のDuolingo' },
+  // NEEDS-NATIVE-REVIEW (ja). The streak is a fixed number, so it is shown with the day it was checked.
+  asOf: { en: (d: string) => `(as of ${d})`, ja: (d: string) => `（${d}時点）` },
   facts: {
     study: { en: 'Final-year B.E. EEE, SRM Easwari', ja: '電気電子工学科 学部4年（SRM Easwari）' },
     abb: { en: 'Research intern, ABB Global CoE', ja: '研究インターン（ABB Global CoE）' },
     jp: { en: 'JLPT N5 and NAT-TEST 4Q passed', ja: 'JLPT N5・NAT-TEST 4Q合格' },
   },
 }
+
+/** `habits.asOf` as a readable date ("18 Nov 2026", "2026年11月18日"), taken at noon so no time zone moves it to another day. */
+const asOfLabel = (lang: 'en' | 'ja') => new Date(`${habits.asOf}T12:00:00`).toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-GB', { year: 'numeric', month: 'short', day: 'numeric' })
 
 const subjectEn = 'Inquiry from your portfolio'
 const subjectJa = 'ポートフォリオを拝見してのお問い合わせ'
@@ -226,7 +231,7 @@ export default function App() {
               </div>
             </div>
             <ul className="facts surface">
-              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>}</li>
+              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>} <span className="tag">{ui.asOf[lang](asOfLabel(lang))}</span></li>
               <li>{t(ui.facts.jp).split(/(NAT-TEST 4Q\S*)/).map((part, i) => (i % 2 ? <span key={i} className="nb">{part}</span> : part))}</li>
             </ul>
           </div>
@@ -285,7 +290,7 @@ export default function App() {
             <div className="surface">
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
-              <a className="btn" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
+              <a className="btn primary" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
               <a href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
               <a href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
               <Documents />
@@ -303,7 +308,7 @@ export default function App() {
             <div>
               <h2 id="om">{t(ui.peekTitle)}</h2>
               <p>{t(ui.peekBody)}</p>
-              <button className="btn" onClick={openGate} onMouseEnter={warm} onFocus={warm}>{t(ui.chaosOn)}</button>
+              <button className="btn primary" onClick={openGate} onMouseEnter={warm} onFocus={warm}>{t(ui.chaosOn)}</button>
             </div>
           </div>
         </section>

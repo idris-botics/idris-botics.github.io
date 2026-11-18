@@ -28,7 +28,7 @@ export function Documents() {
   return (
     <>
       {personal.cv.en && (
-        <a className="btn" style={{ color: 'inherit' }} href={base + personal.cv.en} download>
+        <a className="btn primary sky" href={base + personal.cv.en} download>
           <FileText size={14} /> {lang === 'en' ? 'Download CV (PDF)' : '履歴書をダウンロード（PDF）'}
         </a>
       )}

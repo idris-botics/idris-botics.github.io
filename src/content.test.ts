@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { projects, statusLabel, loopLabel, timeline, pathRows, aboutText, tiles, strip, learning, fieldEvents, hero, links, featured, type L } from './content'
+import { projects, statusLabel, loopLabel, timeline, pathRows, aboutText, tiles, strip, learning, fieldEvents, hero, links, featured, habits, type L } from './content'
 import { EM_DASH, ROOT, SRC, read, walk } from './test/fs'
 
 const imgDir = join(ROOT, 'public', 'media', 'img')
@@ -17,6 +17,13 @@ const collectL = (v: unknown, path: string, out: { path: string; l: L }[] = []) 
 }
 
 describe('content integrity', () => {
+  it('the habits date is a real date and not in the future', () => {
+    expect(habits.asOf).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    const d = new Date(`${habits.asOf}T12:00:00`)
+    expect(Number.isNaN(d.getTime())).toBe(false)
+    expect(d.getTime()).toBeLessThanOrEqual(Date.now() + 36 * 3600 * 1000)
+  })
+
   it('slugs are unique and non-empty', () => {
     const slugs = projects.map((p) => p.slug)
     expect(slugs.every(Boolean)).toBe(true)
