@@ -1,4 +1,4 @@
-// The hero and contact email buttons: the hero has three coloured pills; pressing Email me copies the address and shows a note
+// The hero and contact email buttons: the hero has a coral and a cream pill and a plain CV link; pressing Email me copies the address and shows a note
 // (the mailto: link alone does nothing visible on a computer with no mail app). Usage: node tests/email-note.mjs [url]
 import { chromium, devices } from '@playwright/test'
 const url = process.argv[2] ?? 'http://localhost:4173/'
@@ -10,7 +10,8 @@ for (const [n, o] of [['desktop', { viewport: { width: 1440, height: 900 } }], [
     p.on('pageerror', (e) => errs.push(e.message))
     await p.goto(url); if (lang === 'ja') await p.getByRole('button', { name: '日本語' }).click(); await p.waitForSelector('.hero-actions .btn'); await p.waitForTimeout(1200)
     const hero = await p.evaluate(() => [...document.querySelectorAll('.hero-actions .btn')].map((e) => { const q = e.getBoundingClientRect(); return { t: e.textContent.trim().slice(0, 16), bg: getComputedStyle(e).backgroundColor, h: Math.round(q.height), right: Math.round(q.right) } }))
-    ok(`${n} ${lang}: hero has 3 coloured pills (coral, mustard, sky)`, hero.length === 3 && hero[0].bg === 'rgb(238, 106, 76)' && hero[1].bg === 'rgb(242, 180, 65)' && hero[2].bg === 'rgb(175, 203, 234)', hero.map((h) => h.t).join(' | '))
+    const cv = await p.locator('.hero-actions a.cv-link').count()
+    ok(`${n} ${lang}: hero has a coral pill, a cream pill and a plain CV link`, hero.length === 2 && hero[0].bg === 'rgb(238, 106, 76)' && hero[1].bg === 'rgb(255, 248, 234)' && cv === 1, hero.map((h) => h.t).join(' | '))
     ok(`${n} ${lang}: hero pills >= 44px tall and inside the screen`, hero.every((h) => h.h >= 44 && h.right <= (o.viewport?.width ?? 390)))
     await p.evaluate(() => document.querySelector('.hero-actions a[href^="mailto"]').addEventListener('click', (e) => e.preventDefault(), { once: true })) // stop the real mail app opening during the test
     await p.locator('.hero-actions a[href^="mailto"]').click(); await p.waitForTimeout(500)

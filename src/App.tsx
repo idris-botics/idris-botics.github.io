@@ -1,13 +1,12 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { ExternalLink, FileText, Mail, Pause, Play, X } from 'lucide-react'
+import { Check, ExternalLink, Mail, Pause, Play, X } from 'lucide-react'
 import { useStore } from './store'
 import { useReducedMotion } from './lib/hooks'
-import PointField from './PointField'
 import HeroScene from './HeroScene'
 import Awards from './Awards'
 import PaperGrid from './PaperGrid'
 import Toolpath from './Toolpath'
-import ChaosGate from './ChaosGate'
+import ChaosGate from './ChaosGate' // small (4 kB), and it must open the instant the button is pressed, so it is not lazy
 import ChaosGuard from './chaos/ChaosGuard'
 import { Documents } from './Extras'
 import { tidyThen } from './lib/tidy'
@@ -16,7 +15,6 @@ import { Gallery } from './Gallery'
 import { Reveal, Tick } from './Reveal'
 import { hero, aboutText, pathRows, learning, fieldEvents, strip, projects, habits, links, type L } from './content'
 import { personal } from './personal'
-import ProjectPage from './ProjectPage'
 import { restoreHome, useRoute } from './route'
 
 /** The hero picture is a 15 s muted loop built from real build photos and simulation footage. Reduced motion shows the first frame and a play button. */
@@ -32,17 +30,27 @@ function HeroReel({ lang }: { lang: 'en' | 'ja' }) {
   const on = playing ?? !(reduce || slow)
   const vid = useRef<HTMLVideoElement>(null)
   const small = typeof matchMedia !== 'undefined' && matchMedia('(max-width: 800px)').matches
-  useEffect(() => { const v = vid.current; if (!v) return; if (on) void v.play().catch(() => {}); else v.pause() }, [on])
+  // The reel is the biggest download on the page (over a megabyte), so it starts once the page has loaded and gone quiet. Until then the
+  // poster is the picture, and it is the first thing painted. Pressing a play button starts it at once.
+  const [armed, setArmed] = useState(false)
+  useEffect(() => {
+    let handle = 0
+    const hasIdle = 'requestIdleCallback' in window
+    const go = () => { handle = hasIdle ? requestIdleCallback(() => setArmed(true), { timeout: 3500 }) : window.setTimeout(() => setArmed(true), 1500) }
+    if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true })
+    return () => { removeEventListener('load', go); if (handle) { if (hasIdle) cancelIdleCallback(handle); else clearTimeout(handle) } }
+  }, [])
+  useEffect(() => { const v = vid.current; if (!v) return; if (on && armed) { v.load(); void v.play().catch(() => {}) } else v.pause() }, [on, armed])
   const label = on ? (lang === 'en' ? 'Pause the video' : '動画を止める') : (lang === 'en' ? 'Play the video' : '動画を再生')
   return (
     <figure className="hero-photo">
-      <video ref={vid} muted loop playsInline autoPlay={!(reduce || slow)} preload={slow ? 'none' : 'metadata'} poster={`${base}media/img/hero-reel-poster-${small ? 640 : 1280}.webp`} width={1920} height={1080}
+      <video ref={vid} muted loop playsInline preload="none" poster={`${base}media/img/hero-reel-poster-${small ? 640 : 1280}.webp`} width={1920} height={1080}
         aria-label={lang === 'en' ? 'A short loop of my builds: RoboDog, an 8-bit computer, a battery pack, a PID simulation, a wristband, and more.' : '私の制作物の短いループ映像：RoboDog、8ビットコンピュータ、バッテリー、PIDシミュレーション、リストバンドなど。'}>
-        <source src={`${base}media/vid/hero-reel-${small ? 720 : 1080}.mp4`} type="video/mp4" />
-        <source src={`${base}media/vid/hero-reel-720.webm`} type="video/webm" />
+        {armed && <source src={`${base}media/vid/hero-reel-${small ? 720 : 1080}.mp4`} type="video/mp4" />}
+        {armed && <source src={`${base}media/vid/hero-reel-720.webm`} type="video/webm" />}
       </video>
       {/* no pause button while it plays; when it is not playing (reduced motion, Save-Data, slow connection) a play button starts it */}
-      {!on && <button className="reel-btn" onClick={() => setPlaying(true)} aria-label={label} title={label}><Play size={16} aria-hidden="true" /></button>}
+      {!on && <button className="reel-btn" onClick={() => { setArmed(true); setPlaying(true) }} aria-label={label} title={label}><Play size={16} aria-hidden="true" /></button>}
     </figure>
   )
 }
@@ -73,6 +81,8 @@ function PeekReel({ alt, lang }: { alt: string; lang: 'en' | 'ja' }) {
 }
 
 const Chaos = lazy(() => import('./chaos/Chaos'))
+const PointField = lazy(() => import('./PointField')) // Chaos's background points
+const ProjectPage = lazy(() => import('./ProjectPage')) // a project page: the home page does not need it
 const Scenery = lazy(() => import('./Scenery')) // the long cartoon background; its own small file, so it never delays the first paint
 
 const ui = {
@@ -157,9 +167,14 @@ export default function App() {
   const [gate, setGate] = useState(false)
   // The email buttons are mailto: links. They still try to open the reader's mail app, but many computers have none set up and then
   // nothing visibly happens, so the address is also copied and a short note says so.
-  const [copied, setCopied] = useState(false)
-  const copyEmail = () => {
-    void navigator.clipboard?.writeText(links.email).then(() => { setCopied(true); setTimeout(() => setCopied(false), 6000) }, () => {})
+  const [copied, setCopied] = useState<{ where: 'hero' | 'contact'; fading: boolean } | null>(null)
+  const noteTimers = useRef<number[]>([])
+  const copyEmail = (where: 'hero' | 'contact') => () => {
+    void navigator.clipboard?.writeText(links.email).then(() => {
+      noteTimers.current.forEach(clearTimeout)
+      setCopied({ where, fading: false })
+      noteTimers.current = [window.setTimeout(() => setCopied({ where, fading: true }), 2400), window.setTimeout(() => setCopied(null), 3000)]
+    }, () => {})
   }
   const [lite] = useState(() => {
     const c = (navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }).connection
@@ -184,10 +199,10 @@ export default function App() {
   return (
     <>
       <a className="skip" href="#main">{t(ui.skip)}</a>
-      {mode === 'calm' && <Suspense fallback={null}><Scenery still={!!project} /></Suspense>}
-      <PaperGrid wobble={mode === 'chaos'} />
+      <Suspense fallback={null}><Scenery still={!!project} /></Suspense>
+      <PaperGrid wobble={mode === 'chaos'} soft />
       {!project && mode === 'calm' && <Toolpath key={lang} points={tpPoints} label={lang === 'en' ? 'Page sections' : 'ページの区切り'} />}
-      {mode === 'chaos' && <PointField variant="chaos" />}
+      {mode === 'chaos' && <Suspense fallback={null}><PointField variant="chaos" /></Suspense>}
       <header className="site-header">
         <div className="wrap">
           <strong className="brand" style={{ fontFamily: 'var(--font-head)' }}>Idris Sadiq</strong>
@@ -210,7 +225,7 @@ export default function App() {
       )}
       {gate && <ChaosGate lang={lang} onCancel={() => setGate(false)} onConfirm={() => { setGate(false); scrollTo({ top: 0, behavior: 'instant' }); toggleMode() }} />}
 
-      {project && <main id="main"><ProjectPage project={project} /></main>}
+      {project && <main id="main"><Suspense fallback={null}><ProjectPage project={project} /></Suspense></main>}
       {!project && <main id="main">
         <div>
         <section className="hero">
@@ -221,10 +236,10 @@ export default function App() {
               <p className="hero-sub">{t(hero.sub)}</p>
               <div className="hero-actions">
                 <a className="btn primary" href="#work">{t(ui.seeWork)}</a>
-                <a className="btn primary mustard" onClick={copyEmail} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
-                {personal.cv.en && <a className="btn primary sky" href={base + personal.cv.en} download><FileText size={14} aria-hidden="true" /> {t(ui.cv)}</a>}
+                <a className="btn primary cream" onClick={copyEmail('hero')} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
+                {personal.cv.en && <a className="quiet-link cv-link" href={base + personal.cv.en} download>{t(ui.cv)}</a>}
               </div>
-              <p className="copied-note" role="status">{copied ? ui.copied[lang](links.email) : ''}</p>
+              <p className={`copied-note${copied?.fading ? ' fade' : ''}`} role="status" aria-live="polite">{copied?.where === 'hero' && <><Check size={16} aria-hidden="true" /><span>{ui.copied[lang](links.email)}</span></>}</p>
             </div>
             <HeroReel lang={lang} />
           </div>
@@ -301,12 +316,12 @@ export default function App() {
             <div className="surface">
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
-              <a className="btn primary" onClick={copyEmail} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
+              <a className="btn primary" onClick={copyEmail('contact')} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
               <a className="btn primary sky" href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
-              <a className="btn primary mint" href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
+              <a className="btn primary sky" href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
               <Documents />
             </div>
-            <p className="copied-note" role="status">{copied ? ui.copied[lang](links.email) : ''}</p>
+            <p className={`copied-note${copied?.fading ? ' fade' : ''}`} role="status" aria-live="polite">{copied?.where === 'contact' && <><Check size={16} aria-hidden="true" /><span>{ui.copied[lang](links.email)}</span></>}</p>
             </div>
           </div>
         </section>
@@ -332,7 +347,7 @@ export default function App() {
           {lite && <span className="lite"> · {t(ui.lite)}</span>}
         </div>
       </footer>
-      {mode === 'calm' && !project && <div className="scenery-end" aria-hidden="true" />}
+      {!project && <div className="scenery-end" aria-hidden="true" />}
 
       {mode === 'chaos' && <ChaosGuard key="chaos"><Suspense fallback={null}><Chaos /></Suspense></ChaosGuard>}
     </>

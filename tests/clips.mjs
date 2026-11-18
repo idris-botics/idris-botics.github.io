@@ -22,7 +22,8 @@ const clipTile = async (p) => p.evaluate(() => document.querySelector('.tile .ti
 
 { // desktop, normal
   const { ctx, p, errs } = await open({ viewport: { width: 1440, height: 900 } })
-  await p.waitForTimeout(1200)
+  // the reel starts once the page has loaded and gone quiet (it is over a megabyte), so give it a few seconds
+  await p.waitForFunction(() => { const v = document.querySelector('.hero-photo video'); return !!v && !v.paused }, null, { timeout: 8000 }).catch(() => {})
   check(!(await paused(p, '.hero-photo video')), 'desktop: the hero reel plays by itself')
   check((await p.locator('.hero-photo .reel-btn').count()) === 0, 'desktop: no pause button on the playing hero video')
   const slug = await clipTile(p)

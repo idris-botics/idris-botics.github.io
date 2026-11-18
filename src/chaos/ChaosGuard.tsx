@@ -9,7 +9,7 @@ function undoChaosSideEffects() {
   document.body.style.overflow = ''
   document.querySelector<HTMLElement>('.site-header')?.removeAttribute('style')
   document.querySelectorAll<HTMLElement>('[style*="will-change"], [style*="transform"]').forEach((e) => {
-    if (e.closest('.chaos-layer')) return
+    if (e.closest('.chaos-layer, .scenery')) return
     e.style.transform = ''; e.style.transition = ''; e.style.willChange = ''; e.style.zIndex = ''
   })
 }

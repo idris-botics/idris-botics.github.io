@@ -915,9 +915,59 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 @media (prefers-reduced-motion: reduce) { .scenery-sheet { animation: none; transform: none !important; } }
 
 /* the credit line sits on a cream pill so it reads the same over lake, shore or meadow; the hairline above it would only add a stray line */
-:root[data-mode='calm'] .site-footer { border-top: 0; }
-:root[data-mode='calm'] .site-footer .wrap > span:first-child { display: inline-block; padding: 6px 14px; background: rgba(255, 248, 234, .88); border-radius: 999px; }
+.site-footer { border-top: 0; }
+.site-footer .wrap > span:first-child { display: inline-block; padding: 6px 14px; background: rgba(255, 248, 234, .88); border-radius: 999px; }
 
 /* the note after pressing an email button; empty (and so invisible) the rest of the time */
 .copied-note { margin: 10px 0 0; font-family: var(--font-mono); font-size: 14px; color: var(--ink); }
 .copied-note:empty { margin: 0; }
+
+/* ================= Round 6: fewer layers over the picture, cream plates, clearer buttons ================= */
+
+/* the full grid and rulers are a second canvas that fades out over the first screen (the soft grid stays over the picture) */
+canvas.paper-hero { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+@keyframes paper-hero-fade { from { opacity: 1; } to { opacity: 0; } }
+@supports (animation-timeline: scroll()) {
+  canvas.paper-hero { animation: paper-hero-fade linear both; animation-timeline: scroll(root block); animation-range: 0 100vh; }
+}
+@media print { canvas.paper-hero { display: none; } }
+
+/* the toolpath: a thin coral line; its tags sit on cream plates so they read over clouds and mountains */
+.toolpath .tp-base { stroke-width: 1.5; opacity: .25; }
+.toolpath .tp-done { stroke-width: 1.5; opacity: .55; }
+.tp-wp span { font-size: 11px; line-height: 1; background: rgba(255, 248, 234, .9); border: 0; box-shadow: none; padding: 4px 8px; border-radius: 6px; }
+@media (min-width: 1024px) { .tp-wp span { font-size: 12px; } }
+.tp-wp:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; border-radius: 8px; }
+
+/* text that sits straight on the picture gets a cream plate: headings 12px radius, small labels pills */
+:root[data-mode='calm'] .sec h2 { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 10px; border-radius: 12px; }
+:root[data-mode='calm'] .about-grid > h2 { justify-self: start; width: fit-content; }
+:root[data-mode='calm'] .more-h, :root[data-mode='calm'] .award-group h3, :root[data-mode='calm'] .back { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 12px; border-radius: 999px; }
+:root[data-mode='calm'] .back { display: inline-flex; }
+.site-footer .wrap > span:first-child { background: rgba(255, 248, 234, .9); }
+@media (max-width: 700px) { .award-group h3, .pw-sec h2, .pw-details-body h2, .tile-spec, .tag { font-size: 13px; } }
+
+/* buttons: one coral primary, a cream pill beside it, sky for the rest; the CV in the hero is a plain underlined link */
+.btn.primary.cream { background: var(--card); color: var(--ink); }
+.hero-actions .cv-link { font-size: 14px; color: var(--ink); text-decoration: underline; text-decoration-color: currentColor; text-underline-offset: 3px; padding: 0 6px; }
+@media (min-width: 1024px) { .hero-actions .btn, .hero-actions .cv-link { font-size: 15px; } }
+@media (min-width: 521px) { .contact-row > .btn.primary:first-child { min-height: 52px; padding-left: 22px; padding-right: 22px; font-size: 16px; } }
+.copied-note { transition: opacity 600ms var(--ease-out); }
+.copied-note.fade { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .copied-note { transition: none; } }
+
+/* project pages: the poster behind "Play the simulation" is only slightly dimmed (it was at 45% and looked washed out) */
+.sim-poster img { opacity: .88; }
+
+/* a roomier last panel, so the whole ending scene shows and nothing crowds it */
+.scenery-end { height: clamp(260px, 28vw, 480px); }
+
+/* the smallest mono labels are at least 12 px (13 px on phones) */
+.jog { font-size: 12px; }
+
+/* the note after pressing an email button: a sticker bubble like the Chaos comment blocks (soft mint like the Calm palette, charcoal outline, hard shadow, a tail pointing up at the button), popping in */
+.copied-note:not(:empty) { position: relative; display: flex; align-items: center; gap: 8px; width: fit-content; max-width: 100%; margin: 16px 0 0; background: var(--mint); color: var(--ink); border: 2px solid var(--outline); border-radius: 18px; padding: 8px 16px; font: 600 15px/1.35 var(--font-body); box-shadow: 3px 3px 0 var(--outline); transform-origin: 28px 0; overflow-wrap: anywhere; animation: note-pop 320ms cubic-bezier(.34, 1.56, .64, 1) backwards; }
+.copied-note:not(:empty) svg { flex: none; }
+.copied-note:not(:empty)::before { content: ''; position: absolute; left: 22px; top: -9px; width: 14px; height: 14px; background: var(--mint); border-left: 2px solid var(--outline); border-top: 2px solid var(--outline); transform: rotate(45deg); }
+@keyframes note-pop { from { opacity: 0; transform: translateY(-6px) scale(.85); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .copied-note:not(:empty) { animation: none; } }

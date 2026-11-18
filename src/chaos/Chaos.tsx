@@ -1194,7 +1194,7 @@ function gravityCollapse(dir: 1 | -1 = 1): { stop: (slow?: boolean) => number } 
 
   const units: HTMLElement[] = []
   const walk = (el: HTMLElement) => {
-    if (el.closest('.chaos-layer, .stars, script, style, .skip') || el.hidden || el.getAttribute('aria-hidden') === 'true' && !el.matches(ATOM)) return
+    if (el.closest('.chaos-layer, .stars, .scenery, script, style, .skip') || el.hidden || el.getAttribute('aria-hidden') === 'true' && !el.matches(ATOM)) return
     const cs = getComputedStyle(el)
     if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) === 0) return
     const r = el.getBoundingClientRect()

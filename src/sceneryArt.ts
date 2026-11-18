@@ -87,6 +87,10 @@ const DEFS = el('defs', {},
   vgrad('sc-hill1', stop(0, '#dfe8ae'), stop(1, '#c3d795')),
   vgrad('sc-hill2', stop(0, '#cbdf9f'), stop(1, '#a9c985')),
   vgrad('sc-hill3', stop(0, '#bfd899'), stop(1, '#a6c783')),
+  // the veil over the picture: cream over the dusk and the meadow, a pale blue-white over the sky band, so the sky stays near the Chaos blue
+  vgrad('sc-veil', stop(0, '#fff8ea', 0.3), stop(0.26, '#fff8ea', 0.3), stop(0.34, '#eef7ff', 0.34), stop(0.76, '#eef7ff', 0.34), stop(0.84, '#fff8ea', 0.3), stop(1, '#fff8ea', 0.3)),
+  // a slight blue multiply over the sky band only: cloud whites drop a little so the cream cards on top read warmer than the clouds
+  vgrad('sc-tint', stop(0, '#7cc8ff', 0), stop(0.28, '#7cc8ff', 0), stop(0.38, '#7cc8ff', 0.16), stop(0.74, '#7cc8ff', 0.16), stop(0.82, '#7cc8ff', 0)),
   el('clipPath', { id: 'sc-lakeclip' }, el('rect', { x: 0, y: 3170, width: 1000, height: 260 })),
   MOUNTAIN)
 
@@ -190,14 +194,15 @@ export function scenerySvg(): string {
     el('path', { d: TRAIL_PATH, fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: 0.35 }),
 
     // a cream veil keeps text on the open page easy to read (it is part of the picture, so it costs nothing while scrolling)
-    el('rect', { width: 2000, height: 4000, fill: '#fff8ea', opacity: 0.30 }),
+    el('rect', { width: 2000, height: 4000, fill: 'url(#sc-veil)' }),
+    el('rect', { width: 2000, height: 4000, fill: 'url(#sc-tint)', style: 'mix-blend-mode:multiply' }),
     planet(150, 300),
 
     // the end: the workshop, the robot at the end of the path, and a rocket on its pad (the one launched at the top)
     shed(300 + OX, GROUND_Y, 0.9), robotAt(ROBOT_X, GROUND_Y, 0.85), pad(760 + OX, GROUND_Y), rocketAt(760 + OX, GROUND_Y - 10 - 24 * 0.9, 0.9),
 
     // the dotted trail from the robot up to the tiny rocket in flight, in the right margin
-    el('path', { d: `M${ROBOT_X} ${GROUND_Y - 100} C ${520 + OX} 3640, ${640 + OX} 3480, ${560 + OX} 3300 S ${380 + OX} 3020, ${470 + OX} 2800 S ${640 + OX} 2500, ${520 + OX} 2300 S ${330 + OX} 2000, ${470 + OX} 1820 S ${640 + OX} 1560, ${560 + OX} 1340 S ${700 + OX} 1000, ${740 + OX} 780 S 1560 420, 1880 250`, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.8, 'stroke-width': 6, 'stroke-dasharray': '0.1 17', 'stroke-linecap': 'round' }),
+    el('path', { d: `M${ROBOT_X} ${GROUND_Y - 100} C ${520 + OX} 3640, ${640 + OX} 3480, ${560 + OX} 3300 S ${380 + OX} 3020, ${470 + OX} 2800 S ${640 + OX} 2500, ${520 + OX} 2300 S ${330 + OX} 2000, ${470 + OX} 1820 S ${640 + OX} 1560, ${560 + OX} 1340 S ${700 + OX} 1000, ${740 + OX} 780 S 1560 420, 1880 250`, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.6, 'stroke-width': 3.2, 'stroke-dasharray': '7 11', 'stroke-linecap': 'round' }),
     rocketAt(1880, 220, 0.5, 14, true),
   ].join('')
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 4000" width="2000" height="4000" preserveAspectRatio="xMidYMid slice">${DEFS.replace('</defs>', `${core}</defs>`)}${body}</svg>\n`

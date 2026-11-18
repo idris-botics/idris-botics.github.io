@@ -6,6 +6,9 @@
     <title>Idris Sadiq | Portfolio</title>
     <meta name="description" content="Idris Sadiq: robotics, embedded systems and control. Final-year B.E. Electrical and Electronics Engineering, SRM Easwari Engineering College. RoboDog, an 8-bit computer from logic chips, stepscribe-cad on PyPI, and research at ABB's Global CoE." />
     <meta name="color-scheme" content="light" />
+    <!-- the hero reel's poster is the first picture painted, so it is fetched first (the reel itself starts after the page has loaded) -->
+    <link rel="preload" as="image" href="%BASE_URL%media/img/hero-reel-poster-640.webp" media="(max-width: 800px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="%BASE_URL%media/img/hero-reel-poster-1280.webp" media="(min-width: 801px)" fetchpriority="high" />
     <meta name="theme-color" content="#f6e7c8" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta property="og:type" content="website" />
