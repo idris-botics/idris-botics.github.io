@@ -1023,3 +1023,7 @@ html[data-pre] .ltr { animation: none; }
 /* phones with on-screen buttons (back, home, tabs) or a gesture bar: the page can run under them, so the end of the page keeps clear of them */
 :root { --sb: env(safe-area-inset-bottom, 0px); }
 .page-end { padding-bottom: var(--sb); }
+
+/* a video in the project gallery looks like a picture there (same frame, same corners); its dot is a little square so it can be told apart */
+.spot-video { display: block; margin: 0 auto; border-radius: 12px; border: 1.5px solid var(--line); background: var(--panel); object-fit: contain; }
+.dot.vid span { border-radius: 2px; }

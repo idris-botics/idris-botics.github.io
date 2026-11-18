@@ -4,7 +4,7 @@ import { useState } from 'react'
  * Phones have no keyboard for the typed secrets, so the corner menu holds a small command box: type a word, or tap a chip.
  * It sends the letters as key presses, so a typed word and a tapped chip run exactly the same secret. Hidden unless the corner menu is open.
  */
-const CHIPS = ['cat', 'idris', 'coffee', 'roll'] as const
+const CHIPS = ['cat', 'idris', 'coffee', 'cookie', 'roll'] as const
 export default function CommandBox({ lang, run }: { lang: 'en' | 'ja'; run: (word: string) => void }) {
   const [text, setText] = useState('')
   const go = (w: string) => { const word = w.trim().toLowerCase(); if (word) run(word) }

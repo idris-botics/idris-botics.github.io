@@ -95,7 +95,9 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   const d = await pos()
   out(Math.abs(d[0] - c[0]) + Math.abs(d[1] - c[1]) < 4, 'after 32 s the rick X stands still')
   await p.keyboard.press('Escape'); await sleep(300)
-  out((await p.locator('.rick').count()) === 0, 'Esc closes the rick roll')
+  out((await p.locator('.rick').count()) === 1, 'Esc does not close the rick roll')
+  await p.locator('.rick-x').click(); await sleep(300)
+  out((await p.locator('.rick').count()) === 0, 'the X closes it once it stands still')
   await p.context().close()
 }
 

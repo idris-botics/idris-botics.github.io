@@ -31,6 +31,8 @@ import { MAX_EVENTS, newInterval, repeatDue, watchPage, type ActiveClock } from 
 import Scout from '../Scout'
 import Conjure from './Conjure'
 import Clip from './Clip'
+import { Countdown } from './Countdown'
+import { endsWithWord, makeRemixMap, remixEnabled, remixUnlocked, setRemix, unlockRemix, type RemixWord } from './remix'
 import CommandBox from './CommandBox'
 import { ACH_NAMES, ACH_TOTAL } from './secretsRegistry'
 
@@ -145,6 +147,11 @@ export default function Chaos() {
   // the count starts again on a refresh or a normal exit; it is kept only after an eviction or a Chaos crash (see achievementsStore)
   const [ach, setAch] = useState<string[]>(() => takeInitialAchievements().filter((a) => a in ACH))
   const [achOpen, setAchOpen] = useState(false)
+  // Remix (remix.ts): after every achievement, the hidden words and the random interruptions are shuffled. It is dealt again each Chaos visit.
+  const [remix, setRemixState] = useState(() => remixEnabled())
+  const remixRef = useRef(remix)
+  useEffect(() => { remixRef.current = remix }, [remix])
+  const remixMap = useRef(makeRemixMap())
   useEffect(() => { achievementsTaken() }, [])
   const awarded = useRef(new Set<string>(ach))
   const award = useCallback((id: string) => {
@@ -212,7 +219,7 @@ export default function Chaos() {
   const noteTimer = useRef(0)
   const xBtn = useRef<HTMLButtonElement>(null)
   const xDodges = useRef(0)
-  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first 30 seconds, then holds still (Esc always closes)
+  const rickOpenedAt = useRef(0) // the X runs away from the pointer for the first 30 seconds, then holds still (Esc does nothing)
   useEffect(() => { if (rick) rickOpenedAt.current = performance.now() }, [rick])
   const [xPos, setXPos] = useState<{ x: number; y: number } | null>(null)
   const [cenaPos, setCenaPos] = useState<{ x: number; y: number } | null>(null)
@@ -334,8 +341,8 @@ export default function Chaos() {
   // Esc restores order; announce mode change
   useEffect(() => {
     const k = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && document.querySelector('.cena-video')) { setCena(0); sched.current?.end('cena'); return }
-      if (e.key === 'Escape' && document.querySelector('.rick')) { setRick(false); sched.current?.end('rick'); return }
+      // no Escape during the Rick roll, the Cena video or a clip: the X (once it stops running) is the way out
+      if (e.key === 'Escape' && document.querySelector('.rick, .cena, .clip')) { e.preventDefault(); return }
       if (e.key === 'Escape') { sched.current?.noteRestore(); const falling = !!collapse.current; collapse.current?.stop(); collapse.current = null; if (falling) setMode('calm'); else tidyThen(() => setMode('calm')) }
     }
     addEventListener('keydown', k)
@@ -482,7 +489,7 @@ export default function Chaos() {
   // a video or another event is open, at most 4 events a visit, and each repeat has different lines. The first Rick roll and Cena are likely; the repeats are rarer (weighted 1 to 6 against the cookie).
   const events = useRef({ count: 0, lastAt: 0, interval: newInterval(), last: '' })
   const clockRef = useRef<ActiveClock | null>(null)
-  const noteEvent = useCallback(() => { events.current.count++; events.current.lastAt = clockRef.current?.activeMs() ?? 0; events.current.interval = newInterval() }, [])
+  const noteEvent = useCallback(() => { events.current.count++; events.current.lastAt = clockRef.current?.activeMs() ?? 0; events.current.interval = newInterval() * (remixRef.current ? 0.45 : 1) }, [])
   const startRick = useCallback((variant: number) => {
     const root = document.documentElement
     if (variant > 0) sayText(RICK_AGAIN[(variant - 1) % RICK_AGAIN.length][langRef.current], 3500)
@@ -506,10 +513,12 @@ export default function Chaos() {
     const busy = () => quietRef.current || document.hidden || !!document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site')
     const fire = (force?: string) => {
       const ev = events.current
-      if (busy() || ev.count >= MAX_EVENTS) return
-      const kinds = ['cookie', 'rick', 'cena'].filter((k) => k !== ev.last)
+      const rx = remixRef.current
+      if (busy() || ev.count >= MAX_EVENTS + (rx ? 3 : 0)) return
+      // remix: the whole pool, not just the three
+      const kinds = (rx ? ['cookie', 'rick', 'cena', 'cat', 'coffee', 'omae', 'idris'] : ['cookie', 'rick', 'cena']).filter((k) => k !== ev.last)
       // the cookie is the gentle one; the Rick roll and the Cena jumpscare come up much less often
-      const weights: Record<string, number> = { cookie: 6, rick: 1, cena: 1 }
+      const weights: Record<string, number> = { cookie: rx ? 4 : 6, rick: 1, cena: 1, cat: 2, coffee: 2, omae: 2, idris: 2 }
       let roll = Math.random() * kinds.reduce((n, k) => n + weights[k], 0)
       const picked = kinds.find((k) => (roll -= weights[k]) < 0) ?? kinds[0]
       const kind = force && kinds.includes(force) ? force : picked
@@ -518,9 +527,10 @@ export default function Chaos() {
       noteEvent()
       if (kind === 'cookie') { cookieVariant.current = variant; setBites(0); setCookie(true) }
       else if (kind === 'rick') startRick(variant)
-      else startCena(variant)
+      else if (kind === 'cena') startCena(variant)
+      else typeWord(kind)
     }
-    const id = window.setInterval(() => { if (repeatDue({ count: events.current.count, lastAt: events.current.lastAt, interval: events.current.interval }, clock.activeMs(), busy())) fire() }, 5000)
+    const id = window.setInterval(() => { if (repeatDue({ count: remixRef.current ? Math.max(0, events.current.count - 3) : events.current.count, lastAt: events.current.lastAt, interval: events.current.interval }, clock.activeMs(), busy())) fire() }, 5000)
     const forced = (e: Event) => fire((e as CustomEvent<string>).detail) // lets a test run a repeat without waiting minutes
     addEventListener('portfolio:repeat-event', forced)
     return () => { clearInterval(id); stop(); removeEventListener('portfolio:repeat-event', forced) }
@@ -553,17 +563,36 @@ export default function Chaos() {
     }, 1500)
     return () => clearInterval(id)
   }, [cookie])
+  // each bite: a piece of the cookie flies from the banner into the pet robot's mouth
+  useEffect(() => {
+    if (!cookie || bites < 1 || bites > 5 || reduced()) return
+    const from = document.querySelector('.cookie-pic')?.getBoundingClientRect()
+    const to = dock.current?.getBoundingClientRect()
+    if (!from || !to) return
+    const el = document.createElement('span')
+    el.className = 'gulp'; el.textContent = '🍪'; el.setAttribute('aria-hidden', 'true')
+    document.body.appendChild(el)
+    const a = el.animate([
+      { transform: `translate(${from.left + from.width / 2 - 13}px, ${from.top}px) scale(1) rotate(0deg)`, opacity: 1 },
+      { transform: `translate(${to.left + to.width / 2 - 8}px, ${to.top + to.height * 0.55}px) scale(.35) rotate(300deg)`, opacity: 0.9 },
+    ], { duration: 520, easing: 'cubic-bezier(.4, 0, .6, 1)' })
+    a.onfinish = () => el.remove()
+    return () => { a.cancel(); el.remove() }
+  }, [cookie, bites])
   // the pet robot deals with the cookie: it sneaks over and eats the crumbs (or tries to press "accept"), chokes, coughs crumbs up and apologises
-  const [cough, setCough] = useState(false)
+  const [stuffed, setStuffed] = useState(false)
+  const stuffedRef = useRef(false)
+  useEffect(() => { stuffedRef.current = stuffed }, [stuffed])
   const cookieVariant = useRef(0)
   useEffect(() => {
     if (bites < 5) return
-    setCough(true)
-    sfx('boing')
+    setStuffed(true)
+    sfx('burp')
     award('cookie')
     const v = cookieVariant.current
-    sayText(v % 2 === 0 ? (langRef.current === 'en' ? 'Sorry. It was delicious.' : 'ごめんなさい。おいしかったです。') : (langRef.current === 'en' ? 'I pressed accept. Then I ate the accept. Sorry. Delicious.' : '「同意する」を押して、そのまま食べました。ごめんなさい。おいしかったです。'), 4500)
-    const a = window.setTimeout(() => setCough(false), 1700)
+    sayText(v % 2 === 0 ? (langRef.current === 'en' ? 'I am so full. Do not ask me to move.' : 'おなかいっぱい。動かせないでください。') : (langRef.current === 'en' ? 'I pressed accept. Then I ate the accept. I think I am a cookie now.' : '「同意する」を押して、そのまま食べました。私はもうクッキーかもしれません。'), 4500)
+    window.setTimeout(() => sfx('boing'), 1500)
+    const a = window.setTimeout(() => setStuffed(false), 4200)
     const id = window.setTimeout(closeCookie, 1500) // nothing left to eat: the banner leaves with it
     return () => { clearTimeout(id); clearTimeout(a) }
   }, [bites, award, sayText])
@@ -673,7 +702,14 @@ export default function Chaos() {
     const k = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).closest('input, textarea, select')) return
       buf = (buf + e.key.toLowerCase()).slice(-6)
-      if (buf === 'cookie') { buf = ''; setBites(0); setCookie(true) }
+      if (buf !== 'cookie') return
+      buf = ''
+      // the extra: while the pet robot is still stuffed it will not look at another cookie
+      if (stuffedRef.current) {
+        const no = langRef.current === 'en' ? ['No. Absolutely not.', 'Do not show me that cookie.', 'I cannot. I physically cannot.', 'Ask me again in an hour.'] : ['いいえ。絶対に無理です。', 'そのクッキーを見せないでください。', '無理です。物理的に無理です。', '1時間後にまた聞いてください。']
+        sayText(no[Math.floor(Math.random() * no.length)], 3200); sfx('boing'); return
+      }
+      setBites(0); setCookie(true)
     }
     addEventListener('keydown', k)
     return () => removeEventListener('keydown', k)
@@ -703,8 +739,32 @@ export default function Chaos() {
   // Mission Control (and the command box on phones) can run a secret without a keyboard
   const fireWord = useCallback((id: string) => {
     if (id === 'moon') { document.querySelector<HTMLElement>('.moon')?.click(); return }
-    for (const ch of id) document.body.dispatchEvent(new KeyboardEvent('keydown', { key: ch, bubbles: true }))
+    typeWord(id)
   }, [])
+  // remix: a real typed word is caught on its last letter (before any gag sees it) and a different gag runs instead
+  useEffect(() => {
+    if (!remix) return
+    let buf = '', told = false
+    const k = (e: KeyboardEvent) => {
+      if (!e.isTrusted || e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return
+      if ((e.target as HTMLElement).closest?.('input, textarea, select')) return
+      buf = (buf + e.key.toLowerCase()).slice(-6)
+      const w = endsWithWord(buf)
+      if (!w) return
+      buf = ''
+      e.stopImmediatePropagation(); e.preventDefault()
+      if (!told) { told = true; sayText(langRef.current === 'en' ? 'Remix is on. The words do not do what they say any more.' : 'リミックス中。もう、言葉どおりには動きません。', 3500) }
+      fireWord(remixMap.current[w])
+    }
+    addEventListener('keydown', k, true)
+    return () => removeEventListener('keydown', k, true)
+  }, [remix, fireWord, sayText])
+  // every achievement found: remix switches on for good (the achievements panel has the switch)
+  useEffect(() => {
+    if (ach.length < ACH_TOTAL || !unlockRemix()) return
+    setRemixState(true)
+    sayText(langRef.current === 'en' ? 'That is every achievement. So I have rearranged everything. Do not trust the words now.' : '実績をすべて達成しました。なので、全部入れ替えました。もう言葉を信じないでください。', 7000)
+  }, [ach, sayText])
 
   // coffee: type it anywhere
   useEffect(() => {
@@ -1000,6 +1060,7 @@ export default function Chaos() {
           {cena > 2 && (
             <LoopVideo className="cena-video" name="cena-90" label={lang === 'en' ? 'Entrance theme' : '入場テーマ'} />
           )}
+          {cena > 2 && <Countdown seconds={30} lang={lang} />}
           {cena > 2 && (
             <button ref={cenaX} className="btn cena-x" autoFocus aria-label={lang === 'en' ? 'Close' : '閉じる'}
               style={cenaPos ? { left: cenaPos.x, top: cenaPos.y, right: 'auto' } : undefined}
@@ -1039,6 +1100,7 @@ export default function Chaos() {
             }
             setXPos({ x: nx, y: ny }); sayTaunt(nx, ny)
           }}>
+          <Countdown seconds={30} lang={lang} />
           <button ref={xBtn} className="btn rick-x" aria-label={lang === 'en' ? 'Close' : '閉じる'}
             style={xPos ? { left: xPos.x, top: xPos.y, right: 'auto' } : undefined}
             onClick={() => { setRick(false); setXPos(null); xDodges.current = 0; sched.current?.end('rick') }}>
@@ -1071,22 +1133,27 @@ export default function Chaos() {
         </div>
       )}
       <MuteButton lang={lang} />
-      <CommandBox lang={lang} run={fireWord} />
+      <CommandBox lang={lang} run={(w) => fireWord(remixRef.current && w in remixMap.current ? remixMap.current[w as RemixWord] : w)} />
       <Conjure lang={lang} say={sayText} award={award} />
       {ach.length > 0 && (
         <div className="ach">
           <button className="btn" aria-expanded={achOpen} onClick={() => setAchOpen((o) => !o)}>
-            <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{ACH_TOTAL}
+            <span className="ach-word">{lang === 'en' ? 'Achievements' : '実績'}</span> {ach.length}/{ACH_TOTAL}{remix && <span className="remix-tag"> REMIX</span>}
           </button>
+          {achOpen && remixUnlocked() && (
+            <button className="btn remix-btn" aria-pressed={remix} onClick={() => { const n = !remix; setRemix(n); setRemixState(n); if (n) remixMap.current = makeRemixMap() }}>
+              {lang === 'en' ? `Remix: ${remix ? 'on' : 'off'}` : `リミックス：${remix ? 'オン' : 'オフ'}`}
+            </button>
+          )}
           {achOpen && <ul>{ach.map((a) => <li key={a}>{a === 'idris' && <img className="ach-thumb" src={`${import.meta.env.BASE_URL}media/img/idris-whimsy-480.jpg`} alt="" width={28} height={28} />}{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
         </div>
       )}
-      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${cookie && bites < 5 ? ' eating' : ''}${cough ? ' cough' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length }}>
+      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${cookie && bites < 5 ? ' eating' : ''}${stuffed ? ' stuffed' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length, ['--full' as string]: stuffed ? 5 : cookie ? Math.min(bites, 5) : 0 }}>
         {bubble && <span className="bubble">{bubble}</span>}
         {nap && <span className="zzz">Zzz</span>}
-        {cough && <span className="crumbs" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
+        {stuffed && <span className="crumbs" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
         {caf === 'wired' && <span className="speedlines" aria-hidden="true"><i /><i /><i /></span>}
-        <Scout size={84} mood={caf} />
+        <Scout size={84} mood={caf} full={stuffed ? 5 : cookie ? Math.min(bites, 5) : 0} stuffed={stuffed} />
       </div>
       {stamps.map((s) => <span key={s.id} className="stamp" style={{ left: s.x, top: s.y }} aria-hidden="true">{s.text}</span>)}
       {toast && (
@@ -1116,6 +1183,9 @@ export default function Chaos() {
     </div>
   )
 }
+
+/** Types a hidden word into the page, letter by letter, so the gag that listens for it runs exactly as if it had been typed. */
+const typeWord = (id: string) => { for (const ch of id) document.body.dispatchEvent(new KeyboardEvent('keydown', { key: ch, bubbles: true })) }
 
 /** A 90 s clip that plays with sound and repeats until the visitor closes the popup. Falls back to muted if the browser blocks sound. */
 function LoopVideo({ className, name, label }: { className: string; name: string; label: string }) {

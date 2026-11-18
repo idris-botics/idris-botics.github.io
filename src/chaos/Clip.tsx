@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { X, Play, Volume2, VolumeX } from 'lucide-react'
 import { isMuted, onMuteChange, setMuted } from './sfx'
+import { Countdown } from './Countdown'
 
 type Props = {
   /** File name without extension, in public/media/vid (an MP4 is always there, a WebM sometimes). */
@@ -20,7 +21,7 @@ type Props = {
 
 /**
  * A clip in a popup that plays in full, with sound, on a loop, with no controls: nothing can be paused or scrubbed, only muted. It opens after a click, tap or typed word, so sound is allowed; if a browser
- * still blocks it, a big "tap to play" button appears. It pauses when the tab is hidden. Escape closes it (unless the close button is running away).
+ * still blocks it, a big "tap to play" button appears. It pauses when the tab is hidden. Escape does nothing. The close button runs away from the pointer (or is missing) for the first while, and a small countdown says how long; after that it is a normal close button.
  */
 export default function Clip({ name, webm, label, lang, runaway = 0, onClose, taunts, closeAfter = 0 }: Props) {
   const v = useRef<HTMLVideoElement>(null)
@@ -37,7 +38,7 @@ export default function Clip({ name, webm, label, lang, runaway = 0, onClose, ta
   const base = import.meta.env.BASE_URL
   const locked = () => (runaway > 0 && performance.now() - openedAt.current < runaway) || (closeAfter > 0 && performance.now() - openedAt.current < closeAfter)
   const [closeShown, setCloseShown] = useState(closeAfter === 0)
-  useEffect(() => { if (closeAfter > 0) { const t = window.setTimeout(() => setCloseShown(true), closeAfter); return () => clearTimeout(t) } }, [closeAfter])
+  useEffect(() => { if (closeAfter > 0) { const id = window.setInterval(() => { if (!locked()) { setCloseShown(true); clearInterval(id) } }, 250); return () => clearInterval(id) } }, [closeAfter]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const el = v.current
@@ -45,11 +46,8 @@ export default function Clip({ name, webm, label, lang, runaway = 0, onClose, ta
     const vis = () => { if (document.hidden) el?.pause(); else if (el?.paused) el.play().catch(() => undefined) }
     const off = onMuteChange(() => setMutedState(isMuted()))
     document.addEventListener('visibilitychange', vis)
-    const key = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
-      e.stopPropagation()
-      if (!locked()) onClose(reached.current)
-    }
+    // Escape does nothing while a clip is up, and the page behind it does not get the key either: the X is the only way out
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation() } }
     addEventListener('keydown', key, true)
     return () => { off(); document.removeEventListener('visibilitychange', vis); removeEventListener('keydown', key, true); el?.pause() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,6 +86,7 @@ export default function Clip({ name, webm, label, lang, runaway = 0, onClose, ta
             <Play size={22} aria-hidden="true" /> {lang === 'en' ? 'Tap to play' : 'タップして再生'}
           </button>
         )}
+        {(runaway > 0 || closeAfter > 0) && <Countdown seconds={Math.max(runaway, closeAfter) / 1000} lang={lang} />}
         {say && <span className="clip-taunt" style={pos ? { left: Math.max(4, pos.x - 120), top: pos.y + 6 } : { right: 60, top: 14 }} aria-hidden="true">{say}</span>}
         <button className="clip-mute" aria-pressed={muted} aria-label={lang === 'en' ? (muted ? 'Turn the sound on' : 'Mute') : (muted ? '音を出す' : 'ミュート')} onClick={() => setMuted(!muted)}>{muted ? <VolumeX size={22} aria-hidden="true" /> : <Volume2 size={22} aria-hidden="true" />}</button>
         {closeShown && <button

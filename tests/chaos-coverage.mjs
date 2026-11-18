@@ -20,7 +20,7 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
     // Escape closes the video and the roll, but during the jumpscare's text phase it would restore order, so wait that out instead
     const clear = async () => { for (let k = 0; k < 12; k++) {
       if (await p.locator('.toast-x').count()) { await p.locator('.toast-x').first().click().catch(() => {}); await p.waitForTimeout(200) }
-      if (await p.locator('.cena-video, .rick').count()) { await p.keyboard.press('Escape'); await p.waitForTimeout(400) } else if (await p.locator('.cena').count()) await p.waitForTimeout(500); else break } }
+      if (await p.locator('.cena-video, .rick').count()) { await p.evaluate(() => { document.querySelectorAll('.rick-x, .cena-x, .clip-x').forEach((e) => e.click()) }); await p.waitForTimeout(400) } else if (await p.locator('.cena').count()) await p.waitForTimeout(500); else break } }
     const covered = async (sel) => (await coveredOnce(sel)) && (await clear(), await p.waitForTimeout(300), await coveredOnce(sel)) // a modal set piece may have just fired: Escape closes it, then look again
     const coveredOnce = async (sel) => {
       await clear()

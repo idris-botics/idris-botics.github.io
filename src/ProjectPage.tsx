@@ -1,8 +1,8 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, ExternalLink, FileText, Minimize2, Play } from 'lucide-react'
 import { useStore } from './store'
 import { SimView } from './sims/registry'
-import { Gallery, mediaBase } from './Gallery'
+import { Gallery, mediaBase, type Media } from './Gallery'
 import { ProjectOpen } from './Extras'
 import { LoadGuard } from './LoadGuard'
 import { backToWork, gotoProject } from './route'
@@ -94,25 +94,7 @@ function SimPanel({ project, lang }: { project: Project; lang: 'en' | 'ja' }) {
   )
 }
 
-function Videos({ project, lang }: { project: Project; lang: 'en' | 'ja' }) {
-  const base = import.meta.env.BASE_URL
-  if (!project.videos?.length) return null
-  const t = (l: { en: string; ja: string }) => l[lang]
-  return (
-    <div className="media pw-videos">
-      {project.videos.map((v) => (
-        <figure key={v.src}>
-          <video muted playsInline controls preload="none" loop width={1280} height={720}
-            poster={`${base}media/img/${v.poster}-640.webp`} aria-label={`${t(v.caption)} (${t(ui.noSound)})`}>
-            <source src={`${base}media/vid/${v.src}.mp4`} type="video/mp4" />
-            <source src={`${base}media/vid/${v.src}.webm`} type="video/webm" />
-          </video>
-          <figcaption>{t(v.caption)}</figcaption>
-        </figure>
-      ))}
-    </div>
-  )
-}
+
 
 function Stepscribe({ lang }: { lang: 'en' | 'ja' }) {
   const t = (l: { en: string; ja: string }) => l[lang]
@@ -184,8 +166,13 @@ export default function ProjectPage({ project }: { project: Project }) {
   }
 
   const rows = (['objective', 'method', 'status'] as const).filter((k) => project.summary[k])
-  const leadVideo = project.leadVideo && project.videos?.length
-  const hasMedia = !!leadVideo || !!project.media?.length
+  // the pictures and the videos are one gallery, top left (the videos first when the project says so)
+  const items: Media[] = useMemo(() => {
+    const vids: Media[] = (project.videos ?? []).map((v) => ({ src: v.poster, w: v.w ?? 1280, h: v.h ?? 720, alt: v.caption, caption: v.caption, label: { en: 'Video', ja: '動画' }, widths: [640], video: v.src }))
+    const pics = project.media ?? []
+    return project.leadVideo ? [...vids, ...pics] : [...pics, ...vids]
+  }, [project])
+  const hasMedia = items.length > 0
   const Fig = FIGURES[project.slug]
   const S = project.sim ? SimView[project.sim] : null
 
@@ -197,8 +184,7 @@ export default function ProjectPage({ project }: { project: Project }) {
         <div className={`page-top${hasMedia ? ' has-media' : ''}`}>
           {hasMedia && (
             <div className="page-media">
-              {leadVideo && <Videos project={{ ...project, videos: project.videos!.slice(0, 1) }} lang={lang} />}
-              {project.media && project.media.length > 0 && <div className="page-gallery"><Gallery key={project.slug} items={project.media} lang={lang} morph /></div>}
+              <div className="page-gallery"><Gallery key={project.slug} items={items} lang={lang} morph /></div>
             </div>
           )}
           <div className="page-intro surface">
@@ -251,8 +237,6 @@ export default function ProjectPage({ project }: { project: Project }) {
         {project.credit && <p className="pw-credit">{t(project.credit)}</p>}
         <ProjectOpen slug={project.slug} />
 
-        {!leadVideo && <Videos project={project} lang={lang} />}
-        {leadVideo && project.videos!.length > 1 && <Videos project={{ ...project, videos: project.videos!.slice(1) }} lang={lang} />}
 
 
         <aside className="interest surface">

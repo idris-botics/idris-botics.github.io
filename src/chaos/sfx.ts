@@ -124,6 +124,7 @@ const RECIPES = {
   pop: (c: AudioContext) => tone(c, 'sine', 700, 280, 0.09, 0.8),
   ding: (c: AudioContext) => { tone(c, 'triangle', 880, 880, 0.35, 0.7); tone(c, 'triangle', 1320, 1320, 0.5, 0.4, 0.08) },
   blip: (c: AudioContext) => tone(c, 'square', 520, 780, 0.07, 0.35),
+  burp: (c: AudioContext) => { tone(c, 'sawtooth', 150, 52, 0.5, 0.6); noise(c, 0.4, 500, 140, 0.3, 0.02, 'lowpass') },
   boing: (c: AudioContext) => { tone(c, 'sine', 260, 720, 0.12, 0.9); tone(c, 'sine', 720, 240, 0.22, 0.9, 0.11) },
   whoosh: (c: AudioContext) => noise(c, 0.9, 400, 4000, 0.7, 0, 'bandpass'),
   whistle: (c: AudioContext) => tone(c, 'sine', 1500, 160, 1.3, 0.6),

@@ -74,6 +74,7 @@ export type Media = {
   caption?: L
   label?: L // e.g. "Concept render"
   widths?: number[] // available widths, default [640, 1280]
+  video?: string // a video in the gallery: basename in /media/vid (mp4 and webm); src is then its poster picture (640 wide)
 }
 
 export type Project = {
@@ -86,12 +87,12 @@ export type Project = {
   blurb: L
   summary: { objective?: L; method?: L; status?: L; mine?: L }
   media?: Media[]
-  videos?: { src: string; poster: string; caption: L }[]
+  videos?: { src: string; poster: string; caption: L; w?: number; h?: number }[] // w and h: the video's own size (default 1280 x 720)
   sim?: SimKey
   credit?: L
   tags: string[]
   link?: { href: string; label: L }
-  leadVideo?: boolean // show the first video above the pictures
+  leadVideo?: boolean // the videos come before the pictures in the gallery (otherwise after)
   paper?: { href: string; label: L; abstract: L; venue: L }
   more?: { title: L; body: L }[] // short extra sections shown in a "Details" disclosure on the project page
 }
@@ -127,8 +128,8 @@ export const projects: Project[] = [
     ],
     media: [IMG('image16', 1918, 904, { en: 'Screenshot of the servo PID digital-twin interface: servo with horn arm, gain sliders and response charts.', ja: 'サーボPIDデジタルツインの画面：サーボとアーム、ゲインのスライダー、応答グラフ。' }, { caption: { en: 'The original browser tool', ja: '元のブラウザツール' } })],
     videos: [
-      { src: 'rl-pid', poster: 'rlpid-poster', caption: { en: 'Short demo: a payload change, then RL auto-tune (simulation)', ja: '短い紹介：負荷変更とRL自動調整（シミュレーション）' } },
-      { src: 'pid-demo', poster: 'image16', caption: { en: 'Recording of the original tool', ja: '元のツールの録画' } },
+      { w: 1280, h: 720, src: 'rl-pid', poster: 'rlpid-poster', caption: { en: 'Short demo: a payload change, then RL auto-tune (simulation)', ja: '短い紹介：負荷変更とRL自動調整（シミュレーション）' } },
+      { w: 960, h: 452, src: 'pid-demo', poster: 'image16', caption: { en: 'Recording of the original tool', ja: '元のツールの録画' } },
     ],
     sim: 'pid',
     tags: ['PID', 'reinforcement learning', 'simulation'],
@@ -161,9 +162,10 @@ export const projects: Project[] = [
       IMG('swarm-bot-top', 800, 719, { en: 'Top view of one two-wheeled balancing robot: a white printed frame, two motors with wheels, a battery and a control board with wiring.', ja: '倒立振子型二輪ロボット1台を真上から見た写真：白い造形フレーム、モーター2つと車輪、バッテリー、配線された制御基板。' }, { widths: [640], caption: { en: 'One balancing unit, from above', ja: '倒立振子ユニット1台を上から' } }),
     ],
     videos: [
-      { src: 'swarm-proto-720', poster: 'swarm-proto-poster', caption: { en: 'The self-balancing prototype on the floor', ja: '床の上の自己平衡プロトタイプ' } },
-      { src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } },
+      { w: 480, h: 600, src: 'swarm-proto-720', poster: 'swarm-proto-poster', caption: { en: 'The self-balancing prototype on the floor', ja: '床の上の自己平衡プロトタイプ' } },
+      { w: 480, h: 480, src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } },
     ],
+    leadVideo: true,
     sim: 'swarm',
     tags: ['multi-agent', 'balance control', 'ESP-NOW'],
   },
@@ -324,7 +326,7 @@ export const projects: Project[] = [
       IMG('image6', 1080, 758, { en: 'Spider-inspired quadruped robot.', ja: 'クモ型の四足ロボット。' }, { caption: { en: 'The spider quadruped', ja: 'クモ型四足ロボット' }, widths: [640] }),
     ],
     leadVideo: true,
-    videos: [{ src: 'spider-walk-720', poster: 'spider-walk-poster', caption: { en: 'The spider walking across a granite floor', ja: '御影石の床を歩くクモ型ロボット' } }],
+    videos: [{ w: 408, h: 720, src: 'spider-walk-720', poster: 'spider-walk-poster', caption: { en: 'The spider walking across a granite floor', ja: '御影石の床を歩くクモ型ロボット' } }],
     sim: 'spider',
     tags: ['legged', 'servo', 'gait'],
   },

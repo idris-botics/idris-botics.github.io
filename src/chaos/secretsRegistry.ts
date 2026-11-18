@@ -260,13 +260,14 @@ export const SECRETS: SecretEntry[] = [
   {
     id: 'cookie', ach: 'cookie',
     name: { en: 'Shared a cookie', ja: 'クッキーを分け合った' },
-    trigger: { kind: 'idle', text: 'The cookie banner shows up by itself; let the pet robot deal with it.' },
+    trigger: { kind: 'word', text: 'The cookie banner shows up by itself after a while, or type cookie (or tap the cookie chip in the command box) and let the pet robot deal with it.' },
     hints: [
       { en: 'Something sweet will turn up on its own. Do not rush it.', ja: '甘いものが勝手に現れます。急がないで。' },
       { en: 'A cookie banner appears after a minute or two. The pet robot has feelings about it.', ja: '1〜2分すると、クッキーのバナーが出ます。ペットロボットには思うところがあります。' },
-      { en: 'Wait for the cookie banner, then watch what the pet robot does with it.', ja: 'クッキーのバナーを待ち、ペットロボットがどうするか見ましょう。' },
+      { en: 'Wait for the cookie banner, or just type what it is called. Then watch what the pet robot does with it.', ja: 'クッキーのバナーを待つか、その名前を打ってみましょう。ペットロボットがどうするか見てください。' },
     ],
-    solved: { en: 'Sorry. It was delicious.', ja: 'ごめんなさい。おいしかったです。' },
+    solved: { en: 'I am so full. Do not ask me to move.', ja: 'おなかいっぱい。動かせないでください。' },
+    word: 'cookie',
   },
   {
     id: 'asked', ach: 'asked', finalHintClip: false, rewardsClip: true,

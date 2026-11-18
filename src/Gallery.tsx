@@ -51,7 +51,20 @@ function Lightbox({ items, i, go, onClose, lang }: { items: Media[]; i: number; 
   )
 }
 
-/** Spotlight gallery: one large image, thumbnails below. Clicking a thumbnail promotes it; it rotates by itself until the reader takes over. */
+/** The same box for a video: poster, play controls, muted, no sound track. It stops when the reader moves to another item. */
+function GalleryVideo({ m, lang, morph }: { m: Media; lang: 'en' | 'ja'; morph: boolean }) {
+  const base = import.meta.env.BASE_URL
+  const label = `${m.caption ? m.caption[lang] : m.alt[lang]} (${lang === 'en' ? 'no sound' : '音声なし'})`
+  return (
+    <video className="spot-video" muted playsInline controls loop preload="none" width={m.w} height={m.h} poster={`${mediaBase()}${m.src}-640.webp`} aria-label={label}
+      style={{ ...(m.w >= m.h ? { width: '100%', height: 'auto' } : { height: 'min(62vh, 560px)', width: 'auto', maxWidth: '100%' }), aspectRatio: `${m.w} / ${m.h}`, ...(morph ? { viewTransitionName: 'proj' } : {}) }}>
+      <source src={`${base}media/vid/${m.video}.mp4`} type="video/mp4" />
+      <source src={`${base}media/vid/${m.video}.webm`} type="video/webm" />
+    </video>
+  )
+}
+
+/** Spotlight gallery: one large picture or video, dots below. Clicking a thumbnail promotes it; it rotates by itself until the reader takes over. */
 export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 'en' | 'ja'; morph?: boolean }) {
   const [i, setI] = useState(0)
   const swipe = useRef<{ x: number; y: number } | null>(null)
@@ -60,10 +73,14 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
   const n = items.length
   const go = (k: number) => setI(((k % n) + n) % n)
   const m = items[i]
+  // the enlarged view steps through the pictures only (a video has its own full-screen button)
+  const pics = items.filter((x) => !x.video)
+  const pi = pics.indexOf(m)
+  const goPic = (k: number) => setI(items.indexOf(pics[((k % pics.length) + pics.length) % pics.length]))
   const w = m.widths ?? [640, 1280]
   const t = (l: { en: string; ja: string }) => l[lang]
   return (
-    <div className={n === 1 ? 'gallery single' : 'gallery'} ref={host} role="group" aria-roledescription="carousel" aria-label={lang === 'en' ? 'Project images' : 'プロジェクトの画像'}
+    <div className={n === 1 ? 'gallery single' : 'gallery'} ref={host} role="group" aria-roledescription="carousel" aria-label={lang === 'en' ? 'Project pictures and videos' : 'プロジェクトの画像と動画'}
       onKeyDown={(e) => { if (e.key === 'ArrowRight') go(i + 1); else if (e.key === 'ArrowLeft') go(i - 1) }}>
       <figure className="spot" aria-live="polite">
         <div className="spot-img" style={m.w >= m.h ? undefined : { width: 'fit-content', maxWidth: '100%', margin: '0 auto' }}
@@ -75,10 +92,10 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
             if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(i + (dx < 0 ? 1 : -1))
           }}
           onPointerCancel={() => { swipe.current = null }}>
-          <button className="spot-open" onClick={() => setZoom(true)} aria-label={`${lang === 'en' ? 'Enlarge image' : '画像を拡大'}: ${t(m.alt)}`}>
+          {m.video ? <GalleryVideo key={m.src} m={m} lang={lang} morph={morph && i === 0} /> : <button className="spot-open" onClick={() => setZoom(true)} aria-label={`${lang === 'en' ? 'Enlarge image' : '画像を拡大'}: ${t(m.alt)}`}>
             <img key={m.src} src={src(m, 0)} srcSet={w.map((x) => `${mediaBase()}${m.src}-${x}.webp ${x}w`).join(', ')} sizes="(max-width: 900px) 100vw, 640px"
           width={m.w} height={m.h} style={{ ...(m.w >= m.h ? { width: '100%', height: 'auto' } : { height: 'min(62vh, 560px)', width: 'auto', maxWidth: '100%' }), ...(morph && i === 0 ? { viewTransitionName: 'proj' } : {}) }} alt={t(m.alt)} loading="lazy" decoding="async" />
-          </button>
+          </button>}
           {n > 1 && (
             <>
               <button className="spot-nav prev" onClick={() => go(i - 1)} aria-label={lang === 'en' ? 'Previous image' : '前の画像'}><ChevronLeft size={20} aria-hidden="true" /></button>
@@ -88,11 +105,11 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
         </div>
         {(m.caption || m.label) && <figcaption>{m.label && <span className="lab">{t(m.label)}</span>}{m.caption && t(m.caption)}</figcaption>}
       </figure>
-      {zoom && <Lightbox items={items} i={i} go={go} onClose={() => setZoom(false)} lang={lang} />}
+      {zoom && !m.video && <Lightbox items={pics} i={pi} go={goPic} onClose={() => setZoom(false)} lang={lang} />}
       {n > 1 && (
         <div className="dots" role="tablist" aria-label={lang === 'en' ? 'Choose an image' : '画像を選ぶ'}>
           {items.map((x, k) => (
-            <button key={x.src} role="tab" className="dot" aria-selected={k === i} onClick={() => go(k)} aria-label={`${lang === 'en' ? 'Image' : '画像'} ${k + 1} / ${n}: ${t(x.alt)}`}><span /></button>
+            <button key={x.video ?? x.src} role="tab" className={x.video ? 'dot vid' : 'dot'} aria-selected={k === i} onClick={() => go(k)} aria-label={`${x.video ? (lang === 'en' ? 'Video' : '動画') : (lang === 'en' ? 'Image' : '画像')} ${k + 1} / ${n}: ${t(x.alt)}`}><span /></button>
           ))}
         </div>
       )}

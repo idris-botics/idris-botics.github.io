@@ -22,6 +22,9 @@ await p.screenshot({ path: 'tests/out/omae.png' })
 check('the omae video has no close button for the first 20 s', (await p.locator('.clip-x').count()) === 0)
 await p.evaluate(() => { performance.now = ((o) => () => o() + 21000)(performance.now.bind(performance)) })
 await p.keyboard.press('Escape'); await p.waitForTimeout(400)
+check('Escape does not close it, even after 20 s', (await p.locator('.clip').count()) === 1)
+await p.waitForSelector('.clip-x', { timeout: 3000 }).catch(() => {})
+await p.evaluate(() => document.querySelector('.clip-x')?.click()); await p.waitForTimeout(400)
 check('omae gone', (await p.locator('.clip').count()) === 0)
 
 // shatter
@@ -34,7 +37,7 @@ await p.waitForTimeout(3600)
 check('text re-forms', (await p.locator('.shard').count()) === 0)
 
 // dodge
-for (let i = 0; i < 3 && (await p.locator('.rick, .cena').count()); i++) { await p.keyboard.press('Escape'); await p.waitForTimeout(500) } // the rick roll or Cena may have fired while scrolling: Esc closes them
+for (let i = 0; i < 3 && (await p.locator('.rick, .cena').count()); i++) { await p.evaluate(() => { document.querySelectorAll('.rick-x, .cena-x, .clip-x').forEach((e) => e.click()) }); await p.waitForTimeout(500) } // the rick roll or Cena may have fired while scrolling: Esc closes them
 await p.waitForSelector('.omae', { state: 'detached', timeout: 10000 }).catch(() => {})
 const chip = p.locator('.hero-actions a.btn').first()
 await p.mouse.move(5, 5); await p.waitForTimeout(300)

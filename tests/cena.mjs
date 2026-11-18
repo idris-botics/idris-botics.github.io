@@ -16,10 +16,13 @@ const name = await p.locator('.cena-b').count()
 await p.screenshot({ path: 'tests/out/cena.png' })
 await p.waitForSelector('.cena-video', { timeout: 5000 }).catch(() => {})
 const video = await p.locator('.cena-video').count()
+await p.keyboard.press('Escape'); await p.waitForTimeout(300)
+const escIgnored = (await p.locator('.cena-video').count()) === 1
+const counting = (await p.locator('.cena .vid-count .vc-clock').count()) === 1
 await p.evaluate(() => document.querySelector('.cena-x')?.click())
 await p.waitForTimeout(200)
 const closed = (await p.locator('.cena').count()) === 0
-const ok = shown === 1 && name === 1 && video === 1 && closed && !errs.length
-console.log(ok ? 'ok  ' : 'FAIL', JSON.stringify({ shown, name, video, closed }), errs.join('|'))
+const ok = shown === 1 && name === 1 && video === 1 && escIgnored && counting && closed && !errs.length
+console.log(ok ? 'ok  ' : 'FAIL', JSON.stringify({ shown, name, video, escIgnored, counting, closed }), errs.join('|'))
 await b.close()
 process.exit(ok ? 0 : 1)
