@@ -16,10 +16,10 @@ export const personal = {
 // Project-level gaps (shown as OPEN in dev; omitted in production).
 export const openFields: Record<string, string[]> = {
   abb: ['Research topic and supervisor (name only if allowed)'],
-  swarm: ['My role in the project', 'Hardware test results when they exist'],
+  swarm: ['Hardware test results when they exist'],
   net: ['Paper title, venue, status (ICCORSE 2026?)'],
-  gait: ['My role details beyond Hardware Team Lead', 'Photos of the build'],
-  vehicles: ['Smart India Hackathon: role, problem statement, outcome'],
+  gait: ['Photos of the build'],
+  vehicles: ['Smart India Hackathon: outcome (if you want to say it)'],
   spider: ['Confirm the spider has 2 joints (8 servos): read from the video'],
   cpu8: ['Build-log photos and day-by-day lessons'],
   pipe: ['Source repo link for the Python simulation'],

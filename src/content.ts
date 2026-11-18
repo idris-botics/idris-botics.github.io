@@ -154,6 +154,7 @@ export const projects: Project[] = [
         en: 'Designed and simulated. Hardware tests are still to come, and scaling to many units is future work.',
         ja: '設計とシミュレーションまで。実機試験はこれからで、多数台への拡張は今後の課題です。',
       },
+      mine: { en: 'My final-year project. I did all of it myself.', ja: '卒業研究です。すべて自分で行いました。' },
     },
     media: [
       IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } }),
@@ -206,7 +207,7 @@ export const projects: Project[] = [
       objective: { en: 'Tell an intentional gesture from a tremor, and trigger a simple action such as switching an appliance.', ja: '意図的なジェスチャーと震えを区別し、家電の切替などの操作につなげる。' },
       method: { en: 'A wrist-worn ESP32-S3 board with an IMU and on-device classification (TinyML).', ja: '手首装着のESP32-S3基板、IMU、端末上での分類（TinyML）。' },
       status: { en: 'Prototype in development. Team grant, Jon C. Taenzer Memorial Fund (2026). I am now building a v2 prototype: smaller, with better sensors and a housing.', ja: '試作開発中。チーム助成（Jon C. Taenzer Memorial Fund、2026年）。現在、より小型で、センサーを改良し、筐体をつけたv2試作を製作中です。' },
-      mine: { en: 'Hardware Team Lead.', ja: 'ハードウェアチームリーダー。' },
+      mine: { en: 'Hardware Team Lead. It is a team project, and I am doing most of the build.', ja: 'ハードウェアチームリーダー。チームで取り組んでおり、製作の大半を私が担当しています。' },
     },
     media: [
       IMG('image14', 1536, 1024, { en: 'Concept render of the final proposed wristband.', ja: '最終提案版リストバンドのコンセプト画像。' }, { label: { en: 'Concept render', ja: 'コンセプト画像' }, caption: { en: 'Final proposed version', ja: '最終提案版' } }),
@@ -335,7 +336,7 @@ export const projects: Project[] = [
       en: 'A running series of Bluetooth-controlled builds: a 2-wheel car with a castor, a 4-wheel car and a tracked tank. Chassis, drivetrain and control electronics built and tuned and tested.',
       ja: 'Bluetooth操作の車両を継続的に製作：キャスター付き2輪車、4輪車、クローラー型。シャーシ、駆動系、制御回路を製作し、調整・試験しています。',
     },
-    summary: { method: { en: 'The tracked tank is the rover built for the Smart India Hackathon (September 2025): an on-board camera reads the grain size of beach sand across intertidal zones, which helps to predict and monitor weather and erosion patterns.', ja: 'クローラー型のロボットは、Smart India Hackathon（2025年9月）向けに製作したローバーです。車載カメラで潮間帯ごとの砂の粒径を読み取り、天候や侵食パターンの予測と監視に役立てます。' } },
+    summary: { mine: { en: 'The tank rover for the Smart India Hackathon was a team build. I helped design and make it, and I was part of the whole ideation process.', ja: 'Smart India Hackathon向けのクローラー型ローバーはチームでの製作です。設計と製作に加わり、発想の段階から最後まで参加しました。' }, method: { en: 'The tracked tank is the rover built for the Smart India Hackathon (September 2025): an on-board camera reads the grain size of beach sand across intertidal zones, which helps to predict and monitor weather and erosion patterns.', ja: 'クローラー型のロボットは、Smart India Hackathon（2025年9月）向けに製作したローバーです。車載カメラで潮間帯ごとの砂の粒径を読み取り、天候や侵食パターンの予測と監視に役立てます。' } },
     media: [
       IMG('image8', 1056, 719, { en: 'Two-wheel car with a castor: four 18650 cells, buck converter, ESP32 and motor driver on perfboard.', ja: 'キャスター付き2輪車：18650セル4本、降圧コンバータ、ESP32、モータードライバをユニバーサル基板に実装。' }, { caption: { en: '2-wheel car with a castor', ja: 'キャスター付き2輪車' }, widths: [640] }),
       IMG('image10', 1627, 952, { en: 'Tracked tank-style robot.', ja: 'クローラー型の戦車ロボット。' }, { caption: { en: 'Tracked tank', ja: 'クローラー型の戦車' } }),
@@ -491,8 +492,8 @@ export const learning: { theme: L; items: L[] }[] = [
 /** Publications and awards: their own section on the home page, after About. Newest or most important first inside each group. */
 export type Honour = { group: 'pub' | 'award'; year: string; title: L; line: L; link?: { href: string; label: L } }
 export const honours: Honour[] = [
-  { group: 'pub', year: '2026', title: { en: 'Swarm-actuated net for space debris', ja: '宇宙デブリ捕獲のスウォーム作動ネット' }, line: { en: 'ICCORSE 2026, conceptual, untested.', ja: 'ICCORSE 2026。概念検討で、未検証です。' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' } } },
-  { group: 'pub', year: '2025', title: { en: 'Rare-earth-free reluctance motor', ja: 'レアアースフリーのリラクタンスモータ' }, line: { en: 'ICUMSAT 2025, third author.', ja: 'ICUMSAT 2025、第3著者。' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'Abstract (PDF)', ja: 'アブストラクト（PDF）' } } },
+  { group: 'pub', year: '2026', title: { en: 'Swarm-actuated net for space debris', ja: '宇宙デブリ捕獲のスウォーム作動ネット' }, line: { en: 'Presented at ICCORSE 2026. Conceptual, untested.', ja: 'ICCORSE 2026で発表。概念検討で、未検証です。' }, link: { href: 'papers/ASANS-ICCORSE-2026.pdf', label: { en: 'Read the paper (PDF)', ja: '論文を読む（PDF）' } } },
+  { group: 'pub', year: '2025', title: { en: 'Rare-earth-free reluctance motor', ja: 'レアアースフリーのリラクタンスモータ' }, line: { en: 'Presented at ICUMSAT 2025. Third author.', ja: 'ICUMSAT 2025で発表。第3著者。' }, link: { href: 'papers/ICUMSAT-2025-abstract.pdf', label: { en: 'Abstract (PDF)', ja: 'アブストラクト（PDF）' } } },
   { group: 'award', year: '2026', title: { en: 'IEEE EPICS grant', ja: 'IEEE EPICS 助成' }, line: { en: 'USD 3,000, awarded. Hardware Team Lead.', ja: '3,000米ドルを獲得。ハードウェアチームリーダー。' } },
   { group: 'award', year: '2025', title: { en: 'InnovateX 2025', ja: 'InnovateX 2025' }, line: { en: 'IEEE hackathon, runner-up.', ja: 'IEEEハッカソン、準優勝。' } },
   { group: 'award', year: '2026', title: { en: 'India Innovates 2026', ja: 'India Innovates 2026' }, line: { en: 'National finalist.', ja: '全国ファイナリスト。' } },
