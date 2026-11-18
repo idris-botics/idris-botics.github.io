@@ -39,7 +39,11 @@ export default function Scenery({ still = false }: { still?: boolean }) {
     let raf = 0, room = 0, travel = 0
     // The measurements are taken when the page changes size, never while scrolling, so a scroll frame only reads scrollY and
     // writes one transform.
-    const measure = () => { room = document.documentElement.scrollHeight - innerHeight; travel = Math.max(0, el.offsetHeight - innerHeight); place() }
+    const probe = document.createElement('div')
+    probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;padding-bottom:env(safe-area-inset-bottom, 0px)'
+    document.body.appendChild(probe)
+    // the picture ends above the system navigation bar, like the CSS version (index.css, --sb)
+    const measure = () => { const sb = parseFloat(getComputedStyle(probe).paddingBottom) || 0; room = document.documentElement.scrollHeight - innerHeight; travel = Math.max(0, el.offsetHeight - innerHeight + sb); place() }
     const place = () => {
       raf = 0
       const p = reduced.matches || room <= 0 ? 0 : Math.min(1, Math.max(0, scrollY / room))
@@ -52,7 +56,7 @@ export default function Scenery({ still = false }: { still?: boolean }) {
     const ro = new ResizeObserver(measure) // the page grows and shrinks (project pages, language, lazy content)
     ro.observe(document.documentElement)
     reduced.addEventListener('change', measure)
-    return () => { cancelAnimationFrame(raf); removeEventListener('scroll', queue); removeEventListener('resize', measure); ro.disconnect(); reduced.removeEventListener('change', measure) }
+    return () => { probe.remove(); cancelAnimationFrame(raf); removeEventListener('scroll', queue); removeEventListener('resize', measure); ro.disconnect(); reduced.removeEventListener('change', measure) }
   }, [still])
 
   return (

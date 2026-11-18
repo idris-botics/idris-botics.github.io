@@ -901,17 +901,20 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 .asof { white-space: nowrap; }
 .scenery-sheet img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 900ms var(--ease-out); }
 .scenery-sheet img.on { opacity: 1; }
+/* when the bars are hidden (or the system bar is transparent) the screen is taller than the picture's end: the meadow carries on underneath it */
+.scenery-sheet::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: 240px; background: #c2d6a2; }
+html[data-mode='chaos'] .scenery-sheet::after { background: #b5df84; }
 @media print { .scenery { display: none; } }
 /* text that sits straight on the picture uses full ink, not the muted grey, so it stays readable over sky, lake and meadow */
 .more-h, .site-footer { color: var(--ink); }
 /* Where the browser supports scroll-driven animations the picture travels on the compositor, with no script running while scrolling;
    other browsers use the small fallback in Scenery.tsx. Reduced motion: the picture stays still (travelling backdrops are parallax). */
-@keyframes scenery-travel { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100vh - max(200vw, 260vh)), 0); } }
+@keyframes scenery-travel { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100svh - var(--sb) - max(200vw, 260vh)), 0); } }
 @supports (animation-timeline: scroll()) {
   .scenery-sheet { animation: scenery-travel linear both; animation-timeline: scroll(root block); }
 }
 /* a project page is short, so the picture would race past: there it stays still, showing the calm band of clouds, and the project is the only thing that moves */
-.scenery-sheet.still { animation: none; transform: translate3d(0, calc((100vh - max(200vw, 260vh)) * 0.55), 0); }
+.scenery-sheet.still { animation: none; transform: translate3d(0, calc((100svh - var(--sb) - max(200vw, 260vh)) * 0.55), 0); }
 @media (prefers-reduced-motion: reduce) { .scenery-sheet { animation: none; transform: none !important; } }
 
 /* the credit line sits on a cream pill so it reads the same over lake, shore or meadow; the hairline above it would only add a stray line */
@@ -1003,7 +1006,7 @@ canvas.paper-hero { position: fixed; inset: 0; width: 100vw; height: 100vh; z-in
 .page-end { position: relative; }
 .page-end.has-scene .site-footer { margin-top: 0; padding: 0; border: 0; }
 .page-end.has-scene .site-footer .wrap { padding: 0; max-width: none; }
-.page-end.has-scene .site-footer .wrap > span:first-child { position: absolute; z-index: 3; left: clamp(calc(min(86vw, 460px) / 2 + 6px), calc(50% + 0.012 * max(200vw, 260vh)), calc(100% - min(86vw, 460px) / 2 - 6px)); bottom: calc(0.048 * max(200vw, 260vh)); translate: -50% 0; width: min(86vw, 460px); display: block; text-align: center; padding: 10px 16px; background: #fff8ea; color: var(--ink); border: 2px solid var(--outline); border-radius: 18px; box-shadow: 3px 3px 0 var(--outline); font: 600 15px/1.4 var(--font-body); }
+.page-end.has-scene .site-footer .wrap > span:first-child { position: absolute; z-index: 3; left: clamp(calc(min(86vw, 460px) / 2 + 6px), calc(50% + 0.012 * max(200vw, 260vh)), calc(100% - min(86vw, 460px) / 2 - 6px)); bottom: calc(0.048 * max(200vw, 260vh) + var(--sb)); translate: -50% 0; width: min(86vw, 460px); display: block; text-align: center; padding: 10px 16px; background: #fff8ea; color: var(--ink); border: 2px solid var(--outline); border-radius: 18px; box-shadow: 3px 3px 0 var(--outline); font: 600 15px/1.4 var(--font-body); }
 .page-end.has-scene .site-footer .wrap > span:first-child::after { content: ''; position: absolute; left: 50%; bottom: -10px; width: 16px; height: 16px; margin-left: -8px; background: #fff8ea; border-right: 2px solid var(--outline); border-bottom: 2px solid var(--outline); transform: rotate(45deg); }
 @media (min-width: 1024px) { .page-end.has-scene .site-footer .wrap > span:first-child { font-size: 16px; } }
 /* the last panel is taller, so the bigger ending scene and its bubble have room */
@@ -1016,3 +1019,7 @@ canvas.paper-hero { position: fixed; inset: 0; width: 100vw; height: 100vh; z-in
 html[data-pre] .ltr { animation: none; }
 /* the waypoints are placed once the sections have been measured; until then they are not drawn (they used to appear at the top and jump into place) */
 .toolpath.pending { visibility: hidden; }
+
+/* phones with on-screen buttons (back, home, tabs) or a gesture bar: the page can run under them, so the end of the page keeps clear of them */
+:root { --sb: env(safe-area-inset-bottom, 0px); }
+.page-end { padding-bottom: var(--sb); }
