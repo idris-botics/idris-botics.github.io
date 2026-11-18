@@ -160,7 +160,10 @@ export const projects: Project[] = [
       IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } }),
       IMG('swarm-bot-top', 800, 719, { en: 'Top view of one two-wheeled balancing robot: a white printed frame, two motors with wheels, a battery and a control board with wiring.', ja: '倒立振子型二輪ロボット1台を真上から見た写真：白い造形フレーム、モーター2つと車輪、バッテリー、配線された制御基板。' }, { widths: [640], caption: { en: 'One balancing unit, from above', ja: '倒立振子ユニット1台を上から' } }),
     ],
-    videos: [{ src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } }],
+    videos: [
+      { src: 'swarm-proto-720', poster: 'swarm-proto-poster', caption: { en: 'The self-balancing prototype on the floor', ja: '床の上の自己平衡プロトタイプ' } },
+      { src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } },
+    ],
     sim: 'swarm',
     tags: ['multi-agent', 'balance control', 'ESP-NOW'],
   },
