@@ -107,8 +107,10 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
   check(await p.evaluate(() => document.querySelector('.scout-dock')?.classList.contains('eating')) && (await p.locator('.cookie-pile i').count()) > 0, 'but the robot keeps chomping and the pile is still there')
   await p.waitForSelector('.scout-dock.stuffed', { timeout: 14000 })
   check(true, 'it still gets stuffed')
-  await p.waitForTimeout(6500)
-  check(!(await p.evaluate(() => document.querySelector('.scout-dock')?.classList.contains('stuffed'))), 'about 4 s later it is not stuffed any more')
+  const t0 = Date.now()
+  await p.waitForSelector('.scout-dock.stuffed', { state: 'detached', timeout: 24000 })
+  const stuffedFor = (Date.now() - t0) / 1000
+  check(stuffedFor < 21, 'it is not stuffed any more after at most 20 s (' + stuffedFor.toFixed(1) + ' s left to wait)')
   check((await p.evaluate(() => Number(getComputedStyle(document.querySelector('.scout-dock')).getPropertyValue('--full')))) === 0, 'and it has deflated back to normal size')
   await p.keyboard.type('cookie'); await p.waitForSelector('.cookie', { timeout: 3000 })
   check(true, 'and the cookie word works again')

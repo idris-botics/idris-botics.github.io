@@ -28,12 +28,12 @@ import MuteButton from './MuteButton'
 import { useStore } from '../store'
 import { breakName, isBroken, reassembleName } from './nameBreak'
 import { MAX_EVENTS, newInterval, repeatDue, watchPage, type ActiveClock } from './activeTime'
-import Scout from '../Scout'
+import Scout, { type Pose } from '../Scout'
 import Conjure from './Conjure'
 import Clip from './Clip'
 import { Countdown } from './Countdown'
 import RemixFlush from './RemixFlush'
-import { endsWithWord, makeRemixMap, remixEnabled, remixUnlocked, setRemix, unlockRemix, type RemixWord } from './remix'
+import { bumpRemixRuns, endsWithWord, makeRemixMap, remixEnabled, remixRuns, remixUnlocked, setRemix, unlockRemix, type RemixWord } from './remix'
 import CommandBox from './CommandBox'
 import { ACH_NAMES, ACH_TOTAL } from './secretsRegistry'
 
@@ -166,6 +166,7 @@ export default function Chaos() {
     if (awarded.current.has(id) || !(id in ACH)) return
     awarded.current.add(id)
     hitStop(40)
+    dispatchEvent(new CustomEvent('portfolio:scout', { detail: 'happy' }))
     setAch((a) => { const n = [...a, id]; setCurrentAchievements(n); return n })
     setTimeout(() => sfx('chime'), 350)
   }, [])
@@ -603,8 +604,8 @@ export default function Chaos() {
     const v = cookieVariant.current
     sayText(v % 2 === 0 ? (langRef.current === 'en' ? 'I am so full. Do not ask me to move.' : 'おなかいっぱい。動かせないでください。') : (langRef.current === 'en' ? 'I pressed accept. Then I ate the accept. I think I am a cookie now.' : '「同意する」を押して、そのまま食べました。私はもうクッキーかもしれません。'), 4500)
     window.setTimeout(() => sfx('boing'), 1500)
-    // these timers are not cleared when the effect runs again: the banner leaves with the cookie, and the robot is stuffed for 4.2 s, then deflates
-    feastTimers.current.push(window.setTimeout(closeCookie, 1500), window.setTimeout(() => { setStuffed(false); setBites(0) }, 4200))
+    // these timers are not cleared when the effect runs again: the banner leaves with the cookie, and the robot is stuffed for 10 to 20 s, then deflates
+    feastTimers.current.push(window.setTimeout(closeCookie, 1500), window.setTimeout(() => { setStuffed(false); setBites(0) }, 10000 + Math.random() * 10000))
   }, [feast, bites, award, sayText])
 
   // finale (C): when the contact section is reached, once
@@ -772,15 +773,28 @@ export default function Chaos() {
   }, [remix, fireWord, sayText])
   // every achievement found: remix switches on for good (the achievements panel has the switch)
   useEffect(() => {
-    if (ach.length < ACH_TOTAL || !unlockRemix()) return
-    setRemixState(true)
-    setFlushing(true) // the page is flushed, comes back up, and REMIX IS ON fills the screen (RemixFlush.tsx)
+    if (ach.length < ACH_TOTAL || flushingRef.current) return
+    const first = unlockRemix()
+    if (!first && !remixRef.current) return // switched off in the panel: no show
+    if (first) setRemixState(true)
+    setFlushReal(true); setFlushRun(bumpRemixRuns())
+    setFlushing(true) // a statement, then the page is flushed, comes back up, and REMIX IS ON fills the screen (RemixFlush.tsx)
   }, [ach])
   const [flushing, setFlushing] = useState(false)
+  const flushingRef = useRef(false)
+  useEffect(() => { flushingRef.current = flushing }, [flushing])
+  const [flushRun, setFlushRun] = useState(() => Math.max(1, remixRuns()))
+  const [flushReal, setFlushReal] = useState(false) // a real completion (resets the count), not the owner's remixtest
   const endFlush = useCallback(() => {
     setFlushing(false)
+    if (flushReal) {
+      // a new run: the count goes back to zero and the words are dealt out again
+      awarded.current.clear(); setAch([]); setCurrentAchievements([])
+      remixMap.current = makeRemixMap()
+    }
+    setFlushReal(false)
     sayText(langRef.current === 'en' ? 'Remix is on. Even I do not know what happens now: nobody has made it this far. Godspeed, sailor.' : 'リミックスがオンになりました。この先に何が起こるかは私にもわかりません。ここまで来た人は誰もいないのです。ご武運を、船乗りさん。', 8000)
-  }, [sayText])
+  }, [sayText, flushReal])
   // for the owner only: type remixtest to watch the flush and the REMIX IS ON banner again. It is not a secret (not in the hints, the command box or the
   // achievements), it does not unlock anything and it does not touch the Remix setting.
   useEffect(() => {
@@ -788,7 +802,7 @@ export default function Chaos() {
     const k = (e: KeyboardEvent) => {
       if ((e.target as HTMLElement).closest?.('input, textarea, select') || e.key.length !== 1) return
       buf = (buf + e.key.toLowerCase()).slice(-9)
-      if (buf === 'remixtest') { buf = ''; if (!document.querySelector('.remix-flush')) setFlushing(true) }
+      if (buf === 'remixtest') { buf = ''; if (!document.querySelector('.remix-flush')) { setFlushReal(false); setFlushRun(Math.max(1, remixRuns())); setFlushing(true) } }
     }
     addEventListener('keydown', k)
     return () => removeEventListener('keydown', k)
@@ -979,6 +993,52 @@ export default function Chaos() {
 
   // Scout clicks: every click gets a short remark and the robot gets angrier; too many and the site explodes and evicts you
   const clicks = useRef(0)
+  // The pet robot's face and moves (Scout.tsx, chaos.css ".scout-dock.pose-..."). What it shows depends on what is going on, in this order:
+  // a short reaction ("flash"), the big set pieces, being poked, napping, and then little bits of life of its own when nothing else is happening.
+  const [flash, setFlash] = useState<Pose | null>(null)
+  const flashT = useRef(0)
+  const react = useCallback((p: Pose, ms = 1500) => { setFlash(p); clearTimeout(flashT.current); flashT.current = window.setTimeout(() => setFlash(null), ms) }, [])
+  useEffect(() => {
+    const f = (e: Event) => react((e as CustomEvent<Pose>).detail)
+    addEventListener('portfolio:scout', f)
+    return () => { removeEventListener('portfolio:scout', f); clearTimeout(flashT.current) }
+  }, [react])
+  useEffect(() => { if (caf === 'wired') react('sip', 1700) }, [caf, react]) // a sip of coffee first, then the shakes
+  const [watching, setWatching] = useState('') // which full-screen thing is up (a clip or the portrait), so the robot can react to it
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      const m = /([\w-]+)-poster/.exec(document.querySelector('.clip video')?.getAttribute('poster') ?? '')
+      setWatching(m ? m[1] : document.querySelector('.summon') ? 'summon' : '')
+    }, 400)
+    return () => clearInterval(id)
+  }, [])
+  const [idlePose, setIdlePose] = useState<Pose>('idle')
+  useEffect(() => {
+    let t = 0, back = 0
+    const next = () => {
+      t = window.setTimeout(() => {
+        if (!document.hidden && !feastRef.current && !stuffedRef.current && !flushingRef.current && !document.querySelector('.rick, .cena, .clip, .summon, .remix-flush')) {
+          const picks: { p: Pose; ms: number }[] = [{ p: 'yawn', ms: 2300 }, { p: 'whistle', ms: 3000 }, { p: 'look', ms: 2400 }, { p: 'wave', ms: 2200 }, { p: 'happy', ms: 1300 }, { p: 'look', ms: 2400 }]
+          const pick = picks[Math.floor(Math.random() * picks.length)]
+          setIdlePose(pick.p); clearTimeout(back); back = window.setTimeout(() => setIdlePose('idle'), pick.ms)
+        }
+        next()
+      }, 6500 + Math.random() * 8000)
+    }
+    next()
+    return () => { clearTimeout(t); clearTimeout(back) }
+  }, [])
+  const pose: Pose =
+    stuffed || feast ? 'idle'
+    : caf !== 'off' ? (flash === 'sip' ? 'sip' : 'idle')
+    : flushing ? 'panic'
+    : rick ? 'dance'
+    : cena > 0 ? (cena < 3 ? 'shock' : 'salute')
+    : omae > 0 || omaeClip || watching === 'omae' ? 'shock'
+    : watching === 'cat' || watching === 'summon' ? 'love'
+    : watching === 'tell-me' ? 'annoyed'
+    : flash ?? (nap ? 'sleepy' : anger > 4 ? 'annoyed' : idlePose)
+
   const poke = () => {
     if (!on('scoutClicks')) return
     clicks.current++
@@ -1001,6 +1061,7 @@ export default function Chaos() {
       }, reduced() ? 400 : 1500)
       return
     }
+    react(n <= 2 ? 'happy' : n <= 4 ? 'dizzy' : 'annoyed', 1500)
     setBubble(MAD[n - 1][langRef.current])
     setAnger(n)
     angerBeep(n)
@@ -1098,7 +1159,7 @@ export default function Chaos() {
       )}
       {taunt && <span key={taunt.id} className={taunt.x > 220 ? 'x-taunt left' : 'x-taunt'} style={{ left: taunt.x + (taunt.x > 220 ? -12 : 60), top: taunt.y + 6 }} aria-hidden="true">{taunt.text}</span>}
       {on('coffee') && <Coffee lang={lang} fire={coffee} say={sayText} award={award} start={() => run('coffee', 'C', true)} end={() => sched.current?.end('coffee')} />}
-      <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} award={award} />
+      <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} award={award} remixMap={remix ? remixMap.current : null} />
       <CornerMenu lang={lang} />
       <Narrators lang={lang} found={ach} say={sayText} award={award} />
       <WorkAwards award={award} />
@@ -1161,7 +1222,7 @@ export default function Chaos() {
         </div>
       )}
       <MuteButton lang={lang} />
-      {flushing && <RemixFlush lang={lang} onDone={endFlush} />}
+      {flushing && <RemixFlush lang={lang} total={ACH_TOTAL} run={flushRun} onDone={endFlush} />}
       <CommandBox lang={lang} run={(w) => fireWord(remixRef.current && w in remixMap.current ? remixMap.current[w as RemixWord] : w)} />
       <Conjure lang={lang} say={sayText} award={award} />
       {ach.length > 0 && (
@@ -1177,7 +1238,7 @@ export default function Chaos() {
           {achOpen && <ul>{ach.map((a) => <li key={a}>{a === 'idris' && <img className="ach-thumb" src={`${import.meta.env.BASE_URL}media/img/idris-whimsy-480.jpg`} alt="" width={28} height={28} />}{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
         </div>
       )}
-      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${feast && bites < 10 ? ' eating' : ''}${stuffed ? ' stuffed' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length, ['--full' as string]: stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0 }}>
+      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${feast && bites < 10 ? ' eating' : ''}${stuffed ? ' stuffed' : ''}${pose !== 'idle' ? ' pose-' + pose : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length, ['--full' as string]: stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0 }}>
         {bubble && <span className="bubble">{bubble}</span>}
         {nap && <span className="zzz">Zzz</span>}
         {stuffed && <span className="crumbs" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
@@ -1190,7 +1251,7 @@ export default function Chaos() {
             })}
           </span>
         )}
-        <Scout size={84} mood={caf} full={stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0} stuffed={stuffed} />
+        <Scout size={84} mood={caf} pose={pose} full={stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0} stuffed={stuffed} />
       </div>
       {stamps.map((s) => <span key={s.id} className="stamp" style={{ left: s.x, top: s.y }} aria-hidden="true">{s.text}</span>)}
       {toast && (

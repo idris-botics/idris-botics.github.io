@@ -330,7 +330,7 @@ h1[data-name].name-wobble .ltr { animation: name-wobble .45s ease-in-out 2; }
 .scout-dock.eating { transform: translateX(calc(-1 * min(34vw, 340px))); }
 .scout-dock.eating svg { animation: chew .35s ease-in-out infinite; transform-origin: 50% 100%; }
 /* every cookie makes the pet robot rounder (--full, 0 to 5, set in Chaos.tsx); when it is stuffed it squeezes its eyes shut, pats its belly and burps crumbs */
-.scout-dock svg { scale: calc(1 + var(--full, 0) * .06) calc(1 + var(--full, 0) * .045); transform-origin: 50% 100%; transition: scale 1.3s ease-in-out; }
+.scout-dock svg { scale: calc(1 + var(--full, 0) * .06) calc(1 + var(--full, 0) * .045); transform-origin: 50% 100%; transition: scale 2.6s ease-in-out; }
 .scout-dock .belly, .scout-dock .cheek { transition: x .4s, width .4s, height .4s, cx .4s, r .4s; }
 .scout-dock .mouth { transform-box: fill-box; transform-origin: center; }
 .scout-dock.eating .mouth { animation: munch .28s ease-in-out infinite; }
@@ -415,18 +415,11 @@ html:has(.clip, .rick, .cena) .hb-btn, html:has(.clip, .rick, .cena) .hb-panel, 
 .cookie-pile i { position: absolute; left: calc(var(--c) * 30px); bottom: calc(var(--r) * 22px); font-style: normal; font-size: 32px; line-height: 1; rotate: var(--t); filter: drop-shadow(1px 2px 0 rgba(38, 34, 31, .35)); }
 @media (max-width: 767px) { .cookie-pile { width: 100px; height: 76px; } .cookie-pile i { left: calc(var(--c) * 23px); bottom: calc(var(--r) * 17px); font-size: 24px; } }
 
-/* remix flush: the page spins down a drain in the middle of the screen, then comes back up (RemixFlush.tsx) */
-html.flush-down :is(main, .site-header, .page-end) { animation: flush-down 2.6s cubic-bezier(.55, 0, .9, .45) forwards; pointer-events: none; }
-html.flush-hold :is(main, .site-header, .page-end) { transform: scale(0); pointer-events: none; }
-html.flush-up :is(main, .site-header, .page-end) { animation: flush-up 1.2s cubic-bezier(.2, 1.35, .4, 1) both; pointer-events: none; }
-@keyframes flush-down { 0% { transform: rotate(0deg) scale(1); } 14% { transform: rotate(-14deg) scale(.97); } 100% { transform: rotate(-1260deg) scale(0); } }
-@keyframes flush-up { 0% { transform: rotate(540deg) scale(0); } 100% { transform: rotate(0deg) scale(1); } }
-.remix-flush { position: fixed; inset: 0; z-index: 325; pointer-events: none; overflow: hidden; }
-.flush-hole { position: absolute; left: 50%; top: 50%; width: 0; height: 0; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, #02040a 0 34%, #14283c 35% 58%, #6fb7e8 59% 64%, rgba(255, 255, 255, 0) 65%); transition: width .5s ease-out, height .5s ease-out; }
+/* remix flush (RemixFlush.tsx): the pieces and the background are moved with the Web Animations API; this is the white and the drain */
+.remix-flush { position: fixed; inset: 0; z-index: 500; pointer-events: none; overflow: hidden; }
+.rf-white { position: absolute; inset: 0; background: #fff; clip-path: circle(0px at 50% 50%); }
+.flush-hole { position: absolute; left: 50%; top: 50%; width: min(52vmin, 300px); height: min(52vmin, 300px); translate: -50% -50%; scale: 0; border-radius: 50%; background: radial-gradient(circle, #02040a 0 34%, #14283c 35% 58%, #6fb7e8 59% 64%, rgba(255, 255, 255, 0) 65%); }
 .flush-hole::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg, rgba(255, 255, 255, .55), transparent 18%, rgba(255, 255, 255, .4) 35%, transparent 55%, rgba(255, 255, 255, .5) 75%, transparent); animation: spin .7s linear infinite; -webkit-mask: radial-gradient(circle, transparent 28%, #000 30% 64%, transparent 66%); mask: radial-gradient(circle, transparent 28%, #000 30% 64%, transparent 66%); }
-.flush-hole.grow { width: min(52vmin, 300px); height: min(52vmin, 300px); transition: width 2.4s ease-in, height 2.4s ease-in; }
-.flush-hole.on { width: min(52vmin, 300px); height: min(52vmin, 300px); }
-.flush-hole.shrink { width: 0; height: 0; transition: width 1.1s ease-in .3s, height 1.1s ease-in .3s; }
 .remix-banner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 16px; background: rgba(20, 22, 26, .35); animation: rb-bg 4s ease-in-out both; }
 .remix-banner b { font: 900 clamp(46px, 13vw, 210px)/.95 var(--font-head); color: #ffd60a; -webkit-text-stroke: clamp(3px, .6vw, 8px) #26221f; paint-order: stroke fill; text-shadow: 6px 6px 0 #ff3b30, 12px 12px 0 #26221f; letter-spacing: .02em; transform: rotate(-4deg); animation: rb-pop .7s cubic-bezier(.2, 1.5, .4, 1) both, rb-wob 1.4s ease-in-out .7s infinite alternate; }
 .remix-banner span { font: 800 clamp(16px, 2.6vw, 26px) var(--font-body); color: #fff8ea; background: #26221f; padding: 6px 16px; border-radius: 999px; animation: rb-pop .6s cubic-bezier(.2, 1.5, .4, 1) .35s both; }
@@ -434,5 +427,71 @@ html.flush-up :is(main, .site-header, .page-end) { animation: flush-up 1.2s cubi
 @keyframes rb-wob { from { rotate: -1.5deg; scale: 1; } to { rotate: 1.5deg; scale: 1.04; } }
 @keyframes rb-bg { 0% { opacity: 0; } 8% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .remix-banner b, .remix-banner span, .flush-hole::before { animation: none; } }
-.remix-flush { z-index: 500; }
 html:has(.remix-flush) :is(.end-card, .end-party) { visibility: hidden; }
+
+/* the statement before the flush (RemixFlush.tsx) */
+.remix-statement { position: absolute; inset: 0; z-index: 3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; text-align: center; background: rgba(12, 14, 20, .94); color: #fff8ea; animation: rs-in .5s ease-out both; }
+.remix-statement p { margin: 0; max-width: 28em; }
+.rs-a { font: 900 clamp(26px, 6vw, 72px)/1.05 var(--font-head); color: #ffd60a; letter-spacing: .03em; text-shadow: 0 0 24px rgba(255, 214, 10, .45); animation: rs-pop .6s cubic-bezier(.2, 1.5, .4, 1) .2s both; }
+.rs-b { font: 700 clamp(18px, 2.6vw, 30px) var(--font-body); animation: rs-up .6s ease-out 1s both; }
+.rs-c { font: 700 clamp(16px, 2.2vw, 26px) var(--font-body); color: #ff7a45; animation: rs-up .6s ease-out 2s both; }
+.rs-d { font: 600 clamp(16px, 1.9vw, 22px) var(--font-body); opacity: .85; animation: rs-up .6s ease-out 3.1s both; }
+@keyframes rs-in { from { opacity: 0; } }
+@keyframes rs-pop { from { transform: scale(.2); opacity: 0; } }
+@keyframes rs-up { from { transform: translateY(12px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .remix-statement, .remix-statement p { animation: none; } }
+
+/* the pet robot's poses: Scout.tsx draws the face and the props, this moves them. Chaos.tsx puts pose-<name> on the dock. */
+.scout-dock .hand-l, .scout-dock .hand-r { transition: translate .25s ease-out; transform-box: fill-box; transform-origin: center; }
+.scout-dock .spiral.slow { animation: spin 1.6s linear infinite; transform-box: fill-box; transform-origin: center; }
+.scout-dock .breath, .scout-dock .yawn-mouth, .scout-dock .sc-snot .bubble { transform-box: fill-box; transform-origin: center; }
+.scout-dock.pose-happy svg { animation: sc-hop .45s ease-out 2; }
+.scout-dock.pose-happy .hand-l { translate: 4px -10px; } .scout-dock.pose-happy .hand-r { translate: -4px -10px; }
+.scout-dock.pose-wave .hand-r { animation: sc-wave .45s ease-in-out infinite alternate; translate: -2px -24px; }
+.scout-dock.pose-wave svg { animation: sc-sway 1.4s ease-in-out infinite; }
+.scout-dock.pose-salute .hand-r { translate: -6px -28px; } .scout-dock.pose-salute svg { animation: sc-sway 2.2s ease-in-out infinite; }
+.scout-dock.pose-dance svg { animation: sc-dance .55s ease-in-out infinite alternate; }
+.scout-dock.pose-dance .hand-l { animation: sc-armup .55s ease-in-out infinite alternate; } .scout-dock.pose-dance .hand-r { animation: sc-armup .55s ease-in-out infinite alternate-reverse; }
+.scout-dock.pose-dizzy svg, .scout-dock.pose-panic svg { animation: sc-wobble .8s ease-in-out infinite; }
+.scout-dock.pose-panic .hand-l { translate: 6px -16px; } .scout-dock.pose-panic .hand-r { translate: -6px -16px; }
+.scout-dock.pose-shock svg { animation: sc-shock .35s ease-out 1, sc-shiver .09s linear .35s infinite; }
+.scout-dock.pose-shock .hand-l { translate: 9px -12px; } .scout-dock.pose-shock .hand-r { translate: -9px -12px; }
+.scout-dock.pose-love svg { animation: sc-bob 1.1s ease-in-out infinite; }
+.scout-dock.pose-sleepy svg { animation: sc-slump 2.6s ease-in-out infinite; }
+.scout-dock.pose-annoyed svg { animation: sc-shiver .12s linear infinite; }
+.scout-dock.pose-yawn svg { animation: sc-yawn 2.2s ease-in-out 1; }
+.scout-dock.pose-yawn .hand-l { translate: 2px -16px; } .scout-dock.pose-yawn .hand-r { translate: -2px -16px; }
+.scout-dock.pose-whistle svg { animation: sc-sway 1.4s ease-in-out infinite; }
+.scout-dock.pose-sip svg { animation: sc-sip 1.7s ease-in-out 1; } .scout-dock.pose-sip .hand-r { translate: -8px -6px; }
+.pupils.look { animation: sc-look 1.5s ease-in-out infinite; }
+.sc-hearts, .sc-notes { animation: sc-rise 1.3s ease-out infinite; }
+.sc-stars { transform-origin: 60px 22px; animation: spin 1.3s linear infinite; }
+.sc-sweat { animation: sc-drip 1.1s ease-in infinite; }
+.sc-steam circle { transform-box: fill-box; transform-origin: center; animation: sc-puff 1s ease-out infinite; }
+.sc-steam circle:nth-child(2) { animation-delay: .3s; } .sc-steam circle:nth-child(3) { animation-delay: .6s; }
+.sc-snot .bubble { animation: sc-bubble 2.6s ease-in-out infinite; }
+.sc-vapor { animation: sc-rise 1s linear infinite; }
+.sc-cup { transform-box: fill-box; transform-origin: 50% 100%; animation: sc-cup 1.7s ease-in-out 1; }
+.breath { animation: sc-breath 2.6s ease-in-out infinite; }
+.yawn-mouth { animation: sc-yawnmouth 2.2s ease-in-out 1; }
+@keyframes sc-hop { 0%, 100% { translate: 0 0; } 45% { translate: 0 -12px; } }
+@keyframes sc-wave { from { rotate: -20deg; } to { rotate: 20deg; } }
+@keyframes sc-sway { 0%, 100% { rotate: -3deg; } 50% { rotate: 3deg; } }
+@keyframes sc-dance { from { translate: -3px 0; rotate: -6deg; } to { translate: 3px -8px; rotate: 6deg; } }
+@keyframes sc-armup { from { translate: 0 0; } to { translate: 0 -24px; } }
+@keyframes sc-wobble { 0%, 100% { rotate: -8deg; } 50% { rotate: 8deg; } }
+@keyframes sc-shock { 0% { translate: 0 0; scale: 1; } 40% { translate: 0 -14px; scale: 1.1; } 100% { translate: 0 0; scale: 1.04; } }
+@keyframes sc-shiver { 0%, 100% { translate: -1px 0; } 50% { translate: 1px 0; } }
+@keyframes sc-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -4px; } }
+@keyframes sc-slump { 0%, 100% { scale: 1 .96; translate: 0 3px; } 50% { scale: 1 .99; translate: 0 1px; } }
+@keyframes sc-yawn { 0%, 15% { scale: 1; } 45%, 70% { scale: .97 1.1; } 100% { scale: 1; } }
+@keyframes sc-yawnmouth { 0%, 15% { scale: .3 .3; } 45%, 70% { scale: 1 1.2; } 100% { scale: .3 .3; } }
+@keyframes sc-sip { 0%, 100% { rotate: 0deg; } 40%, 60% { rotate: -6deg; } }
+@keyframes sc-cup { 0% { translate: 8px 8px; rotate: 0deg; } 30%, 60% { translate: -10px -8px; rotate: -28deg; } 100% { translate: 8px 8px; rotate: 0deg; } }
+@keyframes sc-look { 0%, 100% { translate: 0 0; } 25% { translate: -4px 0; } 70% { translate: 4px 0; } }
+@keyframes sc-rise { from { translate: 0 6px; opacity: 0; } 25% { opacity: 1; } to { translate: 0 -16px; opacity: 0; } }
+@keyframes sc-drip { 0% { translate: 0 -3px; opacity: 0; } 20% { opacity: 1; } 100% { translate: 0 16px; opacity: 0; } }
+@keyframes sc-puff { 0% { scale: .3; translate: 0 6px; opacity: 0; } 30% { opacity: 1; } 100% { scale: 1.3; translate: 0 -12px; opacity: 0; } }
+@keyframes sc-bubble { 0%, 100% { scale: .5; } 50% { scale: 1.6; } }
+@keyframes sc-breath { 0%, 100% { scale: 1; } 50% { scale: 1.5 1.3; } }
+@media (prefers-reduced-motion: reduce) { .scout-dock[class*='pose-'] svg, .scout-dock .hand-l, .scout-dock .hand-r, .pupils.look, .sc-hearts, .sc-notes, .sc-stars, .sc-sweat, .sc-steam circle, .sc-snot .bubble, .sc-vapor, .sc-cup, .breath, .yawn-mouth, .scout-dock .spiral.slow { animation: none !important; } }

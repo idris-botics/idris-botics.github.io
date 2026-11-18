@@ -38,7 +38,7 @@ type Step =
   | { k: 'hint'; text: string; word?: string }
   | { k: 'msg'; text: string }
 
-type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: number) => boolean; fire: (word: string) => void; award: (id: string) => void }
+type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: number) => boolean; fire: (word: string) => void; award: (id: string) => void; remixMap?: Record<string, string> | null }
 
 /**
  * The hint button, top right. Pressing it starts a few questionable questions and a taunt or two. Only then does it give a hint:
@@ -50,7 +50,7 @@ const UNCHARTED: { en: string; ja: string } = {
   ja: 'もうヒントはありません。この先に何が起こるかは、私にもわかりません。ここまで来た人は誰もいないのです。ご武運を、船乗りさん。',
 }
 
-export default function HintBot({ lang, found, fire, award }: Props) {
+export default function HintBot({ lang, found, fire, award, remixMap }: Props) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step | null>(null)
   const [bubble, setBubble] = useState('')
@@ -91,7 +91,15 @@ export default function HintBot({ lang, found, fire, award }: Props) {
       return
     }
     const tier = given[e.id] ?? 0
-    const tiers = e.hints
+    // remix: the words have been dealt out again, so the hints for a typed word are about that, and the last one names the word that works now
+    const inv = remixMap ? Object.entries(remixMap).find(([, gag]) => gag === e.word)?.[0] : undefined
+    const tiers = e.word && inv
+      ? [
+          { en: 'Remix has shuffled the words. This one still needs a word you already know, just not its own.', ja: 'リミックスで言葉が入れ替わりました。これも知っている言葉で打ちますが、その言葉自身ではありません。' },
+          { en: 'It is one of cat, idris, coffee, cookie, omae or roll. Not the obvious one.', ja: 'cat、idris、coffee、cookie、omae、rollのどれかです。一番ありそうなものではありません。' },
+          { en: `Type: ${inv}`, ja: `「${inv}」と打ってください。` },
+        ]
+      : e.hints
     if (!force && tier > 0 && (Date.now() - (givenAt[e.id] ?? 0)) / 1000 < WAIT[tier]) {
       setStep({ k: 'hint', text: `${ui.soon[lang]} ${tiers[tier - 1][lang]}` })
       return

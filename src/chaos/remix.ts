@@ -1,6 +1,7 @@
 // Remix: once every achievement has been found, the gags stop being predictable. The hidden words no longer do what they say (each Chaos visit
 // deals them out again, never to themselves), and the random interruptions come from the whole pool, a little more often. It is remembered in
 // this browser, and it can be switched off in the achievements panel.
+export const RUNS_KEY = 'chaos-remix-runs' // how many times every achievement has been completed
 export const REMIX_KEY = 'chaos-remix' // '1' unlocked and on, '0' unlocked but switched off
 /** The hidden words that start a gag (typed, tapped in the command box, or the matching random event). */
 export const REMIX_WORDS = ['cat', 'idris', 'coffee', 'cookie', 'omae', 'roll'] as const
@@ -9,6 +10,9 @@ export type RemixWord = (typeof REMIX_WORDS)[number]
 export const remixUnlocked = (): boolean => { try { const v = localStorage.getItem(REMIX_KEY); return v === '1' || v === '0' } catch { return false } }
 export const remixEnabled = (): boolean => { try { return localStorage.getItem(REMIX_KEY) === '1' } catch { return false } }
 export const setRemix = (on: boolean) => { try { localStorage.setItem(REMIX_KEY, on ? '1' : '0') } catch { /* storage can be blocked */ } }
+export const remixRuns = (): number => { try { return Number(localStorage.getItem(RUNS_KEY)) || 0 } catch { return 0 } }
+export const bumpRemixRuns = (): number => { const n = remixRuns() + 1; try { localStorage.setItem(RUNS_KEY, String(n)) } catch { /* ignore */ } return n }
+
 /** First time every achievement is found: switch it on. Returns true when this was the first time. */
 export const unlockRemix = (): boolean => { if (remixUnlocked()) return false; setRemix(true); return true }
 

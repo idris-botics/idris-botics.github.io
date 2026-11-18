@@ -51,10 +51,16 @@ const catClip = (p) => p.evaluate(() => { const v = document.querySelector('.cli
 // the owner's test word: remixtest plays the flush without unlocking anything
 {
   const { ctx, p } = await open(null)
+  await p.evaluate(() => window.__award('coffee'))
   await p.keyboard.type('remixtest')
-  await p.waitForSelector('.remix-banner', { timeout: 9000 }).catch(() => {})
-  check((await p.locator('.remix-banner').count()) === 1, 'typing remixtest plays the flush and the REMIX IS ON banner')
+  await p.waitForSelector('.remix-statement', { timeout: 3000 }).catch(() => {})
+  check((await p.locator('.remix-statement').count()) === 1, 'typing remixtest starts with the statement')
+  await p.waitForSelector('.remix-banner', { timeout: 20000 }).catch(() => {})
+  check((await p.locator('.remix-banner').count()) === 1, 'then the flush and the REMIX IS ON banner')
   check((await p.evaluate(() => localStorage.getItem('chaos-remix'))) === null, 'and unlocks nothing')
+  await p.waitForSelector('.remix-flush', { state: 'detached', timeout: 8000 }).catch(() => {})
+  await p.locator('.ach button').first().click()
+  check((await p.locator('.ach li').count()) === 1, 'and keeps the achievements it had (it is only a test)')
   await ctx.close()
 }
 // finding every achievement unlocks it
@@ -64,10 +70,14 @@ const catClip = (p) => p.evaluate(() => { const v = document.querySelector('.cli
   await p.evaluate((ids) => { for (const a of ids) window.__award(a) }, Object.keys(ACH_NAMES))
   await p.waitForTimeout(600)
   check((await p.evaluate(() => localStorage.getItem('chaos-remix'))) === '1', 'every achievement found: remix is unlocked and on')
-  await p.waitForSelector('.remix-banner', { timeout: 8000 }).catch(() => {})
+  await p.waitForSelector('.remix-statement', { timeout: 3000 }).catch(() => {})
+  check(/ACHIEVEMENTS COMPLETE/.test(await p.locator('.remix-statement').innerText().catch(() => '')), 'it opens with a statement that every achievement is complete')
+  await p.waitForSelector('.remix-banner', { timeout: 20000 }).catch(() => {})
   check((await p.locator('.remix-banner').count()) === 1, 'the page is flushed and a huge REMIX IS ON comes up')
   await p.waitForSelector('.remix-flush', { state: 'detached', timeout: 8000 }).catch(() => {})
   await p.waitForTimeout(500)
+  check((await p.locator('.ach').count()) === 0, 'the achievement count is back to zero')
+  check((await p.evaluate(() => localStorage.getItem('chaos-remix-runs'))) === '1', 'and it remembers this was the first completion')
   check(/godspeed|ご武運/i.test(await p.locator('.toast').first().innerText().catch(() => '')), 'then the pet robot says nobody has made it this far, godspeed')
   await ctx.close()
 }
