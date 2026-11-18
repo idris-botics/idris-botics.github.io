@@ -61,6 +61,7 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
   await x.dispatchEvent('click'); await p.waitForTimeout(200)
   check((await p.locator('.clip').count()) === 1, 'clicking it does nothing yet')
   // 60 s later it can be clicked and Escape works: shift the opening time instead of waiting
+  await p.evaluate(() => { performance.now = ((o) => () => o() + 5000)(performance.now.bind(performance)) }); await p.waitForTimeout(700) // the countdown appears 4 s in, so the video gets its surprise first
   check((await p.locator('.clip .vid-count .vc-clock').count()) === 1, 'a small countdown shows how long the X keeps running')
   await p.evaluate(() => { performance.now = ((o) => () => o() + 61000)(performance.now.bind(performance)) })
   await p.keyboard.press('Escape'); await p.waitForTimeout(300)
@@ -81,12 +82,16 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
   await p.waitForTimeout(3200)
   const mid = await p.evaluate(() => Number(getComputedStyle(document.querySelector('.scout-dock')).getPropertyValue('--full')))
   check(mid >= 1 && mid < 5, 'every bite makes it rounder (--full ' + mid + ')')
+  const pile = await p.locator('.cookie-pile i').count()
+  check(pile > 0 && pile < 10, 'a pile of cookies next to it goes down as it chomps (' + pile + ' left)')
   await p.waitForSelector('.scout-dock.stuffed', { timeout: 12000 })
   check((await p.evaluate(() => Number(getComputedStyle(document.querySelector('.scout-dock')).getPropertyValue('--full')))) === 5, 'it ends up completely stuffed, eyes squeezed shut')
   await p.waitForTimeout(400)
   check(/full|cookie/i.test(await p.locator('.toast').first().innerText().catch(() => '')), 'and says it is full')
   await p.waitForTimeout(2500)
   check((await p.locator('.cookie').count()) === 0, 'the banner leaves with the cookie')
+  await p.keyboard.type('cookie'); await p.waitForTimeout(500)
+  check(await p.locator('.cookie').count() === 0 && /./.test(await p.locator('.toast').first().innerText().catch(() => '')), 'typing cookie at a stuffed robot gets a refusal, not a new banner')
   check(errs.length === 0, 'no page errors ' + errs.join('|'))
   await ctx.close()
 }

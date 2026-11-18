@@ -18,7 +18,9 @@ await p.waitForSelector('.cena-video', { timeout: 5000 }).catch(() => {})
 const video = await p.locator('.cena-video').count()
 await p.keyboard.press('Escape'); await p.waitForTimeout(300)
 const escIgnored = (await p.locator('.cena-video').count()) === 1
-const counting = (await p.locator('.cena .vid-count .vc-clock').count()) === 1
+const before = (await p.locator('.cena .vid-count').count()) === 0
+await p.evaluate(() => { performance.now = ((o) => () => o() + 5000)(performance.now.bind(performance)) }); await p.waitForTimeout(700) // the countdown appears 4 s in, so the video gets its surprise first
+const counting = before && (await p.locator('.cena .vid-count .vc-clock').count()) === 1
 await p.evaluate(() => document.querySelector('.cena-x')?.click())
 await p.waitForTimeout(200)
 const closed = (await p.locator('.cena').count()) === 0

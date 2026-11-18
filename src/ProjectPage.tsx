@@ -166,11 +166,11 @@ export default function ProjectPage({ project }: { project: Project }) {
   }
 
   const rows = (['objective', 'method', 'status'] as const).filter((k) => project.summary[k])
-  // the pictures and the videos are one gallery, top left (the videos first when the project says so)
+  // the pictures and the videos are one gallery, top left: the pictures first, then the videos
   const items: Media[] = useMemo(() => {
     const vids: Media[] = (project.videos ?? []).map((v) => ({ src: v.poster, w: v.w ?? 1280, h: v.h ?? 720, alt: v.caption, caption: v.caption, label: { en: 'Video', ja: '動画' }, widths: [640], video: v.src }))
     const pics = project.media ?? []
-    return project.leadVideo ? [...vids, ...pics] : [...pics, ...vids]
+    return [...pics, ...vids]
   }, [project])
   const hasMedia = items.length > 0
   const Fig = FIGURES[project.slug]

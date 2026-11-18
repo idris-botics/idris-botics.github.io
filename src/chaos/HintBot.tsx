@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Lightbulb, X } from 'lucide-react'
 import data from '../content/jokes/hintbot.json'
 import { markHelped } from './hintsStore'
-import { lastLeft, nextToHint } from './secretsRegistry'
+import { ACH_TOTAL, lastLeft, nextToHint } from './secretsRegistry'
 import Clip from './Clip'
 import { HOST_THIRD_PARTY_CLIPS } from './config'
 
@@ -44,6 +44,12 @@ type Props = { lang: 'en' | 'ja'; found: string[]; say: (text: string, ms?: numb
  * The hint button, top right. Pressing it starts a few questionable questions and a taunt or two. Only then does it give a hint:
  * first what to do, then a clearer nudge, then the answer. Each next hint unlocks on a timer, so pressing early shows the last hint again.
  */
+/** What the hint robot says when there is nothing left to hint at: every achievement is found. */
+const UNCHARTED: { en: string; ja: string } = {
+  en: 'I have no hints left. Even I do not know what happens now: nobody has made it this far. Godspeed, sailor.',
+  ja: 'もうヒントはありません。この先に何が起こるかは、私にもわかりません。ここまで来た人は誰もいないのです。ご武運を、船乗りさん。',
+}
+
 export default function HintBot({ lang, found, fire, award }: Props) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<Step | null>(null)
@@ -76,7 +82,7 @@ export default function HintBot({ lang, found, fire, award }: Props) {
   // When exactly one achievement is left, the first request plays the "tell me, tell me" clip as a joke before the normal hint tiers.
   const reveal = (force = false) => {
     const e = nextToHint(live.current.found)
-    if (!e) { setStep({ k: 'msg', text: ui.none[lang] }); return }
+    if (!e) { setStep({ k: 'msg', text: live.current.found.length >= ACH_TOTAL ? UNCHARTED[lang] : ui.none[lang] }); return }
     const last = lastLeft(live.current.found)
     const wantsClip = !clipShown && ((last && last.finalHintClip !== false) || e.rewardsClip)
     if (wantsClip) {
@@ -110,6 +116,7 @@ export default function HintBot({ lang, found, fire, award }: Props) {
     if (open) { setOpen(false); setStep(null); return }
     setBubble('')
     setOpen(true)
+    if (live.current.found.length >= ACH_TOTAL) { setStep({ k: 'msg', text: UNCHARTED[lang] }); return } // nothing to ask, nothing to hint at
     if (Date.now() < refusedUntil) { setStep({ k: 'msg', text: ui.refused[lang] }); return }
     asked++
     shown.current = 0

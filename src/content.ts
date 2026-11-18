@@ -92,7 +92,6 @@ export type Project = {
   credit?: L
   tags: string[]
   link?: { href: string; label: L }
-  leadVideo?: boolean // the videos come before the pictures in the gallery (otherwise after)
   paper?: { href: string; label: L; abstract: L; venue: L }
   more?: { title: L; body: L }[] // short extra sections shown in a "Details" disclosure on the project page
 }
@@ -158,14 +157,13 @@ export const projects: Project[] = [
       mine: { en: 'My final-year project. I did all of it myself.', ja: '卒業研究です。すべて自分で行いました。' },
     },
     media: [
-      IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } }),
       IMG('swarm-bot-top', 800, 719, { en: 'Top view of one two-wheeled balancing robot: a white printed frame, two motors with wheels, a battery and a control board with wiring.', ja: '倒立振子型二輪ロボット1台を真上から見た写真：白い造形フレーム、モーター2つと車輪、バッテリー、配線された制御基板。' }, { widths: [640], caption: { en: 'One balancing unit, from above', ja: '倒立振子ユニット1台を上から' } }),
+      IMG('image13', 1527, 861, { en: 'Diagram of the three stages: independent operation, swarm coordination, combined platform.', ja: '3段階の図：独立動作、群協調、結合プラットフォーム。' }, { label: { en: 'Illustration', ja: 'イラスト' } }),
     ],
     videos: [
       { w: 480, h: 600, src: 'swarm-proto-720', poster: 'swarm-proto-poster', caption: { en: 'The self-balancing prototype on the floor', ja: '床の上の自己平衡プロトタイプ' } },
       { w: 480, h: 480, src: 'swarm-bot-720', poster: 'swarm-bot-poster', caption: { en: 'One unit on the carpet, standing on its two wheels', ja: '絨毯の上で二輪で立つユニット1台' } },
     ],
-    leadVideo: true,
     sim: 'swarm',
     tags: ['multi-agent', 'balance control', 'ESP-NOW'],
   },
@@ -325,7 +323,6 @@ export const projects: Project[] = [
     media: [
       IMG('image6', 1080, 758, { en: 'Spider-inspired quadruped robot.', ja: 'クモ型の四足ロボット。' }, { caption: { en: 'The spider quadruped', ja: 'クモ型四足ロボット' }, widths: [640] }),
     ],
-    leadVideo: true,
     videos: [{ w: 408, h: 720, src: 'spider-walk-720', poster: 'spider-walk-poster', caption: { en: 'The spider walking across a granite floor', ja: '御影石の床を歩くクモ型ロボット' } }],
     sim: 'spider',
     tags: ['legged', 'servo', 'gait'],
@@ -362,7 +359,6 @@ export const projects: Project[] = [
       ja: '配管内を移動する機構の提案。実機を作る前にモデル化とシミュレーションを行いました。',
     },
     summary: { status: { en: 'Proposed. Modelled and simulated; not built.', ja: '提案段階。モデル化とシミュレーションまでで、製作はしていません。' } },
-    leadVideo: true,
     videos: [{ src: 'pipe-sim-720', poster: 'pipe-sim-poster', caption: { en: 'The in-pipe robot simulation', ja: '管内ロボットのシミュレーション' } }],
     media: [
       IMG('image11', 1920, 1051, { en: 'Blender render of the in-pipe robot design concept.', ja: '管内ロボットの設計コンセプトのBlenderレンダリング。' }, { label: { en: 'Design concept', ja: '設計コンセプト' } }),
@@ -384,7 +380,6 @@ export const projects: Project[] = [
     },
     summary: {
       method: { en: 'Runs offline. Use it as a plugin for your AI assistant (MCP), from the terminal, or in a local web page when you would rather click. Published on PyPI as stepscribe-cad.', ja: 'オフラインで動作。AIアシスタントのプラグイン（MCP）としても、ターミナルからも、クリックで使えるローカルWebページでも利用できます。PyPIに stepscribe-cad として公開。' },    },
-    leadVideo: true,
     videos: [
       { src: 'stepscribe-v2', poster: 'stepscribe-poster', caption: { en: 'v2.0: one STEP file of a six-axis arm in, joints, URDF and drawings out', ja: 'v2.0：6軸アームのSTEPファイル1つから、関節、URDF、図面を出力' } },
       { src: 'stepscribe', poster: 'stepscribe-v1-poster', caption: { en: 'v1: a STEP file in, a readable description out', ja: 'v1：STEPファイルを入力し、読みやすい説明を出力' } },
@@ -517,7 +512,7 @@ export const fieldEvents: L[] = [
 
 /** The Calm home page shows three featured builds as image-first tiles and the rest as a strip. Everything else lives in the project window. */
 // Featured: Idris's three proudest builds (answer 6): the 8-bit computer, RoboDog and stepscribe-cad (it replaced the self-balancing swarm in November 2026).
-export const featured = ['cpu8', 'robodog', 'stepscribe']
+export const featured = ['cpu8', 'robodog', 'swarm']
 /** The order of the project pages: the featured three first, then the rest. Previous and next follow it. */
 export const order = [...featured, ...projects.map((p) => p.slug).filter((x) => !featured.includes(x))]
 
@@ -534,7 +529,7 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
   swarm: {
     short: { en: 'Self-balancing swarm', ja: '自己平衡スウォーム' },
     line: { en: 'Three balancing robots that coordinate without a central controller.', ja: '中央制御なしで協調する、倒立振子型ロボット3台。' },
-    did: { en: 'Final-year project, designed and simulated.', ja: '卒業研究。設計とシミュレーションまで。' },
+    did: { en: 'My final-year project. I did all of it myself.', ja: '卒業研究。すべて自分で行いました。' },
     strip: { en: 'Balancing robots that coordinate', ja: '協調する倒立振子ロボット' },
     clip: 'tile-swarm',
   },

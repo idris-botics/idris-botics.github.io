@@ -39,7 +39,7 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
   check(/111 109 097 101/.test(await p.locator('.pw-clue-out').innerText()), `${name}: 8-bit computer window holds the display`)
   await close()
 
-  await open('robodog'); await close() // with cpu8 above, the featured three (src/content.ts: featured) are cpu8, robodog and stepscribe
+  await open('robodog'); await close() // with cpu8 above, the featured three (src/content.ts: featured) are cpu8, robodog and swarm
   await open('stepscribe'); await close()
 
   // work achievements

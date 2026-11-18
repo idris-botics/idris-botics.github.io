@@ -1,9 +1,9 @@
 // Cuts the Duolingo owl out of its white background and writes small web-ready pictures next to the streak in About.
-// Usage: node scripts/process-duobird.mjs ../duobird.png
+// Usage: node scripts/process-duobird.mjs ../source-media/photos/duobird.png
 // The white outside the owl is removed by a flood fill from the edges, so the white of its eyes stays. Writes public/media/img/duo-owl-96.webp and -144.webp.
 import sharp from 'sharp'
 
-const src = process.argv[2] ?? '../duobird.png'
+const src = process.argv[2] ?? '../source-media/photos/duobird.png'
 const { data, info } = await sharp(src).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
 const { width: w, height: h } = info
 const near = (i) => Math.min(data[i], data[i + 1], data[i + 2]) >= 236 // near white
