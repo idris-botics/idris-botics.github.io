@@ -16,6 +16,7 @@ import { Reveal, Tick } from './Reveal'
 import { hero, aboutText, pathRows, learning, fieldEvents, strip, projects, habits, links, type L } from './content'
 import { personal } from './personal'
 import { restoreHome, useRoute } from './route'
+import { preShell } from './preShell'
 
 /** The hero picture is a 15 s muted loop built from real build photos and simulation footage. Reduced motion shows the first frame and a play button. */
 function HeroReel({ lang }: { lang: 'en' | 'ja' }) {
@@ -44,7 +45,7 @@ function HeroReel({ lang }: { lang: 'en' | 'ja' }) {
   const label = on ? (lang === 'en' ? 'Pause the video' : '動画を止める') : (lang === 'en' ? 'Play the video' : '動画を再生')
   return (
     <figure className="hero-photo">
-      <video ref={vid} muted loop playsInline preload="none" poster={`${base}media/img/hero-reel-poster-${small ? 640 : 1280}.webp`} width={1920} height={1080}
+      <video ref={vid} muted loop playsInline preload="none" poster={preShell.poster || `${base}media/img/hero-reel-poster-${small ? 640 : 1280}.webp`} width={1920} height={1080}
         aria-label={lang === 'en' ? 'A short loop of my builds: RoboDog, an 8-bit computer, a battery pack, a PID simulation, a wristband, and more.' : '私の制作物の短いループ映像：RoboDog、8ビットコンピュータ、バッテリー、PIDシミュレーション、リストバンドなど。'}>
         {armed && <source src={`${base}media/vid/hero-reel-${small ? 720 : 1080}.mp4`} type="video/mp4" />}
         {armed && <source src={`${base}media/vid/hero-reel-720.webm`} type="video/webm" />}
@@ -257,7 +258,7 @@ export default function App() {
               </div>
             </div>
             <ul className="facts surface">
-              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>} <span className="tag asof">{ui.asOf[lang](asOfLabel(lang))}</span></li>
+              <li className="streak"><img className="duo-owl" src={`${base}media/img/duo-owl-96.webp`} srcSet={`${base}media/img/duo-owl-96.webp 1x, ${base}media/img/duo-owl-144.webp 1.5x`} width={48} height={48} alt="" loading="lazy" decoding="async" /><span className="streak-text">{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>} <span className="tag asof">{ui.asOf[lang](asOfLabel(lang))}</span></span></li>
               <li>{t(ui.facts.jp).split(/(NAT-TEST 4Q\S*)/).map((part, i) => (i % 2 ? <span key={i} className="nb">{part}</span> : part))}</li>
             </ul>
           </div>
@@ -341,13 +342,16 @@ export default function App() {
         </section>
       )}
 
-      <footer className="site-footer">
-        <div className="wrap">
-          <span>{t(ui.footer)}</span>
-          {lite && <span className="lite"> · {t(ui.lite)}</span>}
-        </div>
-      </footer>
-      {!project && <div className="scenery-end" aria-hidden="true" />}
+      {/* On the home page the credit line is a comment bubble above the robot in the last panel of the picture; on a project page it is a plain pill. */}
+      <div className={project ? 'page-end' : 'page-end has-scene'}>
+        <footer className="site-footer">
+          <div className="wrap">
+            <span>{t(ui.footer)}</span>
+            {lite && <span className="lite"> · {t(ui.lite)}</span>}
+          </div>
+        </footer>
+        {!project && <div className="scenery-end" aria-hidden="true" />}
+      </div>
 
       {mode === 'chaos' && <ChaosGuard key="chaos"><Suspense fallback={null}><Chaos /></Suspense></ChaosGuard>}
     </>

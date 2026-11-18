@@ -1,6 +1,9 @@
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { createHash } from 'node:crypto'
+import { existsSync, readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 
 // Production-only Content-Security-Policy meta tag (static hosting cannot set headers).
 // Everything is self-hosted. The one exception: when VITE_GA_MEASUREMENT_ID is set at build time, Google Analytics hosts are allowed (and only then).
@@ -9,9 +12,12 @@ const csp = (): Plugin => ({
   name: 'csp-meta',
   apply: 'build',
   transformIndexHtml(html) {
+    // the one inline script (the guard from heroShell below) is allowed by its hash, never by 'unsafe-inline'
+    const guard = /<script data-pre-guard>([\s\S]*?)<\/script>/.exec(html)
+    const guardHash = guard ? ` 'sha256-${createHash('sha256').update(guard[1]).digest('base64')}'` : ''
     const policy = [
       "default-src 'self'",
-      `script-src 'self'${ga ? ' https://www.googletagmanager.com' : ''}`,
+      `script-src 'self'${guardHash}${ga ? ' https://www.googletagmanager.com' : ''}`,
       "style-src 'self' 'unsafe-inline'", // React inline style attributes
       `img-src 'self' data:${ga ? ' https://*.google-analytics.com https://*.googletagmanager.com' : ''}`,
       "media-src 'self'",
@@ -76,7 +82,32 @@ const preloadFonts = (): Plugin => {
   }
 }
 
+// The first screen (header and hero) is written into index.html as static HTML, so it paints before any script has run. src/heroShell.html is
+// generated from the running app (npm run gen:shell). The app replaces it when it starts. Readers who would get something else (Japanese, or a
+// project page) never see it: a few lines remove it before the first paint, so the page does not show the wrong language and then change.
+const guardScript = "(function(){var r=document.getElementById('root'),l='',m=/[?&]lang=(en|ja)/.exec(location.search);try{l=localStorage.getItem('lang')||''}catch(e){}if(m)l=m[1];if(l!=='en'&&l!=='ja')l=/^ja/i.test(navigator.language||'')?'ja':'en';if(l!=='en'||location.hash.indexOf('#work/')===0){r.textContent='';r.removeAttribute('data-pre')}})()"
+const heroShell = (): Plugin => {
+  let base = '/'
+  return {
+    name: 'hero-shell',
+    apply: 'build',
+    configResolved(config) { base = config.base },
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html) {
+        const file = fileURLToPath(new URL('./src/heroShell.html', import.meta.url))
+        if (!existsSync(file)) return html
+        const shell = readFileSync(file, 'utf8').replaceAll('__BASE__', base).trim()
+        return html.replace('<div id="root"></div>', `<div id="root" data-pre>
+${shell}
+    </div>
+    <script data-pre-guard>${guardScript}</script>`)
+      },
+    },
+  }
+}
+
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
-  plugins: [react(), tailwindcss(), siteUrl(), csp(), inlineCss(), preloadFonts()],
+  plugins: [react(), tailwindcss(), siteUrl(), heroShell(), csp(), inlineCss(), preloadFonts()],
 })

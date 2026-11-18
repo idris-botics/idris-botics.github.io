@@ -66,8 +66,6 @@ h1[data-name][data-prank] .ltr { transform: translate(var(--tx), var(--ty)) rota
 
 @keyframes shardfall { 0% { transform: none; } 25% { transform: translate(calc(var(--tx) * .2), -10px) rotate(calc(var(--rot) * .2)); } 100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)); opacity: .15; } }
 .shard { display: inline-block; animation: shardfall 1.6s cubic-bezier(.5, 0, 1, .6) forwards; }
-[data-mode="chaos"] main h2 { text-shadow: 5px 5px 0 color-mix(in srgb, var(--accent2) 70%, transparent), 10px 10px 0 color-mix(in srgb, var(--accent2) 40%, transparent), 15px 15px 0 color-mix(in srgb, var(--accent2) 18%, transparent); }
-@media (prefers-reduced-motion: reduce) { [data-mode="chaos"] main h2 { text-shadow: none; } }
 @keyframes omaebar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes omaepop { 0% { transform: scale(.2) rotate(-6deg); opacity: 0; } 60% { transform: scale(1.25) rotate(3deg); opacity: 1; } 100% { transform: scale(1); } }
 .omae { position: fixed; inset: 0; z-index: 320; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 16px; background: rgba(0, 0, 0, .78); pointer-events: none; text-align: center; padding: 16px; }
@@ -359,3 +357,28 @@ html:has(.summon) .toast { z-index: 370; } html:has(.summon) .scout-dock { z-ind
 
 /* no hint button while a video is playing (cat, Rick roll, John Cena, King Julien, omae) */
 html:has(.clip, .rick, .cena) .hb-btn, html:has(.clip, .rick, .cena) .hb-panel, html:has(.clip, .rick, .cena) .hb-bubble { display: none; }
+
+/* Round 7: Chaos is louder. Headings sit on the same cream plates as in Calm (replacing the stacked yellow text-shadow, which looked like a
+   smear), as stickers: a 3 px outline, a hard shadow, a slight tilt. Cards get 3 px outlines, 6 px hard shadows and a slight tilt, fixed
+   per card (they never jump). `rotate` is used, not `transform`, so hover and the gags can still move the cards. */
+[data-mode="chaos"] main h2 { text-shadow: none; }
+:root[data-mode='chaos'] .sec h2 { border: 3px solid var(--outline); box-shadow: 4px 4px 0 var(--outline); rotate: -1deg; }
+:root[data-mode='chaos'] :is(.surface, .tile, .award, .mini, .peek-grid, .photo-strip li) { border-width: 3px; border-color: var(--outline); box-shadow: 6px 6px 0 var(--outline); rotate: var(--tilt, 0deg); }
+:root[data-mode='chaos'] .hero-text.surface { --tilt: -1.1deg; }
+:root[data-mode='chaos'] .about-grid > div > .surface { --tilt: .7deg; }
+:root[data-mode='chaos'] .facts.surface { --tilt: -1.3deg; }
+:root[data-mode='chaos'] .contact .surface { --tilt: .5deg; }
+:root[data-mode='chaos'] .peek-grid { --tilt: -.7deg; }
+:root[data-mode='chaos'] .tiles > :nth-child(1) .tile { --tilt: -1.2deg; }
+:root[data-mode='chaos'] .tiles > :nth-child(2) .tile { --tilt: .9deg; }
+:root[data-mode='chaos'] .tiles > :nth-child(3) .tile { --tilt: -.6deg; }
+:root[data-mode='chaos'] .award:nth-child(3n + 1) { --tilt: -1deg; }
+:root[data-mode='chaos'] .award:nth-child(3n + 2) { --tilt: .8deg; }
+:root[data-mode='chaos'] .award:nth-child(3n) { --tilt: -.5deg; }
+:root[data-mode='chaos'] .strip li:nth-child(odd) .mini { --tilt: -1.1deg; }
+:root[data-mode='chaos'] .strip li:nth-child(even) .mini { --tilt: 1.2deg; }
+:root[data-mode='chaos'] .photo-strip li:nth-child(odd) { --tilt: -1deg; }
+:root[data-mode='chaos'] .photo-strip li:nth-child(even) { --tilt: 1deg; }
+
+/* phones: Chaos text is never under 14 px; the small mono labels Calm sets at 13 px are 14 px here */
+@media (max-width: 700px) { :root[data-mode='chaos'] :is(.award-group h3, .pw-sec h2, .pw-details-body h2, .tile-spec, .tag) { font-size: 14px; } }

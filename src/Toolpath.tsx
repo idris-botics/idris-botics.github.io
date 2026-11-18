@@ -76,7 +76,7 @@ export default function Toolpath({ points, label }: { points: WP[]; label: strin
   const go = (id: string) => (e: React.MouseEvent) => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }) }
 
   return (
-    <nav className="toolpath" aria-label={label} style={{ height: geom.h }}>
+    <nav className={geom.ys.length ? 'toolpath' : 'toolpath pending'} aria-label={label} style={{ height: geom.h }}>
       <svg width="28" height={geom.h} viewBox={`0 0 28 ${geom.h}`} aria-hidden="true">
         <path ref={path} d={d} className="tp-base" />
         <path ref={drawn} d={d} className="tp-done" style={{ strokeDasharray: len }} />

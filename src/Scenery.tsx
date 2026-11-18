@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import { useStore } from './store'
 
 /**
  * The long, quiet landscape behind the page (the drawing is src/sceneryArt.ts, shown here from public/scenery.svg). It starts in a
  * soft dusk with a tiny rocket and travels with the page to a meadow where a small robot looks out at the view, so a little more of
- * it opens up as you scroll. Calm mode only.
+ * it opens up as you scroll. Chaos shows a louder version of the same picture (public/scenery-chaos.svg).
  *
  * It is a single <img>: no extra DOM nodes for React to build, loaded when the page is idle so it never competes with the first
  * paint, and faded in. Browsers with scroll-driven animations move it from CSS alone (index.css); this file is the fallback for the
@@ -12,7 +13,8 @@ import { useEffect, useRef, useState } from 'react'
 export default function Scenery({ still = false }: { still?: boolean }) {
   const sheet = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
-  const [shown, setShown] = useState(false)
+  const [loadedFile, setLoadedFile] = useState('') // which picture has arrived, so a new one fades in rather than popping
+  const file = useStore((st) => st.mode === 'chaos') ? 'scenery-chaos.svg' : 'scenery.svg'
 
   // start loading the picture once the page itself has finished and the browser has a quiet moment
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function Scenery({ still = false }: { still?: boolean }) {
   return (
     <div className="scenery" aria-hidden="true">
       <div className={still ? 'scenery-sheet still' : 'scenery-sheet'} ref={sheet}>
-        {ready && <img className={shown ? 'on' : undefined} src={`${import.meta.env.BASE_URL}scenery.svg`} alt="" width={2000} height={4000} decoding="async" fetchPriority="low" draggable={false} onLoad={() => setShown(true)} />}
+        {ready && <img key={file} className={loadedFile === file ? 'on' : undefined} src={`${import.meta.env.BASE_URL}${file}`} alt="" width={2000} height={4000} decoding="async" fetchPriority="low" draggable={false} onLoad={() => setLoadedFile(file)} />}
       </div>
     </div>
   )

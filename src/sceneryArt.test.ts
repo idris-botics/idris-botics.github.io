@@ -4,15 +4,23 @@ import { describe, expect, it } from 'vitest'
 import { scenerySvg } from './sceneryArt'
 import { ROOT } from './test/fs'
 
-describe('background picture', () => {
-  const file = readFileSync(join(ROOT, 'public', 'scenery.svg'), 'utf8')
+const read = (name: string) => readFileSync(join(ROOT, 'public', name), 'utf8')
+// a Windows checkout may turn the files' line endings into CRLF; the pictures themselves are the same
+const lf = (s: string) => s.replace(/\r\n/g, '\n')
+
+describe('background pictures', () => {
+  const calm = read('scenery.svg')
+  const chaos = read('scenery-chaos.svg')
 
   it('public/scenery.svg is what the drawing in src/sceneryArt.ts produces (run npm run gen:scenery)', () => {
-    // a Windows checkout may turn the file's line endings into CRLF; the picture itself is the same
-    expect(file.replace(/\r\n/g, '\n')).toBe(scenerySvg())
+    expect(lf(calm)).toBe(scenerySvg())
   })
 
-  it('is one well-formed picture: balanced tags, unique ids, every gradient it uses is defined', () => {
+  it('public/scenery-chaos.svg is the louder Chaos version of the same drawing', () => {
+    expect(lf(chaos)).toBe(scenerySvg(true))
+  })
+
+  it.each([['calm', calm], ['chaos', chaos]])('the %s picture is well formed: balanced tags, unique ids, every gradient it uses is defined', (_name, file) => {
     const opens = (file.match(/<[a-zA-Z][^>]*>/g) ?? []).filter((t) => !t.endsWith('/>')).length
     const closes = (file.match(/<\/[a-zA-Z]+>/g) ?? []).length
     expect(opens).toBe(closes)
@@ -22,8 +30,13 @@ describe('background picture', () => {
     for (const [, ref] of file.matchAll(/href="#([^"]+)"/g)) expect(ids).toContain(ref)
   })
 
-  it('stays small and quiet: no scripts, no external references, under 60 KB', () => {
+  it.each([['calm', calm], ['chaos', chaos]])('the %s picture stays small and quiet: no scripts, no external references, under 90 KB', (_name, file) => {
     expect(file.length).toBeLessThan(90 * 1024)
     expect(file).not.toMatch(/<script|<foreignObject|<image|https?:\/\/(?!www\.w3\.org)/i)
+  })
+
+  it('the Chaos picture has a blue top where the Calm one has the pink dusk', () => {
+    expect(calm).toContain('stop-color="#dbbccb"')
+    expect(chaos).not.toContain('stop-color="#dbbccb"')
   })
 })

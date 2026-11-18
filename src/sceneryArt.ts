@@ -42,8 +42,8 @@ const bird = (x: number, y: number, s = 1) =>
 const spark = (x: number, y: number, s = 1) => g(at(x, y, s), el('path', { d: 'M0 -14 L3 -3 L14 0 L3 3 L0 14 L-3 3 L-14 0 L-3 -3 Z', fill: '#fffaf0' }))
 
 /** A floating island: grass on top, rock below, a waterfall off one edge. The origin is the middle of the grass edge. */
-const island = (x: number, y: number, s = 1, fall = 0, extra = '') =>
-  g(at(x, y, s),
+const island = (x: number, y: number, s = 1, fall = 0, extra = '', rot = 0) =>
+  g(at(x, y, s, rot),
     fall > 0 ? el('rect', { x: 72, y: 14, width: 15, height: fall, fill: 'url(#sc-fall)' }) : '',
     el('path', { d: 'M-132 4 L132 4 L108 52 L92 86 L64 150 L36 214 L8 268 L-16 212 L-52 156 L-92 96 L-116 48 Z', fill: 'url(#sc-rock)' }),
     el('path', { d: 'M-132 4 L-16 4 L8 268 L-16 212 L-52 156 L-92 96 L-116 48 Z', fill: '#fff', opacity: 0.18 }),
@@ -72,9 +72,57 @@ const MOUNTAIN = g({ id: 'sc-mountain' },
   path('M490 2540 L520 2440 L546 2452 L530 2520 L508 2500 Z', '#fff', 0.9),
   path('M100 3170 C 200 3050, 300 3080, 380 3040 S 560 3060, 640 3030 S 860 3050, 1000 3000 V3170 Z', 'url(#sc-forest)'))
 
-const DEFS = el('defs', {},
+// ---- the louder Chaos version of the same picture ------------------------------------------------------------------------------
+// Same landscape, but the pink dusk at the top is the Chaos blue, the colours are pushed (about 1.5x saturation, a touch more contrast),
+// the cream veil is almost gone, and there is more going on in the sky: a rainbow, UFOs, comets, a striped planet, tilted islands, confetti.
+const CHAOS_SKY = [stop(0, '#74c4ff'), stop(0.12, '#7cc8ff'), stop(0.3, '#86ccff'), stop(0.42, '#94d0ff'), stop(0.58, '#6ab9fb'), stop(0.72, '#9bd5fc'), stop(0.82, '#f1e6cc')]
+const CALM_SKY = [stop(0, '#dbbccb'), stop(0.1, '#efcdc3'), stop(0.2, '#f3d7c4'), stop(0.3, '#cdd9f0'), stop(0.42, '#94d0ff'), stop(0.58, '#6ab9fb'), stop(0.72, '#9bd5fc'), stop(0.82, '#f1e6cc')]
+const CHAOS_VEIL = [stop(0, '#f4faff', 0.14), stop(0.8, '#f4faff', 0.14), stop(0.84, '#fff8ea', 0.2), stop(1, '#fff8ea', 0.2)]
+const CALM_VEIL = [stop(0, '#fff8ea', 0.3), stop(0.26, '#fff8ea', 0.3), stop(0.34, '#eef7ff', 0.34), stop(0.76, '#eef7ff', 0.34), stop(0.84, '#fff8ea', 0.3), stop(1, '#fff8ea', 0.3)]
+
+const ufo = (x: number, y: number, s = 1, r = 0) => g(at(x, y, s, r),
+  path('M-26 22 L26 22 L96 400 L-96 400 Z', 'url(#sc-beam)'),
+  el('ellipse', { cx: 0, cy: 0, rx: 72, ry: 18, fill: '#aeb6d4' }),
+  el('ellipse', { cx: 0, cy: -6, rx: 62, ry: 12, fill: '#d9ddea' }),
+  path('M-30 -10 C -30 -50, 30 -50, 30 -10 Z', '#7ee0d0', 0.95),
+  circle(-42, 5, 5, '#ffd23f'), circle(0, 9, 5, '#ff6b4a'), circle(42, 5, 5, '#ffd23f'))
+
+const comet = (x: number, y: number, s = 1, r = 0) => g(at(x, y, s, r),
+  path('M0 -15 L-210 -3 L0 15 Z', 'url(#sc-tail)'), circle(0, 0, 15, '#fff3b0'), circle(0, 0, 7, '#ff8a5c'))
+
+const stripedPlanet = (x: number, y: number, s = 1) => g(at(x, y, s, -12),
+  circle(0, 0, 56, '#ffb347'),
+  g({ 'clip-path': 'url(#sc-pclip)' }, rect(-60, -34, 120, 16, '#ff6b4a'), rect(-60, -2, 120, 16, '#ffe066'), rect(-60, 28, 120, 14, '#9b6bff')),
+  el('ellipse', { rx: 92, ry: 18, fill: 'none', stroke: '#fff3b0', 'stroke-width': 7, opacity: 0.9 }))
+
+const rainbow = (x: number, y: number, s = 1) => g(at(x, y, s),
+  ...['#ff6b4a', '#ffb347', '#ffe066', '#6ee7b7', '#6ab9fb', '#9b6bff'].map((c, i) => { const R = 560 - i * 20; return el('path', { d: `M${-R} 0 A ${R} ${R} 0 0 1 ${R} 0`, fill: 'none', stroke: c, 'stroke-width': 20, opacity: 0.8 }) }))
+
+const confetti = (() => {
+  const r = rng(21)
+  const colours = ['#ff6b4a', '#ffd23f', '#4fe0b0', '#9b6bff', '#ffffff', '#6ab9fb']
+  return Array.from({ length: 80 }, () => ({ x: r() * 2000, y: 120 + r() * 3600, size: 5 + r() * 7, a: r() * 360, c: colours[Math.floor(r() * colours.length)], kind: Math.floor(r() * 3) }))
+})()
+
+const chaosExtras = () => [
+  rainbow(520, 1500, 0.9),
+  ufo(1760, 900, 1.2, -8), ufo(230, 2350, 1, 10), ufo(1040, 1720, 0.75, 4),
+  comet(420, 560, 1, 14), comet(1650, 1330, 1.1, 10), comet(900, 2920, 0.9, -8),
+  stripedPlanet(1720, 2100, 1), stripedPlanet(300, 3000, 0.7),
+  ...confetti.map((c) => g(at(r1(c.x), r1(c.y), 1, r1(c.a)), c.kind === 0 ? el('circle', { r: r1(c.size), fill: c.c }) : c.kind === 1 ? el('rect', { x: r1(-c.size), y: r1(-c.size * 0.5), width: r1(c.size * 2), height: r1(c.size), fill: c.c }) : el('path', { d: `M0 ${r1(-c.size)} L${r1(c.size)} ${r1(c.size)} L${r1(-c.size)} ${r1(c.size)} Z`, fill: c.c }))),
+].join('')
+
+/** Pushes every colour in the picture: saturation about 1.5x and slightly more contrast (the Chaos treatment, baked in so nothing runs while scrolling). */
+const boost = (svg: string) => svg.replace(/#([0-9a-fA-F]{6})\b/g, (_m, h: string) => {
+  const c = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+  const lum = 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]
+  const out = c.map((v) => Math.min(1, Math.max(0, ((lum + (v - lum) * 1.5) - 0.5) * 1.08 + 0.5)))
+  return '#' + out.map((v) => Math.round(v * 255).toString(16).padStart(2, '0')).join('')
+})
+
+const defs = (chaos: boolean) => el('defs', {},
   // one sky from the top (apricot dusk) down to the horizon (sand); the blue in the middle is the Chaos side's blue (#7cc8ff), a touch deeper here because the veil lightens it
-  vgrad('sc-sky', stop(0, '#dbbccb'), stop(0.1, '#efcdc3'), stop(0.2, '#f3d7c4'), stop(0.3, '#cdd9f0'), stop(0.42, '#94d0ff'), stop(0.58, '#6ab9fb'), stop(0.72, '#9bd5fc'), stop(0.82, '#f1e6cc')),
+  vgrad('sc-sky', ...(chaos ? CHAOS_SKY : CALM_SKY)),
   el('radialGradient', { id: 'sc-sun' }, stop(0, '#fff3cf', 0.95), stop(0.35, '#fbd9b0', 0.5), stop(1, '#f6c4b4', 0)),
   vgrad('sc-ray', stop(0, '#fff', 0.32), stop(1, '#fff', 0)),
   vgrad('sc-rock', stop(0, '#cdcbdc'), stop(1, '#a4abc6')),
@@ -88,10 +136,15 @@ const DEFS = el('defs', {},
   vgrad('sc-hill2', stop(0, '#cbdf9f'), stop(1, '#a9c985')),
   vgrad('sc-hill3', stop(0, '#bfd899'), stop(1, '#a6c783')),
   // the veil over the picture: cream over the dusk and the meadow, a pale blue-white over the sky band, so the sky stays near the Chaos blue
-  vgrad('sc-veil', stop(0, '#fff8ea', 0.3), stop(0.26, '#fff8ea', 0.3), stop(0.34, '#eef7ff', 0.34), stop(0.76, '#eef7ff', 0.34), stop(0.84, '#fff8ea', 0.3), stop(1, '#fff8ea', 0.3)),
+  vgrad('sc-veil', ...(chaos ? CHAOS_VEIL : CALM_VEIL)),
   // a slight blue multiply over the sky band only: cloud whites drop a little so the cream cards on top read warmer than the clouds
   vgrad('sc-tint', stop(0, '#7cc8ff', 0), stop(0.28, '#7cc8ff', 0), stop(0.38, '#7cc8ff', 0.16), stop(0.74, '#7cc8ff', 0.16), stop(0.82, '#7cc8ff', 0)),
   el('clipPath', { id: 'sc-lakeclip' }, el('rect', { x: 0, y: 3170, width: 1000, height: 260 })),
+  ...(chaos ? [
+    vgrad('sc-beam', stop(0, '#fff6a8', 0.7), stop(1, '#fff6a8', 0)),
+    el('linearGradient', { id: 'sc-tail', x1: 0, y1: 0, x2: 1, y2: 0 }, stop(0, '#fff3b0', 0), stop(1, '#fff3b0', 0.9)),
+    el('clipPath', { id: 'sc-pclip' }, el('circle', { cx: 0, cy: 0, r: 56 })),
+  ] : []),
   MOUNTAIN)
 
 const workshop = g({},
@@ -126,7 +179,7 @@ const shed = (x: number, y: number, s: number) => g(at(x, y, s),
   el('path', { d: 'M-22 -116 Q-10 -128 2 -116', fill: 'none', stroke: '#8a7a66', 'stroke-width': 2.5, 'stroke-linecap': 'round' }),
   circle(-10, -108, 3.5, '#e8704f'))
 
-const pad = (x: number, y: number) => g(at(x, y),
+const pad = (x: number, y: number, k = 1) => g(at(x, y, k),
   shadow(0, 3, 74),
   rect(-62, -10, 124, 12, '#d8c8a2', 4), rect(-62, -10, 124, 4, '#e8dcbc', 2),
   el('path', { d: 'M-54 -10 V-92 H-34 M-54 -52 H-38', fill: 'none', stroke: '#b7a47c', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }))
@@ -140,9 +193,10 @@ const planet = (x: number, y: number) => g(at(x, y, 1, -16),
 const OX = 500 // the drawing is 1000 wide; it sits in the middle of a canvas twice as wide, so everything is drawn at half the size
 const ROBOT_X = 548 + OX
 const GROUND_Y = 3962 // where everything at the end of the picture stands
+const K = 1.45 // how much bigger the characters at the end are drawn (they looked too small on a wide screen)
 const TRAIL_PATH = `M${578 + OX} 3646 C ${612 + OX} 3700, ${600 + OX} 3760, ${566 + OX} 3806 S ${524 + OX} 3920, ${ROBOT_X} ${GROUND_Y}`
 
-export function scenerySvg(): string {
+export function scenerySvg(chaos = false): string {
   // the landscape itself, 1000 wide. It is drawn once in the middle and mirrored on both sides, so the sky, lake and hills carry on
   // sideways without a seam. The one-off pieces (sun, planet, rockets, robot, the trail) are not in here, so they appear only once.
   const core = g({ id: 'sc-core' },
@@ -186,7 +240,7 @@ export function scenerySvg(): string {
     el('use', { href: '#sc-core', transform: `translate(${OX} 0)` }),
     // the two floating islands (with their waterfalls) stand in the side margins, where the cards on top do not cover them; they are
     // not in the mirrored landscape, so each appears once
-    island(1845, 1180, 0.8, 420, workshop), island(150, 1740, 0.85, 560, tree),
+    island(1845, 1180, 0.8, 420, workshop, chaos ? 12 : 0), island(150, 1740, 0.85, 560, tree, chaos ? -10 : 0),
     el('use', { href: '#sc-core', transform: `translate(${OX * 5} 0) scale(-1 1)` }),
 
     // the path through the meadow, down to the robot
@@ -195,15 +249,16 @@ export function scenerySvg(): string {
 
     // a cream veil keeps text on the open page easy to read (it is part of the picture, so it costs nothing while scrolling)
     el('rect', { width: 2000, height: 4000, fill: 'url(#sc-veil)' }),
-    el('rect', { width: 2000, height: 4000, fill: 'url(#sc-tint)', style: 'mix-blend-mode:multiply' }),
+    ...(chaos ? [chaosExtras()] : [el('rect', { width: 2000, height: 4000, fill: 'url(#sc-tint)', style: 'mix-blend-mode:multiply' })]),
     planet(150, 300),
 
     // the end: the workshop, the robot at the end of the path, and a rocket on its pad (the one launched at the top)
-    shed(300 + OX, GROUND_Y, 0.9), robotAt(ROBOT_X, GROUND_Y, 0.85), pad(760 + OX, GROUND_Y), rocketAt(760 + OX, GROUND_Y - 10 - 24 * 0.9, 0.9),
+    shed(300 + OX, GROUND_Y, 0.9 * K), robotAt(ROBOT_X, GROUND_Y, 0.85 * K), pad(760 + OX, GROUND_Y, K), rocketAt(760 + OX, GROUND_Y - 10 * K - 24 * 0.9 * K, 0.9 * K),
 
     // the dotted trail from the robot up to the tiny rocket in flight, in the right margin
-    el('path', { d: `M${ROBOT_X} ${GROUND_Y - 100} C ${520 + OX} 3640, ${640 + OX} 3480, ${560 + OX} 3300 S ${380 + OX} 3020, ${470 + OX} 2800 S ${640 + OX} 2500, ${520 + OX} 2300 S ${330 + OX} 2000, ${470 + OX} 1820 S ${640 + OX} 1560, ${560 + OX} 1340 S ${700 + OX} 1000, ${740 + OX} 780 S 1560 420, 1880 250`, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.6, 'stroke-width': 3.2, 'stroke-dasharray': '7 11', 'stroke-linecap': 'round' }),
+    el('path', { d: `M${ROBOT_X} ${GROUND_Y - Math.round(122 * 0.85 * K)} C ${520 + OX} 3640, ${640 + OX} 3480, ${560 + OX} 3300 S ${380 + OX} 3020, ${470 + OX} 2800 S ${640 + OX} 2500, ${520 + OX} 2300 S ${330 + OX} 2000, ${470 + OX} 1820 S ${640 + OX} 1560, ${560 + OX} 1340 S ${700 + OX} 1000, ${740 + OX} 780 S 1560 420, 1880 250`, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.6, 'stroke-width': 3.2, 'stroke-dasharray': '7 11', 'stroke-linecap': 'round' }),
     rocketAt(1880, 220, 0.5, 14, true),
   ].join('')
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 4000" width="2000" height="4000" preserveAspectRatio="xMidYMid slice">${DEFS.replace('</defs>', `${core}</defs>`)}${body}</svg>\n`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 4000" width="2000" height="4000" preserveAspectRatio="xMidYMid slice">${defs(chaos).replace('</defs>', `${core}</defs>`)}${body}</svg>\n`
+  return chaos ? boost(svg) : svg
 }

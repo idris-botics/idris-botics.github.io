@@ -45,7 +45,7 @@ for (const [w, h] of VIEWS) for (const lang of ['en', 'ja']) {
       if ((s.overflowX === 'hidden' || s.textOverflow === 'ellipsis') && e.scrollWidth > e.clientWidth + 2 && e.clientWidth > 0 && !e.matches('img, picture')) out.clipped.push(label(e))
       if (e.tagName === 'IMG' && (!e.complete || e.naturalWidth === 0) && e.loading !== 'lazy') out.badImg.push(e.getAttribute('src'))
       if (e.tagName === 'IMG' && e.complete && e.naturalWidth === 0 && e.getAttribute('src')) out.badImg.push(e.getAttribute('src'))
-      if (e.tagName === 'IMG' && !e.closest('.thumb, svg') && (rc.width < 100 || rc.height < 60) && !e.closest('.spot-nav, .brand')) out.tiny.push(label(e) + ` ${Math.round(rc.width)}x${Math.round(rc.height)}`)
+      if (e.tagName === 'IMG' && !e.closest('.thumb, svg') && (rc.width < 100 || rc.height < 60) && !e.closest('.spot-nav, .brand') && !e.matches('.duo-owl')) out.tiny.push(label(e) + ` ${Math.round(rc.width)}x${Math.round(rc.height)}`)
       if (e.matches('button, a[href], [role="button"], select, input:not([type=hidden])') && !e.closest('svg')) {
         const min = touch ? 40 : 28
         const inlineText = e.matches('a') && getComputedStyle(e).display === 'inline' && !e.classList.contains('btn')

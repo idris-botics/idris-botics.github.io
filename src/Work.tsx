@@ -111,6 +111,25 @@ export default function Work() {
     return () => removeEventListener('portfolio:open-project', f)
   }, [])
 
+  // The strip fades at the left edge once it has been scrolled, and at the right edge while there is more to the right.
+  const strip = useRef<HTMLUListElement>(null)
+  useEffect(() => {
+    const el = strip.current
+    if (!el) return
+    let raf = 0
+    const upd = () => {
+      raf = 0
+      const room = el.scrollWidth - el.clientWidth
+      el.style.setProperty('--fl', `${Math.min(el.scrollLeft, 36)}px`)
+      el.style.setProperty('--fr', `${Math.min(Math.max(0, room - el.scrollLeft), 36)}px`)
+    }
+    const on = () => { if (!raf) raf = requestAnimationFrame(upd) }
+    upd()
+    el.addEventListener('scroll', on, { passive: true })
+    const ro = new ResizeObserver(on); ro.observe(el)
+    return () => { cancelAnimationFrame(raf); el.removeEventListener('scroll', on); ro.disconnect() }
+  }, [])
+
   const project = (s: string) => projects.find((p) => p.slug === s)!
   const more = order.filter((s) => !featured.includes(s))
 
@@ -123,13 +142,13 @@ export default function Work() {
         </div>
 
         <h3 className="more-h">{lang === 'en' ? 'More builds' : 'ほかの制作'}</h3>
-        <ul className="strip" aria-label={lang === 'en' ? 'More builds' : 'ほかの制作'}>
+        <ul className="strip" ref={strip} aria-label={lang === 'en' ? 'More builds' : 'ほかの制作'}>
           {more.map((s) => {
             const p = project(s), info = tiles[s], img = thumbs(p)[0]?.src
             return (
               <li key={s}>
                 <a className="mini" id={s} href={`#work/${s}`} onClick={(e) => plain(e, () => openProject(s, (e.currentTarget as HTMLElement).querySelector('img')))}>
-                  {img && <img src={img} alt="" loading="lazy" decoding="async" width={160} height={100} />}
+                  {img && <img src={img} srcSet={`${img.replace("-640.webp", "-480.webp")} 480w, ${img} 640w`} sizes="192px" alt="" loading="lazy" decoding="async" width={160} height={100} />}
                   <strong>{t(info.short)}</strong>
                   <ArrowUpRight className="tile-go" size={14} aria-hidden="true" />
                 </a>

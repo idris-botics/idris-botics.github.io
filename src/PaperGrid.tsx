@@ -99,6 +99,7 @@ export default function PaperGrid({ wobble = false, soft = false }: { wobble?: b
     const move = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' || !el) return
       if (soft && scrollY > innerHeight * 0.9) { el.classList.remove('on'); return }
+      if ((e.target as Element | null)?.closest?.('.hero-text') || document.querySelector('.copied-note:not(:empty)')) { el.classList.remove('on'); return }
       mx = e.clientX; my = e.clientY
       if (!raf) raf = requestAnimationFrame(() => {
         raf = 0

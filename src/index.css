@@ -563,7 +563,7 @@ html.tidy::after { content: ''; position: fixed; left: 0; right: 0; top: 0; heig
 
 /* hero reel */
 .hero-photo { position: relative; }
-.hero-photo video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); border: 1.5px solid var(--line); background: var(--panel); }
+.hero-photo video, .hero-photo img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); border: 1.5px solid var(--line); background: var(--panel); }
 .reel-btn { display: grid; place-items: center; padding: 0; position: absolute; right: 10px; bottom: 10px; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font-size: 13px; cursor: pointer; touch-action: manipulation; }
 @media (hover: hover) and (pointer: fine) { .reel-btn:hover { border-color: var(--accent); } }
 
@@ -940,10 +940,6 @@ canvas.paper-hero { position: fixed; inset: 0; width: 100vw; height: 100vh; z-in
 .tp-wp:focus-visible { outline: 2px solid var(--accent-text); outline-offset: -2px; border-radius: 8px; }
 
 /* text that sits straight on the picture gets a cream plate: headings 12px radius, small labels pills */
-:root[data-mode='calm'] .sec h2 { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 10px; border-radius: 12px; }
-:root[data-mode='calm'] .about-grid > h2 { justify-self: start; width: fit-content; }
-:root[data-mode='calm'] .more-h, :root[data-mode='calm'] .award-group h3, :root[data-mode='calm'] .back { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 12px; border-radius: 999px; }
-:root[data-mode='calm'] .back { display: inline-flex; }
 .site-footer .wrap > span:first-child { background: rgba(255, 248, 234, .9); }
 @media (max-width: 700px) { .award-group h3, .pw-sec h2, .pw-details-body h2, .tile-spec, .tag { font-size: 13px; } }
 
@@ -971,3 +967,52 @@ canvas.paper-hero { position: fixed; inset: 0; width: 100vw; height: 100vh; z-in
 .copied-note:not(:empty)::before { content: ''; position: absolute; left: 22px; top: -9px; width: 14px; height: 14px; background: var(--mint); border-left: 2px solid var(--outline); border-top: 2px solid var(--outline); transform: rotate(45deg); }
 @keyframes note-pop { from { opacity: 0; transform: translateY(-6px) scale(.85); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .copied-note:not(:empty) { animation: none; } }
+
+/* ================= Round 7 ================= */
+
+/* the More builds strip fades at whichever edge has more to scroll to (Work.tsx sets --fl and --fr as it scrolls) */
+.strip { --fl: 0px; --fr: 36px; mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--fl), #000 calc(100% - var(--fr)), transparent 100%); }
+
+/* the Duolingo owl beside the streak */
+.facts li.streak { display: flex; align-items: center; gap: 12px; }
+.duo-owl { width: 48px; height: 48px; flex: none; }
+.streak-text { min-width: 0; }
+
+/* headings and labels on plates, in both versions; the plates have the cards' corner radius and a soft charcoal outline */
+.sec h2 { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 12px; border-radius: 16px; border: 1.5px solid rgba(38, 34, 31, .35); }
+.about-grid > h2 { justify-self: start; width: fit-content; }
+.more-h, .award-group h3, .back { display: inline-block; background: rgba(255, 248, 234, .9); padding: 4px 12px; border-radius: 16px; border: 1.5px solid rgba(38, 34, 31, .35); }
+.back { border-radius: 999px; }
+.back { display: inline-flex; }
+
+/* phones: the toolpath is a thin line and small dots in the right gutter, under the cards, with no text tags; the dots keep their 44 px tap area */
+@media (max-width: 768px) {
+  .toolpath { right: 2px; width: 12px; z-index: 1; }
+  .toolpath svg { transform: scale(.6); transform-origin: left top; }
+  .tp-wp { right: 0; width: 44px; height: 44px; }
+  .tp-wp i { width: 5px; height: 5px; border-width: 0; margin-right: 4px; }
+  .tp-wp span, .tp-wp:focus-visible span { display: none; }
+  .surface, .tile, .award, .mini, .peek-grid, .photo-strip li { position: relative; z-index: 2; }
+}
+
+/* phones: the CV link sits centred under the two buttons, at 16 px with a 44 px tap area, instead of alone and small */
+@media (max-width: 520px) { .hero-actions .cv-link { flex: 1 0 100%; justify-content: center; font-size: 16px; min-height: 44px; } }
+
+/* the credit line is a comment bubble above the robot in the last panel (home page); the robot is at a fixed place in the picture, so
+   the bubble is placed with the same numbers the picture is scaled by (the picture is max(200vw, 260vh) tall) */
+.page-end { position: relative; }
+.page-end.has-scene .site-footer { margin-top: 0; padding: 0; border: 0; }
+.page-end.has-scene .site-footer .wrap { padding: 0; max-width: none; }
+.page-end.has-scene .site-footer .wrap > span:first-child { position: absolute; z-index: 3; left: clamp(calc(min(86vw, 460px) / 2 + 6px), calc(50% + 0.012 * max(200vw, 260vh)), calc(100% - min(86vw, 460px) / 2 - 6px)); bottom: calc(0.048 * max(200vw, 260vh)); translate: -50% 0; width: min(86vw, 460px); display: block; text-align: center; padding: 10px 16px; background: #fff8ea; color: var(--ink); border: 2px solid var(--outline); border-radius: 18px; box-shadow: 3px 3px 0 var(--outline); font: 600 15px/1.4 var(--font-body); }
+.page-end.has-scene .site-footer .wrap > span:first-child::after { content: ''; position: absolute; left: 50%; bottom: -10px; width: 16px; height: 16px; margin-left: -8px; background: #fff8ea; border-right: 2px solid var(--outline); border-bottom: 2px solid var(--outline); transform: rotate(45deg); }
+@media (min-width: 1024px) { .page-end.has-scene .site-footer .wrap > span:first-child { font-size: 16px; } }
+/* the last panel is taller, so the bigger ending scene and its bubble have room */
+.scenery-end { height: clamp(300px, 32vw, 560px); }
+/* phones: the "One more thing" card keeps clear of the waypoint dots in the right gutter */
+@media (max-width: 800px) { .peek-grid.wrap { width: calc(100% - 36px); } }
+
+/* the first paint of the hero is static HTML (scripts/gen-hero-shell.mjs); its picture is an <img> that fills the same box as the reel, and its letters
+   do not animate again when the app takes over */
+html[data-pre] .ltr { animation: none; }
+/* the waypoints are placed once the sections have been measured; until then they are not drawn (they used to appear at the top and jump into place) */
+.toolpath.pending { visibility: hidden; }

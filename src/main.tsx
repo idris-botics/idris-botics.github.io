@@ -8,8 +8,10 @@ import '@fontsource-variable/space-grotesk'
 import './index.css'
 import App from './App'
 import { AppGuard } from './LoadGuard'
+import { afterFirstPaint } from './preShell'
 import { initAnalytics } from './analytics'
 
 document.documentElement.dataset.mode = 'calm'
-createRoot(document.getElementById('root')!).render(<StrictMode><AppGuard><App /></AppGuard></StrictMode>)
+// the static hero in index.html is on screen first; the app takes over right after its picture has painted
+void afterFirstPaint().then(() => createRoot(document.getElementById('root')!).render(<StrictMode><AppGuard><App /></AppGuard></StrictMode>))
 initAnalytics()
