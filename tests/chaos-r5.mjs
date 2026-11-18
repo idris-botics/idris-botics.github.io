@@ -96,6 +96,26 @@ const open = async (init = SKIP, vp = { width: 1280, height: 900 }) => {
   await ctx.close()
 }
 
+// --- the feast runs on even when the banner's Eat it is pressed, and the robot deflates afterwards
+{
+  const { ctx, p, errs } = await open(() => { try { sessionStorage.setItem('rolled', '1'); sessionStorage.setItem('cena', '1') } catch { /* ignore */ } })
+  await p.keyboard.type('cookie')
+  await p.waitForSelector('.cookie', { timeout: 3000 })
+  await p.waitForTimeout(1500)
+  await p.locator('.cookie .btn').click(); await p.waitForTimeout(1500)
+  check((await p.locator('.cookie').count()) === 0, 'Eat it closes the banner (and fills the screen with cookies)')
+  check(await p.evaluate(() => document.querySelector('.scout-dock')?.classList.contains('eating')) && (await p.locator('.cookie-pile i').count()) > 0, 'but the robot keeps chomping and the pile is still there')
+  await p.waitForSelector('.scout-dock.stuffed', { timeout: 14000 })
+  check(true, 'it still gets stuffed')
+  await p.waitForTimeout(6500)
+  check(!(await p.evaluate(() => document.querySelector('.scout-dock')?.classList.contains('stuffed'))), 'about 4 s later it is not stuffed any more')
+  check((await p.evaluate(() => Number(getComputedStyle(document.querySelector('.scout-dock')).getPropertyValue('--full')))) === 0, 'and it has deflated back to normal size')
+  await p.keyboard.type('cookie'); await p.waitForSelector('.cookie', { timeout: 3000 })
+  check(true, 'and the cookie word works again')
+  check(errs.length === 0, 'no page errors ' + errs.join('|'))
+  await ctx.close()
+}
+
 // --- repeat events: at most 4 per visit, never while another is open
 {
   const { ctx, p } = await open()

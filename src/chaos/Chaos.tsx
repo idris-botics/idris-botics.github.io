@@ -140,6 +140,13 @@ export default function Chaos() {
   const [cookie, setCookie] = useState(false)
   type Crumb = { id: number; x: number; y: number; s: number; r: number; d: number; dl: number }
   const [storm, setStorm] = useState<Crumb[] | null>(null) // clicking Eat it fills the screen with cookies
+  // The feast (the pile, the chomping, the stuffed pet robot) runs on its own once it has started: closing the banner or pressing "Eat it" does not stop it.
+  const [feast, setFeast] = useState(false)
+  const feastRef = useRef(false)
+  useEffect(() => { feastRef.current = feast }, [feast])
+  const feastTimers = useRef<number[]>([])
+  useEffect(() => () => feastTimers.current.forEach(clearTimeout), [])
+  const startCookie = useCallback(() => { setBites(0); setCookie(true); if (!reduced()) setFeast(true) }, [])
   const [bites, setBites] = useState(0) // 0 to 10: a pile of ten cookies next to the pet robot is eaten one chomp at a time; the banner cookie gets a bite every second chomp
   const [finale, setFinale] = useState(false)
   const [roll, setRoll] = useState(false)
@@ -511,7 +518,7 @@ export default function Chaos() {
   useEffect(() => {
     const { clock, stop } = watchPage()
     clockRef.current = clock
-    const busy = () => quietRef.current || document.hidden || !!document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site, .remix-flush')
+    const busy = () => quietRef.current || document.hidden || !!document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site, .remix-flush, .cookie-pile, .scout-dock.stuffed')
     const fire = (force?: string) => {
       const ev = events.current
       const rx = remixRef.current
@@ -526,7 +533,7 @@ export default function Chaos() {
       const variant = ev.count
       ev.last = kind
       noteEvent()
-      if (kind === 'cookie') { cookieVariant.current = variant; setBites(0); setCookie(true) }
+      if (kind === 'cookie') { cookieVariant.current = variant; startCookie() }
       else if (kind === 'rick') startRick(variant)
       else if (kind === 'cena') startCena(variant)
       else typeWord(kind)
@@ -541,10 +548,10 @@ export default function Chaos() {
   useEffect(() => {
     if (!on('cookieBanner')) return
     try { if (sessionStorage.getItem('cookie')) return } catch { /* ignore */ }
-    const id = setTimeout(() => { cookieVariant.current = 0; setCookie(true); noteEvent() }, 20000 + Math.random() * 70000) // on its own, no first press needed
+    const id = setTimeout(() => { if (feastRef.current || stuffedRef.current) return; cookieVariant.current = 0; startCookie(); noteEvent() }, 20000 + Math.random() * 70000) // on its own, no first press needed
     return () => clearTimeout(id)
   }, [noteEvent])
-  const closeCookie = () => { setCookie(false); setBites(0); try { sessionStorage.setItem('cookie', '1') } catch { /* ignore */ } }
+  const closeCookie = () => { setCookie(false); try { sessionStorage.setItem('cookie', '1') } catch { /* ignore */ } }
   const cookieStorm = () => {
     sfx('chomp')
     if (reduced()) return
@@ -554,7 +561,7 @@ export default function Chaos() {
     setTimeout(() => setStorm(null), 4400)
   }
   useEffect(() => {
-    if (!cookie || reduced()) return
+    if (!feast || reduced()) return
     const id = window.setInterval(() => {
       setBites((b) => {
         if (b >= 10) return b
@@ -563,10 +570,10 @@ export default function Chaos() {
       })
     }, 1000)
     return () => clearInterval(id)
-  }, [cookie])
+  }, [feast])
   // each bite: a piece of the cookie flies from the banner into the pet robot's mouth
   useEffect(() => {
-    if (!cookie || bites < 1 || bites > 10 || reduced()) return
+    if (!feast || bites < 1 || bites > 10 || reduced()) return
     const pile = document.querySelector('.cookie-pile')?.getBoundingClientRect()
     const from = pile ?? document.querySelector('.cookie-pic')?.getBoundingClientRect()
     const to = dock.current?.getBoundingClientRect()
@@ -580,7 +587,7 @@ export default function Chaos() {
     ], { duration: 520, easing: 'cubic-bezier(.4, 0, .6, 1)' })
     a.onfinish = () => el.remove()
     return () => { a.cancel(); el.remove() }
-  }, [cookie, bites])
+  }, [feast, bites])
   // the pet robot deals with the cookie: it sneaks over and eats the crumbs (or tries to press "accept"), chokes, coughs crumbs up and apologises
   const [stuffed, setStuffed] = useState(false)
   const stuffedRef = useRef(false)
@@ -588,17 +595,17 @@ export default function Chaos() {
   useEffect(() => { stuffedRef.current = stuffed }, [stuffed])
   const cookieVariant = useRef(0)
   useEffect(() => {
-    if (bites < 10) return
+    if (!feast || bites < 10) return
+    setFeast(false)
     setStuffed(true)
     sfx('burp')
     award('cookie')
     const v = cookieVariant.current
     sayText(v % 2 === 0 ? (langRef.current === 'en' ? 'I am so full. Do not ask me to move.' : 'おなかいっぱい。動かせないでください。') : (langRef.current === 'en' ? 'I pressed accept. Then I ate the accept. I think I am a cookie now.' : '「同意する」を押して、そのまま食べました。私はもうクッキーかもしれません。'), 4500)
     window.setTimeout(() => sfx('boing'), 1500)
-    const a = window.setTimeout(() => setStuffed(false), 4200)
-    const id = window.setTimeout(closeCookie, 1500) // nothing left to eat: the banner leaves with it
-    return () => { clearTimeout(id); clearTimeout(a) }
-  }, [bites, award, sayText])
+    // these timers are not cleared when the effect runs again: the banner leaves with the cookie, and the robot is stuffed for 4.2 s, then deflates
+    feastTimers.current.push(window.setTimeout(closeCookie, 1500), window.setTimeout(() => { setStuffed(false); setBites(0) }, 4200))
+  }, [feast, bites, award, sayText])
 
   // finale (C): when the contact section is reached, once
   useEffect(() => {
@@ -712,7 +719,8 @@ export default function Chaos() {
         const n = refusals.current++
         sayText(NO_MORE[n % NO_MORE.length][langRef.current], 3600); sfx('boing'); return
       }
-      setBites(0); setCookie(true)
+      if (feastRef.current) return // it is already eating
+      startCookie()
     }
     addEventListener('keydown', k)
     return () => removeEventListener('keydown', k)
@@ -773,6 +781,18 @@ export default function Chaos() {
     setFlushing(false)
     sayText(langRef.current === 'en' ? 'Remix is on. Even I do not know what happens now: nobody has made it this far. Godspeed, sailor.' : 'リミックスがオンになりました。この先に何が起こるかは私にもわかりません。ここまで来た人は誰もいないのです。ご武運を、船乗りさん。', 8000)
   }, [sayText])
+  // for the owner only: type remixtest to watch the flush and the REMIX IS ON banner again. It is not a secret (not in the hints, the command box or the
+  // achievements), it does not unlock anything and it does not touch the Remix setting.
+  useEffect(() => {
+    let buf = ''
+    const k = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest?.('input, textarea, select') || e.key.length !== 1) return
+      buf = (buf + e.key.toLowerCase()).slice(-9)
+      if (buf === 'remixtest') { buf = ''; if (!document.querySelector('.remix-flush')) setFlushing(true) }
+    }
+    addEventListener('keydown', k)
+    return () => removeEventListener('keydown', k)
+  }, [])
 
   // coffee: type it anywhere
   useEffect(() => {
@@ -1157,12 +1177,12 @@ export default function Chaos() {
           {achOpen && <ul>{ach.map((a) => <li key={a}>{a === 'idris' && <img className="ach-thumb" src={`${import.meta.env.BASE_URL}media/img/idris-whimsy-480.jpg`} alt="" width={28} height={28} />}{ACH[a][lang]}{isHelped(a) && <b className="ach-help"> · {lang === 'en' ? 'SOLVED WITH HELP' : 'ヒントで解決'}</b>}</li>)}</ul>}
         </div>
       )}
-      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${cookie && bites < 10 ? ' eating' : ''}${stuffed ? ' stuffed' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length, ['--full' as string]: stuffed ? 5 : cookie ? Math.min(bites, 10) / 2 : 0 }}>
+      <div ref={dock} className={`${anger > 6 ? 'scout-dock mad' : 'scout-dock'}${caf === 'wired' ? ' wired' : caf === 'crashed' ? ' crashed' : ''}${bow ? ' bow' : ''}${feast && bites < 10 ? ' eating' : ''}${stuffed ? ' stuffed' : ''}`} aria-hidden="true" onClick={poke} style={{ ['--anger' as string]: anger / MAD.length, ['--full' as string]: stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0 }}>
         {bubble && <span className="bubble">{bubble}</span>}
         {nap && <span className="zzz">Zzz</span>}
         {stuffed && <span className="crumbs" aria-hidden="true"><i /><i /><i /><i /><i /><i /></span>}
         {caf === 'wired' && <span className="speedlines" aria-hidden="true"><i /><i /><i /></span>}
-        {cookie && bites < 10 && (
+        {feast && bites < 10 && (
           <span className="cookie-pile" aria-hidden="true">
             {Array.from({ length: 10 - bites }, (_, i) => {
               const row = i < 4 ? 0 : i < 7 ? 1 : i < 9 ? 2 : 3, col = i < 4 ? i : i < 7 ? i - 4 : i < 9 ? i - 7 : 0
@@ -1170,7 +1190,7 @@ export default function Chaos() {
             })}
           </span>
         )}
-        <Scout size={84} mood={caf} full={stuffed ? 5 : cookie ? Math.min(bites, 10) / 2 : 0} stuffed={stuffed} />
+        <Scout size={84} mood={caf} full={stuffed ? 5 : feast ? Math.min(bites, 10) / 2 : 0} stuffed={stuffed} />
       </div>
       {stamps.map((s) => <span key={s.id} className="stamp" style={{ left: s.x, top: s.y }} aria-hidden="true">{s.text}</span>)}
       {toast && (

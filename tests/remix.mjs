@@ -48,6 +48,15 @@ const catClip = (p) => p.evaluate(() => { const v = document.querySelector('.cli
   check(await catClip(p), 'with remix off the word cat opens the cat clip again')
   await ctx.close()
 }
+// the owner's test word: remixtest plays the flush without unlocking anything
+{
+  const { ctx, p } = await open(null)
+  await p.keyboard.type('remixtest')
+  await p.waitForSelector('.remix-banner', { timeout: 9000 }).catch(() => {})
+  check((await p.locator('.remix-banner').count()) === 1, 'typing remixtest plays the flush and the REMIX IS ON banner')
+  check((await p.evaluate(() => localStorage.getItem('chaos-remix'))) === null, 'and unlocks nothing')
+  await ctx.close()
+}
 // finding every achievement unlocks it
 {
   const { ctx, p } = await open(null)
