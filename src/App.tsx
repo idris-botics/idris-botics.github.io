@@ -73,6 +73,7 @@ function PeekReel({ alt, lang }: { alt: string; lang: 'en' | 'ja' }) {
 }
 
 const Chaos = lazy(() => import('./chaos/Chaos'))
+const Scenery = lazy(() => import('./Scenery')) // the long cartoon background; its own small file, so it never delays the first paint
 
 const ui = {
   skip: { en: 'Skip to content', ja: '本文へ' },
@@ -175,6 +176,7 @@ export default function App() {
   return (
     <>
       <a className="skip" href="#main">{t(ui.skip)}</a>
+      {mode === 'calm' && <Suspense fallback={null}><Scenery /></Suspense>}
       <PaperGrid wobble={mode === 'chaos'} />
       {!project && mode === 'calm' && <Toolpath key={lang} points={tpPoints} label={lang === 'en' ? 'Page sections' : 'ページの区切り'} />}
       {mode === 'chaos' && <PointField variant="chaos" />}
@@ -211,7 +213,7 @@ export default function App() {
               <p className="hero-sub">{t(hero.sub)}</p>
               <div className="hero-actions">
                 <a className="btn primary" href="#work">{t(ui.seeWork)}</a>
-                <a className="btn" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
+                <a className="btn primary mustard" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
                 {personal.cv.en && <a className="quiet" href={base + personal.cv.en} download>{t(ui.cv)}</a>}
               </div>
             </div>
@@ -231,7 +233,7 @@ export default function App() {
               </div>
             </div>
             <ul className="facts surface">
-              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>} <span className="tag">{ui.asOf[lang](asOfLabel(lang))}</span></li>
+              <li>{personal.links.duolingo ? <a className="quiet-link" href={personal.links.duolingo} target="_blank" rel="noopener noreferrer"><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</a> : <><Tick to={habits.duolingoDays} locale={lang} /> {t(ui.streak)}</>} <span className="tag asof">{ui.asOf[lang](asOfLabel(lang))}</span></li>
               <li>{t(ui.facts.jp).split(/(NAT-TEST 4Q\S*)/).map((part, i) => (i % 2 ? <span key={i} className="nb">{part}</span> : part))}</li>
             </ul>
           </div>
@@ -291,8 +293,8 @@ export default function App() {
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
               <a className="btn primary" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
-              <a href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
-              <a href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
+              <a className="btn primary sky" href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
+              <a className="btn primary mint" href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
               <Documents />
             </div>
             </div>
@@ -320,6 +322,7 @@ export default function App() {
           {lite && <span className="lite"> · {t(ui.lite)}</span>}
         </div>
       </footer>
+      {mode === 'calm' && !project && <div className="scenery-end" aria-hidden="true" />}
 
       {mode === 'chaos' && <ChaosGuard key="chaos"><Suspense fallback={null}><Chaos /></Suspense></ChaosGuard>}
     </>

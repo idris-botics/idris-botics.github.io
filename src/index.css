@@ -791,7 +791,10 @@ canvas.scene-chaos { position: absolute; inset: 0; width: 100%; height: 100%; po
 .btn.primary { border: 2px solid var(--outline); box-shadow: 3px 3px 0 var(--outline); }
 .btn.primary:active { box-shadow: 0 0 0 var(--outline); transform: translate(3px, 3px); }
 /* a second colour for a button that sits beside a primary one (the CV beside the email address) */
-.btn.primary.sky { background: var(--sky); border-color: var(--outline); color: var(--ink); }
+.btn.primary.sky, .btn.primary.mint, .btn.primary.mustard { border-color: var(--outline); color: var(--ink); }
+.btn.primary.sky { background: var(--sky); }
+.btn.primary.mint { background: var(--mint); }
+.btn.primary.mustard { background: var(--mustard); }
 .jog { font-size: 10px; background: transparent; border: 0; padding: 0; color: var(--muted); }
 .jog.on { opacity: .6; }
 .spec { border-top: 2px solid var(--outline); }
@@ -886,5 +889,29 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 /* phones: the email button is the longest label on the page; it scales with the screen and may wrap, so it never leaves its card */
 @media (max-width: 520px) {
   .contact-row .btn { white-space: normal; overflow-wrap: anywhere; min-width: 0; }
-  .contact-row .btn.primary:not(.sky) { font-size: clamp(13px, 3.9vw, 18px); }
+  .contact-row > .btn.primary:first-child { font-size: clamp(13px, 3.9vw, 18px); }
+  .contact-row > :last-child { grid-column: 1 / -1; }
 }
+
+/* the long background (Scenery.tsx): fixed behind everything, a tall picture that travels with the page as it scrolls */
+.scenery { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; contain: layout paint style; }
+.scenery-sheet { position: absolute; left: 0; top: 0; width: 100%; height: max(400vw, 260vh); will-change: transform; }
+/* an empty last panel after the footer, so the meadow and the robot at the end of the picture are not hidden behind a card */
+.scenery-end { height: clamp(200px, 36vh, 340px); }
+.asof { white-space: nowrap; }
+.scenery-sheet img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 900ms var(--ease-out); }
+.scenery-sheet img.on { opacity: 1; }
+@media print { .scenery { display: none; } }
+/* text that sits straight on the picture uses full ink, not the muted grey, so it stays readable over sky, lake and meadow */
+.more-h, .site-footer { color: var(--ink); }
+/* Where the browser supports scroll-driven animations the picture travels on the compositor, with no script running while scrolling;
+   other browsers use the small fallback in Scenery.tsx. Reduced motion: the picture stays still (travelling backdrops are parallax). */
+@keyframes scenery-travel { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100vh - max(400vw, 260vh)), 0); } }
+@supports (animation-timeline: scroll()) {
+  .scenery-sheet { animation: scenery-travel linear both; animation-timeline: scroll(root block); }
+}
+@media (prefers-reduced-motion: reduce) { .scenery-sheet { animation: none; transform: none !important; } }
+
+/* the credit line sits on a cream pill so it reads the same over lake, shore or meadow; the hairline above it would only add a stray line */
+:root[data-mode='calm'] .site-footer { border-top: 0; }
+:root[data-mode='calm'] .site-footer .wrap > span:first-child { display: inline-block; padding: 6px 14px; background: rgba(255, 248, 234, .88); border-radius: 999px; }
