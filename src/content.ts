@@ -387,20 +387,6 @@ export const projects: Project[] = [
     tags: ['CAD', 'MCP', 'Python'],
   },
   {
-    slug: 'stocksite',
-    tier: 'foundation',
-    eyebrow: { en: 'Outside robotics', ja: 'ロボット以外' },
-    title: { en: 'Stock and catalogue website', ja: '在庫・カタログのウェブサイト' },
-    status: 'BUILT',
-    loops: ['decide'],
-    blurb: {
-      en: 'Outside robotics, I built a stock and catalogue website for my father\u2019s business. The hard part was not the code. It was understanding how a real shop tracks its products, and designing something that people with no technical background could use every day.',
-      ja: 'ロボット以外にも、父の事業のための在庫・カタログのウェブサイトを作りました。難しかったのはコードではなく、実際のお店が商品をどう管理しているかを理解し、技術の知識がない人が毎日使えるものを設計することでした。',
-    },
-    summary: {},
-    tags: ['web', 'catalogue'],
-  },
-  {
     slug: 'subtlebotic',
     tier: 'foundation',
     eyebrow: { en: 'Internship', ja: 'インターン' },
@@ -425,6 +411,34 @@ export const projects: Project[] = [
       IMG('sub-pcb-longpress', 1337, 960, { en: 'PCB layout of the 555-based long-press switch with the tactile switch, timer IC, LED and timing components.', ja: 'タクタイルスイッチ、タイマーIC、LED、タイミング部品を配置した555ロングプレススイッチのPCBレイアウト。' }, { caption: { en: 'Long-press switch PCB layout', ja: 'ロングプレススイッチのPCBレイアウト' } }),
     ],
     tags: ['schematic', 'PCB', 'EasyEDA'],
+  },
+  {
+    slug: 'stocksite',
+    tier: 'foundation',
+    eyebrow: { en: 'Outside robotics', ja: 'ロボット以外' },
+    title: { en: 'Live Stock Viewer', ja: 'ライブ在庫ビューア' },
+    status: 'BUILT',
+    loops: ['decide'],
+    blurb: {
+      en: 'A web app that gives the wholesale customers of my family\u2019s trading business an always-current view of its stock. It replaces manual stock lists with an automatic feed from the accounting software (Tally), so new items appear without anyone re-uploading anything. The hard part was not the code: it was keeping a real shop\u2019s data correct, backed up and online every day.',
+      ja: '家族の貿易・卸売の事業で、卸先のお客様が常に最新の在庫を見られるWebアプリです。手作業の在庫リストをやめ、会計ソフト（Tally）から自動で取り込むので、誰も再アップロードしなくても新しい商品が表示されます。難しかったのはコードそのものではなく、実際のお店のデータを毎日、正確に、バックアップ付きで、止めずに動かし続けることでした。',
+    },
+    summary: {
+      objective: { en: 'Replace manual stock lists with a view that is always current.', ja: '手作業の在庫リストをやめ、常に最新の在庫を見られるようにする。' },
+      method: { en: 'A small Python agent on the shop PC reads Tally and pushes changes every 3 minutes to a Flask and SQLite app on Render, behind Cloudflare. Dealers browse by category and search, and the page refreshes on its own. Customers can share product pictures in the right order, even for cars with dozens of photos.', ja: '店のPCで動く小さなPythonエージェントがTallyを読み取り、3分ごとに変更をCloudflare経由のRender上のFlask＋SQLiteアプリへ送ります。卸先はカテゴリや検索で探せ、画面は自動で更新されます。何十枚も写真がある車でも、商品画像を正しい順番で共有できます。' },
+      status: { en: 'In daily use. Admins get usage charts (which customers use the app, and when), and all data and images are backed up to Google Drive every night.', ja: '日々使われています。管理者は利用状況のグラフ（どのお客様がいつ使っているか）を見られ、データと画像は毎晩Google Driveにバックアップされます。' },
+    },
+    media: [
+      IMG('stocksite-flow', 1280, 800, { en: 'Diagram: the Tally accounting software on the shop PC feeds a Flask and SQLite app every 3 minutes; dealers see live stock; the app is backed up to Google Drive every night and gives admins usage charts.', ja: '図：店のPCのTally（会計ソフト）から3分ごとにFlask＋SQLiteアプリへ送られ、卸先はリアルタイムの在庫を見られる。アプリは毎晩Google Driveにバックアップされ、管理者は利用状況のグラフを見られる。' }, { label: { en: 'Diagram', ja: '図' } }),
+    ],
+    more: [
+      { title: { en: 'A slow resource leak', ja: '見つけにくいリソースリーク' }, body: { en: 'A slow leak of network sockets traced back to API clients that were never closed. Fixed, then checked over several nights.', ja: 'ネットワークソケットがゆっくり増え続ける原因を、閉じられていないAPIクライアントまで追跡して修正し、数晩かけて確認しました。' } },
+      { title: { en: 'Safe deployments', ja: '安全なデプロイ' }, body: { en: 'Deploy rules (quiet hours, health checks, rollback triggers) so an update does not disrupt customers.', ja: 'デプロイのルール（静かな時間帯、ヘルスチェック、ロールバックの条件）を決め、更新がお客様の邪魔にならないようにしました。' } },
+      { title: { en: 'Data integrity', ja: 'データの整合性' }, body: { en: 'Concurrent pushes from the shop are safe with locking, and change detection uses content hashes.', ja: '店からの同時送信をロックで安全にし、変更の検出には内容のハッシュを使います。' } },
+      { title: { en: 'Reliable backups', ja: '確実なバックアップ' }, body: { en: 'Retries for transient API failures, trash instead of delete, and reconciliation of local files against Google Drive, so an accidental mass deletion cannot wipe the backup.', ja: '一時的なAPI失敗の再試行、削除ではなくゴミ箱へ移す方針、ローカルファイルとGoogle Driveの照合により、誤った一括削除でバックアップが消えないようにしました。' } },
+      { title: { en: 'Fast updates', ja: '更新の速さ' }, body: { en: 'New items used to take up to 6 hours to appear. Now the app refreshes as soon as an unknown item shows up.', ja: '新しい商品が表示されるまで最大6時間かかっていたのを、未知の商品が現れたらすぐ更新するようにして解消しました。' } },
+    ],
+    tags: ['Python', 'Flask', 'SQLite'],
   },
 ]
 
@@ -537,7 +551,7 @@ export const tiles: Record<string, { short: L; line?: L; did?: L; strip: L; tag?
     did: { en: 'I built its electronics, code and calibration tool.', ja: '電子回路、コード、校正ツールを自作しました。' },
     strip: { en: 'Printed quadruped', ja: '3Dプリント四足' } },
   spider: { short: { en: 'Spider quadruped', ja: 'クモ型四足ロボット' }, strip: { en: 'Eight servos', ja: 'サーボ8個' } },
-  stocksite: { short: { en: 'Stock website', ja: '在庫サイト' }, strip: { en: 'Family shop catalogue', ja: '家族の店のカタログ' } },
+  stocksite: { short: { en: 'Live Stock Viewer', ja: 'ライブ在庫ビューア' }, strip: { en: 'Live stock from Tally', ja: 'Tallyから在庫を自動反映' } },
   vehicles: { short: { en: 'Bluetooth vehicles', ja: 'Bluetooth車両' }, strip: { en: 'Cars and a rover', ja: '車とローバー' } },
   pipe: { short: { en: 'Pipe robot', ja: '管内検査ロボット' }, strip: { en: 'Pipe robot, simulated', ja: '管内ロボット（模擬）' } },
   stepscribe: {
