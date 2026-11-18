@@ -181,11 +181,11 @@ export const SECRETS: SecretEntry[] = [
   {
     id: 'featured', ach: 'featured',
     name: { en: 'Opened every featured project', ja: '主な3件をすべて開いた' },
-    trigger: { kind: 'open', text: 'Open all three featured projects: 8-bit computer, RoboDog, self-balancing swarm.' },
+    trigger: { kind: 'open', text: 'Open all three featured projects: 8-bit computer, RoboDog, stepscribe-cad.' },
     hints: [
       { en: 'The big cards at the top of Work are the stars.', ja: 'Workの一番上の大きなカードが主役です。' },
       { en: 'There are three big featured cards. Open each one.', ja: '大きな注目カードが3枚あります。それぞれ開いてください。' },
-      { en: 'Open the 8-bit computer, RoboDog and the self-balancing swarm.', ja: '8ビットコンピュータ、RoboDog、自己バランスのスウォームを開いてください。' },
+      { en: 'Open the 8-bit computer, RoboDog and stepscribe-cad.', ja: '8ビットコンピュータ、RoboDog、stepscribe-cadを開いてください。' },
     ],
     solved: { en: 'All three stars seen. They enjoyed the attention.', ja: '主役の3つを全部見ました。注目されて満足そうです。' },
   },

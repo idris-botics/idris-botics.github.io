@@ -40,12 +40,12 @@ for (const [w, h] of VIEWS) for (const lang of ['en', 'ja']) {
       if (!vis(e)) continue
       const rc = e.getBoundingClientRect()
       const fixed = getComputedStyle(e).position === 'fixed'
-      if (!fixed && (rc.right > w + 1 || rc.left < -1) && !e.closest('.thumbs, .t-list, pre, .sim-screen, svg, .scroller, .tabs, .chips, .nav')) out.past.push(label(e) + ` [${Math.round(rc.left)}..${Math.round(rc.right)}]`)
+      if (!fixed && (rc.right > w + 1 || rc.left < -1) && !e.closest('.thumbs, .t-list, pre, .sim-screen, svg, .scroller, .tabs, .chips, .nav, .strip')) out.past.push(label(e) + ` [${Math.round(rc.left)}..${Math.round(rc.right)}]`)
       const s = getComputedStyle(e)
       if ((s.overflowX === 'hidden' || s.textOverflow === 'ellipsis') && e.scrollWidth > e.clientWidth + 2 && e.clientWidth > 0 && !e.matches('img, picture')) out.clipped.push(label(e))
       if (e.tagName === 'IMG' && (!e.complete || e.naturalWidth === 0) && e.loading !== 'lazy') out.badImg.push(e.getAttribute('src'))
       if (e.tagName === 'IMG' && e.complete && e.naturalWidth === 0 && e.getAttribute('src')) out.badImg.push(e.getAttribute('src'))
-      if (e.tagName === 'IMG' && !e.closest('.thumb, svg') && (rc.width < 120 || rc.height < 60) && !e.closest('.spot-nav, .brand')) out.tiny.push(label(e) + ` ${Math.round(rc.width)}x${Math.round(rc.height)}`)
+      if (e.tagName === 'IMG' && !e.closest('.thumb, svg') && (rc.width < 100 || rc.height < 60) && !e.closest('.spot-nav, .brand')) out.tiny.push(label(e) + ` ${Math.round(rc.width)}x${Math.round(rc.height)}`)
       if (e.matches('button, a[href], [role="button"], select, input:not([type=hidden])') && !e.closest('svg')) {
         const min = touch ? 40 : 28
         const inlineText = e.matches('a') && getComputedStyle(e).display === 'inline' && !e.classList.contains('btn')

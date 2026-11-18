@@ -17,18 +17,25 @@ const open = async (opts, init) => {
 }
 const paused = (p, sel) => p.locator(sel).first().evaluate((v) => v.paused)
 
+// Which featured tile (if any) carries a hover clip is content, not behaviour: find it instead of assuming one (the swarm used to be featured).
+const clipTile = async (p) => p.evaluate(() => document.querySelector('.tile .tile-clip')?.closest('.tile')?.id ?? null)
+
 { // desktop, normal
   const { ctx, p, errs } = await open({ viewport: { width: 1440, height: 900 } })
   await p.waitForTimeout(1200)
   check(!(await paused(p, '.hero-photo video')), 'desktop: the hero reel plays by itself')
   check((await p.locator('.hero-photo .reel-btn').count()) === 0, 'desktop: no pause button on the playing hero video')
-  await p.locator('#swarm').scrollIntoViewIfNeeded(); await p.mouse.move(5, 5); await p.waitForTimeout(400)
-  check(await paused(p, '#swarm .tile-clip'), 'desktop: the swarm tile clip is paused until hovered')
-  await p.locator('#swarm').hover({ position: { x: 24, y: 24 } })
-  await p.waitForTimeout(900)
-  check(!(await paused(p, '#swarm .tile-clip')) && (await p.locator('#swarm .tile-clip').evaluate((v) => getComputedStyle(v).opacity)) === '1', 'desktop: hovering the swarm tile plays its clip')
-  await p.mouse.move(5, 5); await p.waitForTimeout(300)
-  check(await paused(p, '#swarm .tile-clip'), 'desktop: leaving it pauses the clip')
+  const slug = await clipTile(p)
+  if (slug) {
+    const sel = '#' + slug
+    await p.locator(sel).scrollIntoViewIfNeeded(); await p.mouse.move(5, 5); await p.waitForTimeout(400)
+    check(await paused(p, sel + ' .tile-clip'), `desktop: the ${slug} tile clip is paused until hovered`)
+    await p.locator(sel).hover({ position: { x: 24, y: 24 } })
+    await p.waitForTimeout(900)
+    check(!(await paused(p, sel + ' .tile-clip')) && (await p.locator(sel + ' .tile-clip').evaluate((v) => getComputedStyle(v).opacity)) === '1', `desktop: hovering the ${slug} tile plays its clip`)
+    await p.mouse.move(5, 5); await p.waitForTimeout(300)
+    check(await paused(p, sel + ' .tile-clip'), 'desktop: leaving it pauses the clip')
+  } else check(true, 'desktop: no featured tile carries a hover clip today (the clip-capable tiles are in the More builds strip, which shows stills)')
   check((await p.locator('#gait .tile-clip').count()) === 0, 'desktop: G.A.I.T. stays a still')
   await p.locator('.peek-fig').scrollIntoViewIfNeeded()
   await p.locator('.peek-fig').hover(); await p.waitForTimeout(900)
@@ -60,11 +67,12 @@ const paused = (p, sel) => p.locator(sel).first().evaluate((v) => v.paused)
 }
 { // phone: the tile in the middle of the screen plays
   const { ctx, p } = await open({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
-  await p.locator('#swarm').evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }))
-  await p.waitForTimeout(1200)
-  check(!(await paused(p, '#swarm .tile-clip')), 'phone: the swarm tile clip plays when the tile is mid-screen')
-  await p.locator('#swarm').evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }))
-  await p.waitForTimeout(1200)
+  const slug = await clipTile(p)
+  if (slug) {
+    await p.locator('#' + slug).evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }))
+    await p.waitForTimeout(1200)
+    check(!(await paused(p, '#' + slug + ' .tile-clip')), `phone: the ${slug} tile clip plays when the tile is mid-screen`)
+  } else check(true, 'phone: no featured tile carries a hover clip today')
   await p.locator('.peek-fig .reel-btn').evaluate((e) => e.scrollIntoView({ block: 'center', behavior: 'instant' }))
   await p.locator('.peek-fig .reel-btn').click(); await p.waitForTimeout(900)
   check(!(await paused(p, '.peek-fig video')), 'phone: tapping the teaser button plays the peek')

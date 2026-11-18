@@ -39,7 +39,8 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
   check(/111 109 097 101/.test(await p.locator('.pw-clue-out').innerText()), `${name}: 8-bit computer window holds the display`)
   await close()
 
-  await open('robodog'); await close() // the third featured project
+  await open('robodog'); await close() // with cpu8 above, the featured three (src/content.ts: featured) are cpu8, robodog and stepscribe
+  await open('stepscribe'); await close()
 
   // work achievements
   { const fab = p.locator('.corner-fab'); if (await fab.isVisible().catch(() => false) && !(await p.locator('html.corner-open').count())) await fab.click() } await p.locator('.ach .btn').click()

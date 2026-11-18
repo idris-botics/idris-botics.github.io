@@ -767,7 +767,7 @@ canvas.scene-chaos { position: absolute; inset: 0; width: 100%; height: 100%; po
 .tile-text { color: var(--ink); }
 .tile-text strong { color: var(--ink); font-weight: 700; }
 .tile-text span, .tile-text .tile-did { color: var(--ink); }
-.tile-text .tile-spec { font-family: var(--font-mono); font-size: 12px; color: var(--ink); opacity: .85; }
+.tile-text .tile-spec { font-family: var(--font-mono); font-size: 12px; color: var(--ink); }
 .mini { padding: 8px 8px 10px; box-shadow: 3px 3px 0 var(--outline); }
 .mini img { border: 2px solid var(--outline); border-radius: 8px; background: var(--panel); }
 .mini strong, .mini span { color: var(--ink); padding-left: 2px; padding-right: 2px; }
@@ -895,9 +895,9 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 
 /* the long background (Scenery.tsx): fixed behind everything, a tall picture that travels with the page as it scrolls */
 .scenery { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; contain: layout paint style; }
-.scenery-sheet { position: absolute; left: 0; top: 0; width: 100%; height: max(400vw, 260vh); will-change: transform; }
+.scenery-sheet { position: absolute; left: 0; top: 0; width: 100%; height: max(200vw, 260vh); will-change: transform; }
 /* an empty last panel after the footer, so the meadow and the robot at the end of the picture are not hidden behind a card */
-.scenery-end { height: clamp(200px, 36vh, 340px); }
+.scenery-end { height: clamp(240px, 26vw, 460px); }
 .asof { white-space: nowrap; }
 .scenery-sheet img { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 900ms var(--ease-out); }
 .scenery-sheet img.on { opacity: 1; }
@@ -906,12 +906,18 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
 .more-h, .site-footer { color: var(--ink); }
 /* Where the browser supports scroll-driven animations the picture travels on the compositor, with no script running while scrolling;
    other browsers use the small fallback in Scenery.tsx. Reduced motion: the picture stays still (travelling backdrops are parallax). */
-@keyframes scenery-travel { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100vh - max(400vw, 260vh)), 0); } }
+@keyframes scenery-travel { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100vh - max(200vw, 260vh)), 0); } }
 @supports (animation-timeline: scroll()) {
   .scenery-sheet { animation: scenery-travel linear both; animation-timeline: scroll(root block); }
 }
+/* a project page is short, so the picture would race past: there it stays still, showing the calm band of clouds, and the project is the only thing that moves */
+.scenery-sheet.still { animation: none; transform: translate3d(0, calc((100vh - max(200vw, 260vh)) * 0.55), 0); }
 @media (prefers-reduced-motion: reduce) { .scenery-sheet { animation: none; transform: none !important; } }
 
 /* the credit line sits on a cream pill so it reads the same over lake, shore or meadow; the hairline above it would only add a stray line */
 :root[data-mode='calm'] .site-footer { border-top: 0; }
 :root[data-mode='calm'] .site-footer .wrap > span:first-child { display: inline-block; padding: 6px 14px; background: rgba(255, 248, 234, .88); border-radius: 999px; }
+
+/* the note after pressing an email button; empty (and so invisible) the rest of the time */
+.copied-note { margin: 10px 0 0; font-family: var(--font-mono); font-size: 14px; color: var(--ink); }
+.copied-note:empty { margin: 0; }

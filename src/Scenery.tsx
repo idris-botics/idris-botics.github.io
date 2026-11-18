@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react'
  * paint, and faded in. Browsers with scroll-driven animations move it from CSS alone (index.css); this file is the fallback for the
  * rest. With reduced motion the picture stays still.
  */
-export default function Scenery() {
+export default function Scenery({ still = false }: { still?: boolean }) {
   const sheet = useRef<HTMLDivElement>(null)
   const [ready, setReady] = useState(false)
   const [shown, setShown] = useState(false)
@@ -31,6 +31,7 @@ export default function Scenery() {
     const el = sheet.current
     if (!el) return
     // Browsers with scroll-driven animations move the picture from CSS alone (see index.css); this is the fallback for the rest.
+    if (still) return // a project page: CSS holds the picture still (index.css)
     if (CSS.supports('animation-timeline: scroll()')) return
     const reduced = matchMedia('(prefers-reduced-motion: reduce)')
     let raf = 0, room = 0, travel = 0
@@ -50,12 +51,12 @@ export default function Scenery() {
     ro.observe(document.documentElement)
     reduced.addEventListener('change', measure)
     return () => { cancelAnimationFrame(raf); removeEventListener('scroll', queue); removeEventListener('resize', measure); ro.disconnect(); reduced.removeEventListener('change', measure) }
-  }, [])
+  }, [still])
 
   return (
     <div className="scenery" aria-hidden="true">
-      <div className="scenery-sheet" ref={sheet}>
-        {ready && <img className={shown ? 'on' : undefined} src={`${import.meta.env.BASE_URL}scenery.svg`} alt="" width={1000} height={4000} decoding="async" fetchPriority="low" draggable={false} onLoad={() => setShown(true)} />}
+      <div className={still ? 'scenery-sheet still' : 'scenery-sheet'} ref={sheet}>
+        {ready && <img className={shown ? 'on' : undefined} src={`${import.meta.env.BASE_URL}scenery.svg`} alt="" width={2000} height={4000} decoding="async" fetchPriority="low" draggable={false} onLoad={() => setShown(true)} />}
       </div>
     </div>
   )

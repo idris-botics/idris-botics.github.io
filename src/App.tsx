@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
-import { ExternalLink, Mail, Pause, Play, X } from 'lucide-react'
+import { ExternalLink, FileText, Mail, Pause, Play, X } from 'lucide-react'
 import { useStore } from './store'
 import { useReducedMotion } from './lib/hooks'
 import PointField from './PointField'
@@ -107,6 +107,8 @@ const ui = {
   streak: { en: 'day Duolingo streak', ja: '日連続のDuolingo' },
   // NEEDS-NATIVE-REVIEW (ja). The streak is a fixed number, so it is shown with the day it was checked.
   asOf: { en: (d: string) => `(as of ${d})`, ja: (d: string) => `（${d}時点）` },
+  // NEEDS-NATIVE-REVIEW (ja). Shown after an email button is pressed: the mail link needs a mail app, so the address is also copied.
+  copied: { en: (e: string) => `Address copied: ${e}`, ja: (e: string) => `アドレスをコピーしました：${e}` },
   facts: {
     study: { en: 'Final-year B.E. EEE, SRM Easwari', ja: '電気電子工学科 学部4年（SRM Easwari）' },
     abb: { en: 'Research intern, ABB Global CoE', ja: '研究インターン（ABB Global CoE）' },
@@ -153,6 +155,12 @@ export default function App() {
   const { lang, setLang, mode, toggleMode, evicted, setEvicted } = useStore()
   const t = (l: L) => l[lang]
   const [gate, setGate] = useState(false)
+  // The email buttons are mailto: links. They still try to open the reader's mail app, but many computers have none set up and then
+  // nothing visibly happens, so the address is also copied and a short note says so.
+  const [copied, setCopied] = useState(false)
+  const copyEmail = () => {
+    void navigator.clipboard?.writeText(links.email).then(() => { setCopied(true); setTimeout(() => setCopied(false), 6000) }, () => {})
+  }
   const [lite] = useState(() => {
     const c = (navigator as unknown as { connection?: { saveData?: boolean; effectiveType?: string } }).connection
     return !!c && (c.saveData === true || /(^|-)2g$/.test(c.effectiveType ?? ''))
@@ -176,7 +184,7 @@ export default function App() {
   return (
     <>
       <a className="skip" href="#main">{t(ui.skip)}</a>
-      {mode === 'calm' && <Suspense fallback={null}><Scenery /></Suspense>}
+      {mode === 'calm' && <Suspense fallback={null}><Scenery still={!!project} /></Suspense>}
       <PaperGrid wobble={mode === 'chaos'} />
       {!project && mode === 'calm' && <Toolpath key={lang} points={tpPoints} label={lang === 'en' ? 'Page sections' : 'ページの区切り'} />}
       {mode === 'chaos' && <PointField variant="chaos" />}
@@ -213,9 +221,10 @@ export default function App() {
               <p className="hero-sub">{t(hero.sub)}</p>
               <div className="hero-actions">
                 <a className="btn primary" href="#work">{t(ui.seeWork)}</a>
-                <a className="btn primary mustard" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
-                {personal.cv.en && <a className="quiet" href={base + personal.cv.en} download>{t(ui.cv)}</a>}
+                <a className="btn primary mustard" onClick={copyEmail} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {t(ui.email)}</a>
+                {personal.cv.en && <a className="btn primary sky" href={base + personal.cv.en} download><FileText size={14} aria-hidden="true" /> {t(ui.cv)}</a>}
               </div>
+              <p className="copied-note" role="status">{copied ? ui.copied[lang](links.email) : ''}</p>
             </div>
             <HeroReel lang={lang} />
           </div>
@@ -292,11 +301,12 @@ export default function App() {
             <div className="surface">
             <p className="contact-body">{t(ui.contactBody)}</p>
             <div className="contact-row">
-              <a className="btn primary" href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
+              <a className="btn primary" onClick={copyEmail} href={`mailto:${links.email}?subject=${encodeURIComponent(lang === 'ja' ? subjectJa : subjectEn)}`}><Mail size={14} aria-hidden="true" /> {links.email}</a>
               <a className="btn primary sky" href={links.linkedin} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> LinkedIn</a>
               <a className="btn primary mint" href={links.github} rel="noopener noreferrer" target="_blank"><ExternalLink size={14} aria-hidden="true" /> GitHub</a>
               <Documents />
             </div>
+            <p className="copied-note" role="status">{copied ? ui.copied[lang](links.email) : ''}</p>
             </div>
           </div>
         </section>

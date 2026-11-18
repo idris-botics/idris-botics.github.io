@@ -25,7 +25,7 @@ const r1 = (n: number) => Math.round(n * 10) / 10
 const rng = (seed: number) => () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296 }
 
 type Tone = { shade: string; mid: string; light: string }
-const DAY: Tone = { shade: '#d4dfe9', mid: '#f4f2ed', light: '#fffdf8' }
+const DAY: Tone = { shade: '#d0dce8', mid: '#edf1f3', light: '#fafcfc' }
 const DUSK: Tone = { shade: '#e6c0c4', mid: '#fbe6dd', light: '#fff7ef' }
 const PUFFS: [number, number, number][] = [[0, 0, 62], [78, -40, 84], [160, -18, 70], [228, 8, 54], [-62, 18, 46], [110, 30, 74], [30, 30, 60], [190, 34, 50]]
 
@@ -73,8 +73,8 @@ const MOUNTAIN = g({ id: 'sc-mountain' },
   path('M100 3170 C 200 3050, 300 3080, 380 3040 S 560 3060, 640 3030 S 860 3050, 1000 3000 V3170 Z', 'url(#sc-forest)'))
 
 const DEFS = el('defs', {},
-  // one sky from the top (apricot dusk) down to the horizon (sand)
-  vgrad('sc-sky', stop(0, '#dbbccb'), stop(0.1, '#efcdc3'), stop(0.2, '#f3d7c4'), stop(0.3, '#d6d7e6'), stop(0.42, '#cadbeb'), stop(0.58, '#bcd5ea'), stop(0.72, '#d6e7ee'), stop(0.82, '#f1e6cc')),
+  // one sky from the top (apricot dusk) down to the horizon (sand); the blue in the middle is the Chaos side's blue (#7cc8ff), a touch deeper here because the veil lightens it
+  vgrad('sc-sky', stop(0, '#dbbccb'), stop(0.1, '#efcdc3'), stop(0.2, '#f3d7c4'), stop(0.3, '#cdd9f0'), stop(0.42, '#94d0ff'), stop(0.58, '#6ab9fb'), stop(0.72, '#9bd5fc'), stop(0.82, '#f1e6cc')),
   el('radialGradient', { id: 'sc-sun' }, stop(0, '#fff3cf', 0.95), stop(0.35, '#fbd9b0', 0.5), stop(1, '#f6c4b4', 0)),
   vgrad('sc-ray', stop(0, '#fff', 0.32), stop(1, '#fff', 0)),
   vgrad('sc-rock', stop(0, '#cdcbdc'), stop(1, '#a4abc6')),
@@ -86,6 +86,7 @@ const DEFS = el('defs', {},
   vgrad('sc-lake', stop(0, '#d6edee'), stop(0.5, '#a9d8de'), stop(1, '#8cc7d4')),
   vgrad('sc-hill1', stop(0, '#dfe8ae'), stop(1, '#c3d795')),
   vgrad('sc-hill2', stop(0, '#cbdf9f'), stop(1, '#a9c985')),
+  vgrad('sc-hill3', stop(0, '#bfd899'), stop(1, '#a6c783')),
   el('clipPath', { id: 'sc-lakeclip' }, el('rect', { x: 0, y: 3170, width: 1000, height: 260 })),
   MOUNTAIN)
 
@@ -94,39 +95,63 @@ const workshop = g({},
   rect(40, -44, 9, 26, '#c9a068'), circle(44, -62, 26, '#9ccaa0'), circle(30, -50, 18, '#b0d8ae'), circle(60, -52, 17, '#b0d8ae'))
 const tree = g({}, rect(-14, -42, 9, 24, '#c9a068'), circle(-9, -58, 26, '#9ccaa0'), circle(-26, -46, 17, '#b0d8ae'), circle(8, -46, 17, '#b0d8ae'))
 
-const robot = g(at(540, 3892, 1),
-  el('ellipse', { cx: 2, cy: 4, rx: 34, ry: 7, fill: '#5f8a47', opacity: 0.35 }),
-  rect(-26, -44, 54, 44, '#e9b34e', 10),
-  rect(-22, -86, 46, 40, '#fff8ea', 12), rect(-17, -80, 36, 22, '#5f8fc9', 7), circle(-6, -69, 4.2, '#fff8ea'), circle(8, -69, 4.2, '#fff8ea'),
-  el('path', { d: 'M0 -86 V-102', stroke: '#7a6a56', 'stroke-width': 3, 'stroke-linecap': 'round' }), circle(0, -106, 6, '#e8704f'),
-  rect(-36, -38, 12, 30, '#e9b34e', 6), rect(26, -38, 12, 30, '#e9b34e', 6))
+const shadow = (cx: number, cy: number, rx: number) => el('ellipse', { cx, cy, rx, ry: rx * 0.2, fill: '#5f8a47', opacity: 0.3 })
 
-const rocket = g(at(880, 220, 0.5, 14),
-  path('M-12 22 Q0 76 12 22 Z', '#f4b073'), path('M-6 22 Q0 52 6 22 Z', '#fff0b8'),
+const inked = (x: number, y: number, width: number, height: number, fill: string, rx: number) => el('rect', { x, y, width, height, rx, fill, stroke: '#26221f', 'stroke-width': 3.5 })
+const robotAt = (x: number, y: number, s: number) => g(at(x, y, s),
+  shadow(2, 3, 38),
+  inked(-36, -38, 12, 30, '#e9b34e', 6), inked(26, -38, 12, 30, '#e9b34e', 6),
+  inked(-26, -44, 54, 44, '#e9b34e', 10),
+  el('path', { d: 'M0 -86 V-104', stroke: '#26221f', 'stroke-width': 3.5, 'stroke-linecap': 'round' }), el('circle', { cx: 0, cy: -108, r: 6, fill: '#e8704f', stroke: '#26221f', 'stroke-width': 3 }),
+  inked(-22, -86, 46, 40, '#fff8ea', 12), inked(-17, -80, 36, 22, '#5f8fc9', 7), circle(-6, -69, 4.2, '#fff8ea'), circle(8, -69, 4.2, '#fff8ea'))
+
+/** A rocket. The tiny one at the top is in flight (with a flame); the one at the end stands on its pad. */
+const rocketAt = (x: number, y: number, s: number, r = 0, flame = false) => g(at(x, y, s, r),
+  flame ? path('M-12 22 Q0 76 12 22 Z', '#f4b073') + path('M-6 22 Q0 52 6 22 Z', '#fff0b8') : '',
   path('M-26 8 L-46 40 L-26 34 Z', '#efc16a'), path('M26 8 L46 40 L26 34 Z', '#efc16a'),
   path('M0 -92 C 26 -62 30 -24 28 24 L-28 24 C -30 -24 -26 -62 0 -92 Z', '#fff8ea'),
   path('M0 -92 C 13 -77 21 -62 25 -48 L-25 -48 C -21 -62 -13 -77 0 -92 Z', '#e98a72'),
   circle(0, -18, 12, '#7ea3cf'), circle(-4, -22, 3.5, '#fff8ea'))
 
-const TRAIL_PATH = 'M500 4000 C 430 3910, 650 3860, 570 3790 S 610 3700, 580 3650'
+/** The end of the journey: a small workshop with an antenna, the robot, and a rocket on its pad, all on one closed hill. */
+const shed = (x: number, y: number, s: number) => g(at(x, y, s),
+  shadow(-8, 3, 76),
+  rect(-60, -52, 100, 52, '#fff8ea', 4), path('M-72 -52 L-10 -94 L52 -52 Z', '#e98a72'),
+  rect(18, -84, 10, 28, '#d8765d'), rect(-10, -34, 22, 34, '#7ea3cf', 3), rect(-48, -40, 24, 20, '#f6d98c', 3),
+  el('path', { d: 'M-10 -94 V-112', stroke: '#8a7a66', 'stroke-width': 2.5, 'stroke-linecap': 'round' }),
+  el('path', { d: 'M-22 -116 Q-10 -128 2 -116', fill: 'none', stroke: '#8a7a66', 'stroke-width': 2.5, 'stroke-linecap': 'round' }),
+  circle(-10, -108, 3.5, '#e8704f'))
+
+const pad = (x: number, y: number) => g(at(x, y),
+  shadow(0, 3, 74),
+  rect(-62, -10, 124, 12, '#d8c8a2', 4), rect(-62, -10, 124, 4, '#e8dcbc', 2),
+  el('path', { d: 'M-54 -10 V-92 H-34 M-54 -52 H-38', fill: 'none', stroke: '#b7a47c', 'stroke-width': 4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }))
+
+/** A small ringed planet in the dusk, up in the left margin. */
+const planet = (x: number, y: number) => g(at(x, y, 1, -16),
+  circle(0, 0, 34, '#f1c7a6'),
+  el('path', { d: 'M-28 -10 Q0 -20 28 -10 M-33 6 Q0 -8 33 6', fill: 'none', stroke: '#e8b08e', 'stroke-width': 5, 'stroke-linecap': 'round' }),
+  el('ellipse', { rx: 62, ry: 14, fill: 'none', stroke: '#efc16a', 'stroke-width': 6, opacity: 0.95 }))
+
+const OX = 500 // the drawing is 1000 wide; it sits in the middle of a canvas twice as wide, so everything is drawn at half the size
+const ROBOT_X = 548 + OX
+const GROUND_Y = 3962 // where everything at the end of the picture stands
+const TRAIL_PATH = `M${578 + OX} 3646 C ${612 + OX} 3700, ${600 + OX} 3760, ${566 + OX} 3806 S ${524 + OX} 3920, ${ROBOT_X} ${GROUND_Y}`
 
 export function scenerySvg(): string {
-  const body = [
-    el('rect', { width: 1000, height: 4000, fill: 'url(#sc-sky)' }),
-
-    // top: dusk, a few stars, the sun
+  // the landscape itself, 1000 wide. It is drawn once in the middle and mirrored on both sides, so the sky, lake and hills carry on
+  // sideways without a seam. The one-off pieces (sun, planet, rockets, robot, the trail) are not in here, so they appear only once.
+  const core = g({ id: 'sc-core' },
+    // top: a few stars and dusk clouds
     ...stars.map((st) => (st.spark ? spark(r1(st.x), r1(st.y), r1(st.s)) : circle(r1(st.x), r1(st.y), r1(1.4 + st.s * 1.4), '#fffaf0', 0.8))),
-    circle(690, 640, 330, 'url(#sc-sun)'), circle(690, 640, 80, '#fff6d8'),
     cloud(560, 640, 1.5, DUSK), cloud(40, 420, 1.0, DUSK, 0.9), cloud(-80, 860, 1.6, DUSK),
 
     // high: a floating island with a little workshop
     cloud(20, 1180, 1.3, DUSK, 0.95), cloud(560, 1460, 1.5),
-    island(730, 1180, 1.05, 420, workshop),
     bird(420, 1290, 0.9), bird(470, 1322, 0.6),
 
     // middle: a sea of clouds with light and islands
     g({ fill: 'url(#sc-ray)' }, path('M120 1480 L400 1480 L900 2420 L560 2420 Z', 'url(#sc-ray)', 0.7), path('M-40 1480 L90 1480 L360 2420 L180 2420 Z', 'url(#sc-ray)', 0.55), path('M520 1480 L640 1480 L1060 2420 L860 2420 Z', 'url(#sc-ray)', 0.5)),
-    island(250, 1740, 1.15, 560, tree),
     cloud(420, 1940, 1.7), cloud(-60, 2080, 1.9), cloud(600, 2240, 1.8),
     bird(560, 1640, 1), bird(610, 1680, 0.65), bird(110, 2310, 0.8),
 
@@ -143,21 +168,37 @@ export function scenerySvg(): string {
     path('M0 3290 C 90 3250, 180 3270, 240 3330 S 330 3420, 300 3470 L0 3470 Z', 'url(#sc-hill2)'),
     path('M1000 3260 C 900 3230, 840 3260, 790 3320 S 720 3420, 760 3470 L1000 3470 Z', 'url(#sc-hill2)'),
 
-    // ground: the meadow
+    // ground: the meadow, and the last low hill that closes the picture
     path('M0 3440 C 200 3360, 420 3400, 540 3460 S 820 3420, 1000 3360 V4000 H0 Z', 'url(#sc-hill1)'),
     path('M0 3640 C 260 3560, 520 3600, 700 3680 S 920 3680, 1000 3640 V4000 H0 Z', 'url(#sc-hill2)'),
+    path('M0 3946 C 240 3922, 480 3944, 720 3930 S 940 3938, 1000 3922 V4000 H0 Z', 'url(#sc-hill3)'),
+    ...grass.map((q) => el('path', { d: `M${r1(q.x)} ${r1(q.y)} l-4 -${r1(q.h)} M${r1(q.x)} ${r1(q.y)} l1 -${r1(q.h + 4)} M${r1(q.x)} ${r1(q.y)} l6 -${r1(q.h - 2)}`, stroke: '#86ad68', 'stroke-width': 2.5, 'stroke-linecap': 'round', fill: 'none', opacity: 0.6 })),
+    ...flowers.map((f) => circle(r1(f.x), r1(f.y), r1(f.r), f.c, 0.9)))
+
+  const body = [
+    el('rect', { width: 2000, height: 4000, fill: 'url(#sc-sky)' }),
+    circle(690 + OX, 640, 330, 'url(#sc-sun)'), circle(690 + OX, 640, 80, '#fff6d8'),
+    el('use', { href: '#sc-core', transform: `translate(${OX} 0) scale(-1 1)` }),
+    el('use', { href: '#sc-core', transform: `translate(${OX} 0)` }),
+    // the two floating islands (with their waterfalls) stand in the side margins, where the cards on top do not cover them; they are
+    // not in the mirrored landscape, so each appears once
+    island(1845, 1180, 0.8, 420, workshop), island(150, 1740, 0.85, 560, tree),
+    el('use', { href: '#sc-core', transform: `translate(${OX * 5} 0) scale(-1 1)` }),
+
+    // the path through the meadow, down to the robot
     el('path', { d: TRAIL_PATH, fill: 'none', stroke: '#f9f2d8', 'stroke-width': 30, 'stroke-linecap': 'round', opacity: 0.95 }),
     el('path', { d: TRAIL_PATH, fill: 'none', stroke: '#fff', 'stroke-width': 8, 'stroke-linecap': 'round', opacity: 0.35 }),
-    ...grass.map((q) => el('path', { d: `M${r1(q.x)} ${r1(q.y)} l-4 -${r1(q.h)} M${r1(q.x)} ${r1(q.y)} l1 -${r1(q.h + 4)} M${r1(q.x)} ${r1(q.y)} l6 -${r1(q.h - 2)}`, stroke: '#86ad68', 'stroke-width': 2.5, 'stroke-linecap': 'round', fill: 'none', opacity: 0.6 })),
-    ...flowers.map((f) => circle(r1(f.x), r1(f.y), r1(f.r), f.c, 0.9)),
 
     // a cream veil keeps text on the open page easy to read (it is part of the picture, so it costs nothing while scrolling)
-    el('rect', { width: 1000, height: 4000, fill: '#fff8ea', opacity: 0.36 }),
-    robot,
+    el('rect', { width: 2000, height: 4000, fill: '#fff8ea', opacity: 0.30 }),
+    planet(150, 300),
 
-    // the dotted trail from the robot's path up to the tiny rocket
-    el('path', { d: 'M540 3840 C 520 3640, 640 3480, 560 3300 S 380 3020, 470 2800 S 640 2500, 520 2300 S 330 2000, 470 1820 S 640 1560, 560 1340 S 700 1000, 740 780 S 850 420, 880 250', fill: 'none', stroke: '#fff', 'stroke-opacity': 0.6, 'stroke-width': 4, 'stroke-dasharray': '1 15', 'stroke-linecap': 'round' }),
-    rocket,
+    // the end: the workshop, the robot at the end of the path, and a rocket on its pad (the one launched at the top)
+    shed(300 + OX, GROUND_Y, 0.9), robotAt(ROBOT_X, GROUND_Y, 0.85), pad(760 + OX, GROUND_Y), rocketAt(760 + OX, GROUND_Y - 10 - 24 * 0.9, 0.9),
+
+    // the dotted trail from the robot up to the tiny rocket in flight, in the right margin
+    el('path', { d: `M${ROBOT_X} ${GROUND_Y - 100} C ${520 + OX} 3640, ${640 + OX} 3480, ${560 + OX} 3300 S ${380 + OX} 3020, ${470 + OX} 2800 S ${640 + OX} 2500, ${520 + OX} 2300 S ${330 + OX} 2000, ${470 + OX} 1820 S ${640 + OX} 1560, ${560 + OX} 1340 S ${700 + OX} 1000, ${740 + OX} 780 S 1560 420, 1880 250`, fill: 'none', stroke: '#fff', 'stroke-opacity': 0.8, 'stroke-width': 6, 'stroke-dasharray': '0.1 17', 'stroke-linecap': 'round' }),
+    rocketAt(1880, 220, 0.5, 14, true),
   ].join('')
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 4000" width="1000" height="4000" preserveAspectRatio="xMidYMid slice">${DEFS}${body}</svg>\n`
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 4000" width="2000" height="4000" preserveAspectRatio="xMidYMid slice">${DEFS.replace('</defs>', `${core}</defs>`)}${body}</svg>\n`
 }
