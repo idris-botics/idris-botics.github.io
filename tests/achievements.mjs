@@ -1,4 +1,4 @@
-// Achievements start again on a refresh and after a normal exit; they are kept only when the robot evicts you.
+// Achievements last: they are kept after the robot evicts you, after a normal exit with Restore order, and after a refresh.
 import { chromium } from '@playwright/test'
 import { enterChaos } from './enter-chaos.mjs'
 const url = process.argv[2] ?? 'http://localhost:4173/'
@@ -20,14 +20,15 @@ await p.waitForSelector('.evicted', { timeout: 6000 })
 await enterChaos(p); await p.waitForTimeout(1200)
 const afterEvict = await count()
 check(afterEvict >= first, `kept after the eviction (${afterEvict}, was ${first})`)
-// 2. normal exit with Restore order: the count starts again
+// 2. normal exit with Restore order: the count is kept
 await p.getByRole('button', { name: /Restore order/ }).click(); await p.waitForTimeout(600)
 await enterChaos(p); await p.waitForTimeout(1200)
-check((await count()) === 0, `reset after a normal exit (${await count()})`)
-// 3. refresh: starts again
-await p.keyboard.type('roll'); await p.waitForTimeout(1200)
-check((await count()) >= 1, 'one unlocked again')
+check((await count()) === afterEvict, `kept after a normal exit (${await count()}, was ${afterEvict})`)
+// 3. refresh: kept, and a new one adds to it
+const before = await count()
+await p.keyboard.type('coffee'); await p.waitForTimeout(1500)
+check((await count()) === before + 1, 'one more unlocked')
 await p.reload({ waitUntil: 'networkidle' })
 await enterChaos(p); await p.waitForTimeout(1200)
-check((await count()) === 0, `reset after a refresh (${await count()})`)
+check((await count()) === before + 1, `kept after a refresh (${await count()})`)
 await b.close(); process.exit(fails ? 1 : 0)

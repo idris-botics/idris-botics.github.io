@@ -6,6 +6,8 @@ export type L = { en: string; ja: string }
 export type SecretEntry = {
   /** Short unique id (the registry key). */
   id: string
+  /** Stable index number, used by save codes (progressCode.ts). Never change it and never reuse a retired one: list it in RETIRED_IDX instead. New entries take the next free number. */
+  idx: number
   /** The achievement id given with award('...'). Usually the same as the id. */
   ach: string
   /** Name shown in the achievements list. */
@@ -30,7 +32,7 @@ export type SecretEntry = {
 
 export const SECRETS: SecretEntry[] = [
   {
-    id: 'moon', ach: 'moon', core: true,
+    id: 'moon', idx: 0, ach: 'moon', core: true,
     name: { en: 'Broke the Moon', ja: '月を壊した' },
     trigger: { kind: 'click', text: 'Press the Moon in the hero scene (it says do not press).' },
     hints: [
@@ -42,7 +44,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'moon',
   },
   {
-    id: 'roll', ach: 'roll', core: true,
+    id: 'roll', idx: 1, ach: 'roll', core: true,
     name: { en: 'Rolled the barrel', ja: 'バレルロールをした' },
     trigger: { kind: 'word', text: 'Type roll, or the Konami code.' },
     hints: [
@@ -54,7 +56,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'roll',
   },
   {
-    id: 'omae', ach: 'omae', core: true,
+    id: 'omae', idx: 2, ach: 'omae', core: true,
     name: { en: 'Heard the verdict', ja: '宣告を聞いた' },
     trigger: { kind: 'word', text: 'Type omae.' },
     hints: [
@@ -66,7 +68,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'omae',
   },
   {
-    id: 'coffee', ach: 'coffee', core: true,
+    id: 'coffee', idx: 3, ach: 'coffee', core: true,
     name: { en: 'Caffeinated', ja: 'カフェイン注入' },
     trigger: { kind: 'word', text: 'Type coffee.' },
     hints: [
@@ -78,7 +80,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'coffee',
   },
   {
-    id: 'letters', ach: 'letters',
+    id: 'letters', idx: 4, ach: 'letters',
     name: { en: 'Scattered the name', ja: '名前を散らかした' },
     trigger: { kind: 'click', text: 'Click or tap the name Idris Sadiq (it also breaks by itself).' },
     hints: [
@@ -89,7 +91,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'Eleven letters, all over the floor. Very dignified.', ja: '11文字が床に散らばりました。とても上品です。' },
   },
   {
-    id: 'sim', ach: 'sim',
+    id: 'sim', idx: 5, ach: 'sim',
     name: { en: 'Poked a simulation', ja: 'シミュレーションを動かした' },
     trigger: { kind: 'open', text: 'Open a project and press Play on its simulation.' },
     hints: [
@@ -100,7 +102,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'You touched the science. It touched back.', ja: '科学に触れました。科学も触れ返しました。' },
   },
   {
-    id: 'finale', ach: 'finale',
+    id: 'finale', idx: 6, ach: 'finale',
     name: { en: 'Read all the way down', ja: '最後まで読んだ' },
     trigger: { kind: 'scroll', text: 'Scroll to the very bottom of the home page.' },
     hints: [
@@ -111,7 +113,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'You made it to the end. Nobody does that.', ja: '最後まで来ましたね。そんな人、めったにいません。' },
   },
   {
-    id: 'rick', ach: 'rick',
+    id: 'rick', idx: 7, ach: 'rick',
     name: { en: 'Got rolled', ja: 'ロールされた' },
     trigger: { kind: 'random', text: 'Keep scrolling: the page shakes, then a famous song plays.' },
     hints: [
@@ -123,7 +125,7 @@ export const SECRETS: SecretEntry[] = [
     finalHintClip: true,
   },
   {
-    id: 'moonup', ach: 'moonup',
+    id: 'moonup', idx: 8, ach: 'moonup',
     name: { en: 'Fell upwards', ja: '上に落ちた' },
     trigger: { kind: 'click', text: 'Press the Moon a second time.' },
     hints: [
@@ -134,7 +136,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'Up is the new down. I am filing a complaint with physics.', ja: '上が新しい下です。物理学に苦情を出しておきます。' },
   },
   {
-    id: 'moon3', ach: 'moon3',
+    id: 'moon3', idx: 9, ach: 'moon3',
     name: { en: 'Pressed it a third time', ja: '3回目を押した' },
     trigger: { kind: 'click', text: 'Press the Moon a third time.' },
     hints: [
@@ -145,7 +147,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'Three presses. You have a problem. I respect it.', ja: '3回押しましたね。重症です。尊敬します。' },
   },
   {
-    id: 'crash', ach: 'crash',
+    id: 'crash', idx: 10, ach: 'crash',
     name: { en: 'Shot down a rocket', ja: 'ロケットを撃墜した' },
     trigger: { kind: 'click', text: 'Click a rocket or satellite that flies across the page.' },
     hints: [
@@ -156,7 +158,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'Direct hit. Captain Pip would have wanted it this way. No, he would not.', ja: '命中。ピップ船長はこうなってほしかった……いえ、そんなことはありません。' },
   },
   {
-    id: 'evicted', ach: 'evicted',
+    id: 'evicted', idx: 11, ach: 'evicted',
     name: { en: 'Evicted by the robot', ja: 'ロボットに追い出された' },
     trigger: { kind: 'click', text: 'Click the pet robot many times in a row.' },
     hints: [
@@ -167,7 +169,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'Out you go. Please come back. I did not mean it.', ja: 'お帰りください。……戻ってきてください。本気ではありません。' },
   },
   {
-    id: 'cena', ach: 'cena',
+    id: 'cena', idx: 12, ach: 'cena',
     name: { en: 'Heard a name', ja: '名前を聞いた' },
     trigger: { kind: 'random', text: 'A random jumpscare once per visit.' },
     hints: [
@@ -179,7 +181,7 @@ export const SECRETS: SecretEntry[] = [
     finalHintClip: true,
   },
   {
-    id: 'featured', ach: 'featured',
+    id: 'featured', idx: 13, ach: 'featured',
     name: { en: 'Opened every featured project', ja: '主な3件をすべて開いた' },
     trigger: { kind: 'open', text: 'Open all three featured projects: 8-bit computer, RoboDog, self-balancing swarm.' },
     hints: [
@@ -190,7 +192,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'All three stars seen. They enjoyed the attention.', ja: '主役の3つを全部見ました。注目されて満足そうです。' },
   },
   {
-    id: 'twin', ach: 'twin',
+    id: 'twin', idx: 14, ach: 'twin',
     name: { en: 'Ran the PID twin', ja: 'PIDツインを動かした' },
     trigger: { kind: 'open', text: 'Open the PID project and run the digital twin.' },
     hints: [
@@ -201,7 +203,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'The twin is running. The original is jealous.', ja: 'ツインが動いています。本物は嫉妬しています。' },
   },
   {
-    id: 'about', ach: 'about',
+    id: 'about', idx: 15, ach: 'about',
     name: { en: 'Read the About story', ja: '自己紹介を読んだ' },
     trigger: { kind: 'idle', text: 'Stay in the About section for a moment.' },
     hints: [
@@ -212,7 +214,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'You read it. All five paragraphs. Idris is touched.', ja: '読みましたね。5段落すべて。Idrisは感激しています。' },
   },
   {
-    id: 'cv', ach: 'cv',
+    id: 'cv', idx: 16, ach: 'cv',
     name: { en: 'Found the CV', ja: '履歴書を見つけた' },
     trigger: { kind: 'click', text: 'Open the CV (PDF).' },
     hints: [
@@ -223,7 +225,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'CV found. Hire him. I am only saying.', ja: '履歴書、発見。採用してください。言ってみただけです。' },
   },
   {
-    id: 'legend', ach: 'legend', meta: true, finalHintClip: false,
+    id: 'legend', idx: 17, ach: 'legend', meta: true, finalHintClip: false,
     name: { en: 'Saw a legendary line', ja: '伝説の一言を見た' },
     trigger: { kind: 'random', text: 'A very rare gold comment from the pet robot.' },
     hints: [
@@ -234,7 +236,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'A legendary line. I have never been so proud.', ja: '伝説の一言。こんなに誇らしいことはありません。' },
   },
   {
-    id: 'idris', ach: 'idris',
+    id: 'idris', idx: 18, ach: 'idris',
     name: { en: 'Summoned the supreme one', ja: '至高の存在を召喚した' },
     trigger: { kind: 'word', text: 'Type idris (any case), here or in the command box.' },
     hints: [
@@ -246,7 +248,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'idris',
   },
   {
-    id: 'cat', ach: 'cat',
+    id: 'cat', idx: 19, ach: 'cat',
     name: { en: 'Cat person', ja: '猫好き' },
     trigger: { kind: 'word', text: 'Type cat (or tap the cat chip in the command box).' },
     hints: [
@@ -258,7 +260,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'cat',
   },
   {
-    id: 'cookie', ach: 'cookie',
+    id: 'cookie', idx: 20, ach: 'cookie',
     name: { en: 'Shared a cookie', ja: 'クッキーを分け合った' },
     trigger: { kind: 'word', text: 'The cookie banner shows up by itself after a while, or type cookie (or tap the cookie chip in the command box) and let the pet robot deal with it.' },
     hints: [
@@ -270,7 +272,7 @@ export const SECRETS: SecretEntry[] = [
     word: 'cookie',
   },
   {
-    id: 'asked', ach: 'asked', finalHintClip: false, rewardsClip: true,
+    id: 'asked', idx: 21, ach: 'asked', finalHintClip: false, rewardsClip: true,
     name: { en: 'Asked nicely', ja: 'ちゃんとお願いした' },
     trigger: { kind: 'meta', text: 'Watch the "tell me, tell me" clip the hint robot plays when one achievement is left.' },
     hints: [
@@ -281,7 +283,7 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'You asked properly. Now you may have the hint.', ja: 'ちゃんとお願いできましたね。ではヒントをどうぞ。' },
   },
   {
-    id: 'everything', ach: 'everything', meta: true, finalHintClip: false,
+    id: 'everything', idx: 22, ach: 'everything', meta: true, finalHintClip: false,
     name: { en: 'Found everything', ja: 'すべて見つけた' },
     trigger: { kind: 'meta', text: 'Find the four core secrets: Moon, roll, omae and coffee.' },
     hints: [
@@ -292,6 +294,14 @@ export const SECRETS: SecretEntry[] = [
     solved: { en: 'You found everything. Go outside. Touch a robot.', ja: '全部見つけました。外に出て、ロボットに触れてきてください。' },
   },
 ]
+
+/** Index numbers of removed secrets. They are never handed out again, so an old save code can never light up a different achievement. */
+export const RETIRED_IDX: readonly number[] = []
+/** One more than the highest index ever used: the size of the bitmap in a save code. */
+export const IDX_SPAN = Math.max(-1, ...SECRETS.map((s) => s.idx), ...RETIRED_IDX) + 1
+/** Achievement id <-> stable index number. */
+export const ACH_IDX: Record<string, number> = Object.fromEntries(SECRETS.map((s) => [s.ach, s.idx]))
+export const ACH_BY_IDX: Record<number, string> = Object.fromEntries(SECRETS.map((s) => [s.idx, s.ach]))
 
 export const SECRET_IDS = SECRETS.map((s) => s.id)
 /** Achievement id -> display name, for the achievements list. */

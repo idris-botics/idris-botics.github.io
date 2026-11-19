@@ -34,7 +34,7 @@ for (const [name, w, h] of [['phone', 390, 844], ['desktop', 1440, 900]]) {
   await p.waitForFunction(() => document.documentElement.dataset.mode === 'calm', null, { timeout: 15000 })
   await enterChaos(p)
   await p.waitForTimeout(2500)
-  check((await p.locator('.ach').count()) === 0, `${name}: second entry starts with no achievements`)
+  check(/1\/23/.test(await p.locator('.ach').first().innerText().catch(() => '')), `${name}: second entry keeps the saved achievement (1/23)`)
 }
 await b.close()
 process.exit(bad ? 1 : 0)

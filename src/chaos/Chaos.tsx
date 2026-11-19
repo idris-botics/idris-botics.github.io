@@ -18,8 +18,8 @@ import WorkAwards from './WorkAwards'
 import { hitStop } from './juice'
 import { tidyThen } from '../lib/tidy'
 import Ending from './Ending'
-import { isHelped } from './hintsStore'
-import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
+import { hintTier, isHelped } from './hintsStore'
+import { foundIds, recordAchievement, resetProgress, subscribeProgress } from './achievementsStore'
 import { X, Lock } from 'lucide-react'
 import { angerBeep, fall, impact, isMuted, onMuteChange, setVoiceMood, sfx, startConstruction, talk } from './sfx'
 import { resumeCaffeine, useCaffeine } from './caffeine'
@@ -153,8 +153,8 @@ export default function Chaos() {
   const [roll, setRoll] = useState(false)
   const [progress, setProgress] = useState(0)
   const [nap, setNap] = useState(false)
-  // the count starts again on a refresh or a normal exit; it is kept only after an eviction or a Chaos crash (see achievementsStore)
-  const [ach, setAch] = useState<string[]>(() => takeInitialAchievements().filter((a) => a in ACH))
+  // progress lasts: it is kept on this device across refreshes, exits and updates (see achievementsStore)
+  const [ach, setAch] = useState<string[]>(() => foundIds())
   const [achOpen, setAchOpen] = useState(false)
   // the achievements list also closes when the reader presses anywhere else on the screen (the button itself still toggles it)
   useEffect(() => {
@@ -170,14 +170,20 @@ export default function Chaos() {
   const remixRef = useRef(remix)
   useEffect(() => { remixRef.current = remix }, [remix])
   const remixMap = useRef(makeRemixMap())
-  useEffect(() => { achievementsTaken() }, [])
   const awarded = useRef(new Set<string>(ach))
+  // progress changed from outside this component (read back from IndexedDB, restored from a save code, or a finished run reset it)
+  useEffect(() => {
+    const sync = () => { const ids = foundIds(); awarded.current = new Set(ids); setAch(ids) }
+    sync()
+    return subscribeProgress(sync)
+  }, [])
   const award = useCallback((id: string) => {
     if (awarded.current.has(id) || !(id in ACH)) return
     awarded.current.add(id)
     hitStop(40)
     dispatchEvent(new CustomEvent('portfolio:scout', { detail: 'happy' }))
-    setAch((a) => { const n = [...a, id]; setCurrentAchievements(n); return n })
+    recordAchievement(id, hintTier(id))
+    setAch(foundIds())
     setTimeout(() => sfx('chime'), 350)
   }, [])
   // end-to-end tests (?e2e=1) can award achievements directly, so the whole ending can be checked without playing every gag
@@ -799,7 +805,7 @@ export default function Chaos() {
     setFlushing(false)
     if (flushReal) {
       // a new run: the count goes back to zero and the words are dealt out again
-      awarded.current.clear(); setAch([]); setCurrentAchievements([])
+      awarded.current.clear(); setAch([]); resetProgress()
       remixMap.current = makeRemixMap()
     }
     setFlushReal(false)
@@ -1105,7 +1111,6 @@ export default function Chaos() {
       if (!reduced()) { document.documentElement.classList.add('shake'); setTimeout(() => document.documentElement.classList.remove('shake'), 1100) }
       setTimeout(() => {
         clicks.current = 0
-        keepAchievementsForNextVisit()
         setEvicted(true)
         setMode('calm')
         scrollTo({ top: 0, behavior: 'instant' })

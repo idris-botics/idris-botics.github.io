@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Lightbulb, X } from 'lucide-react'
 import data from '../content/jokes/hintbot.json'
-import { markHelped } from './hintsStore'
+import { markHelped, noteHint } from './hintsStore'
 import { ACH_TOTAL, lastLeft, nextToHint } from './secretsRegistry'
 import Clip from './Clip'
+import ProgressTools from './ProgressTools'
 import { HOST_THIRD_PARTY_CLIPS } from './config'
 
 type L = { en: string; ja: string }
@@ -107,6 +108,7 @@ export default function HintBot({ lang, found, fire, award, remixMap }: Props) {
     const use = force ? Math.min(tier, tiers.length - 1) : tier
     given[e.id] = Math.min(use + 1, tiers.length)
     givenAt[e.id] = Date.now()
+    noteHint(e.ach, use + 1)
     if (use === tiers.length - 1) markHelped(e.ach)
     setStep({ k: 'hint', text: tiers[use][lang], word: use === tiers.length - 1 ? e.word : undefined })
   }
@@ -179,6 +181,7 @@ export default function HintBot({ lang, found, fire, award, remixMap }: Props) {
             </div>
           )}
           {step.k === 'msg' && <div className="hb-body"><p>{step.text}</p></div>}
+          <ProgressTools lang={lang} />
         </div>
       )}
       {clip && (
