@@ -86,3 +86,9 @@ Build and test: Vite, Tailwind CSS, TypeScript, vitest, Playwright, oxlint, shar
 
 ## Reused code
 The simulations are written for this site. The PID twin structure echoes Idris's own Digital Twin RL-PID project; the simulation uses illustrative values, not measured data.
+
+## Where the photos are used (19 Nov 2026)
+
+- **3D print card, "Beyond the lab":** `li-print-result` (cover), `li-print-model`, `li-print-bag`.
+- **"Out in the field" (inside the collapsed certificates block):** `li-iisc-me`, `iisc-hall`, `iisc-lab`, `expo-robots`, `expo-spring`, `expo-cutter`, `expo-dino`. The expo captions say "an expo" because the file does not say which of the three each is from; `expo-robots` is Automation Expo South 2025.
+- **Shipped but not shown, on purpose:** `expo-station` (visitors and staff are clearly recognisable), `li-talentia-a` and `li-talentia-b` (a different event from the Emcee card; a fifth card would leave the strip uneven), `image5` (the unrotated copy of `image5r`).

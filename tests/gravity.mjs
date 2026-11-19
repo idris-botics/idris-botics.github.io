@@ -32,8 +32,9 @@ await p.waitForTimeout(23000)
 await p.getByRole('button', { name: /Do not press/ }).click()
 await p.waitForSelector('.rick video', { timeout: 3000 }).catch(() => {})
 const song = await p.locator('.rick video').count()
-const moonGone = await p.locator('.moon').count()
+const moonGone = await p.locator('.moon.locked').count() // the button stays, locked
+const lockTag = await p.locator('.moon.locked .moon-tag').innerText().catch(() => '')
 console.log(JSON.stringify({ ...y, start, back, up, song, moonGone, angry, note1: note1.slice(0, 24) }), errs.length ? 'ERRORS ' + errs.join('|') : 'no errors')
 await b.close()
 // the view settles on the densest part of the heap (in the lower half of a long page), never on empty sky
-process.exit(y.y >= y.max * 0.4 && Math.abs(back - Math.min(start, maxBack)) < 60 && up < y.max * 0.5 && angry === 1 && /Now look at what you did/.test(note1) && song === 1 && !errs.length ? 0 : 1)
+process.exit(y.y >= y.max * 0.4 && Math.abs(back - Math.min(start, maxBack)) < 60 && up < y.max * 0.5 && angry === 1 && /Now look at what you did/.test(note1) && song === 1 && moonGone === 1 && /button privileges have been revoked/i.test(lockTag) && !errs.length ? 0 : 1)

@@ -1047,3 +1047,8 @@ html[data-pre] .ltr { animation: none; }
 :root:not([data-mode='chaos']) .chip[aria-pressed='true'] { border-color: var(--accent); }
 :root:not([data-mode='chaos']) .btn.primary { border-color: var(--outline); }
 @media (hover: hover) and (pointer: fine) { :root:not([data-mode='chaos']) .btn:not(.primary):hover { border-color: var(--accent); } }
+
+
+/* the four captions on every figure plate (Fig 2, the title, the hint, the readout) were 10.5px, the smallest text on the site. 13px on larger screens,
+   scaling down to about 12px on a 390px phone so the longest readout line still fits inside the plate. (The kit's own stylesheet is vendored; this wins on specificity.) */
+.iso-plate .iso-plate-corner { font-size: clamp(10.5px, 3.05vw, 13px); }

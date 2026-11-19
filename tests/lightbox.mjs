@@ -44,7 +44,7 @@ for (const idx of [0, 1]) {
 check(errs.length === 0, 'no page errors ' + errs.join(';'))
 if (await p.locator('.page').count()) { await p.locator('.back').first().click(); await p.waitForTimeout(600) } // close the project window left open above
 await p.setViewportSize({ width: 390, height: 780 })
-const g = p.locator('.gallery').first()
+const g = p.locator('.photo-strip .gallery').first()
 await g.evaluate((e) => { const r = e.getBoundingClientRect(); scrollTo({ top: scrollY + r.top - 80, behavior: 'instant' }) })
 await g.locator('.spot-open').click(); await p.waitForSelector('.lightbox'); await p.waitForTimeout(250)
 const mm = await p.evaluate(() => { const r = document.querySelector('.lightbox img').getBoundingClientRect(); return { l: r.left, r: r.right, b: r.bottom, vw: innerWidth, vh: innerHeight } })

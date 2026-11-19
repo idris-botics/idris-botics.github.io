@@ -507,3 +507,27 @@ html:has(.remix-flush) :is(.end-card, .end-party) { visibility: hidden; }
 .bug-splat { position: absolute; width: 18px; height: 11px; margin: -6px 0 0 -9px; border-radius: 50%; background: rgba(70, 45, 25, .4); animation: bug-splat 4s ease-out forwards; pointer-events: none; }
 @keyframes bug-splat { 0% { scale: .4; opacity: .9; } 12% { scale: 1; opacity: .8; } 100% { scale: 1.1; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .bug.walk .legs-a, .bug.walk .legs-b { animation: none; } }
+
+/* the Moon button after the third press: it stays, greyed out under a padlock, with a tag that says why */
+.moon.locked { animation: none; cursor: not-allowed; border-color: #3a3a3a; background: radial-gradient(circle at 36% 26%, #c4c4c4 0, #8e8e8e 40%, #5e5e5e 78%, #444 100%); box-shadow: 0 4px 0 #3a3a3a, 0 10px 16px rgba(0, 0, 0, .3), inset 0 -8px 12px rgba(0, 0, 0, .28); }
+.moon.locked:hover { filter: none; } /* a filter here would grey the tag too */
+.moon.locked:active { transform: none; }
+.moon.locked > span { opacity: .55; }
+.moon-lock { position: absolute; left: 50%; top: 50%; translate: -50% -50%; color: #1e2128; fill: #f2b441; stroke: #1e2128; filter: drop-shadow(0 2px 0 rgba(255, 255, 255, .5)); animation: moon-lock-in .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+.moon-tag { position: absolute; left: calc(100% + 12px); bottom: 10px; width: max-content; max-width: min(210px, calc(100vw - 190px)); padding: 6px 10px; border: 2px solid #1e2128; border-radius: 10px; background: #fff8ea; color: #1e2128; font: 800 14px/1.25 var(--font-body); text-align: left; text-transform: none; letter-spacing: 0; text-shadow: none; rotate: -2deg; filter: none; animation: moon-tag-in .35s ease-out .4s both, moon-tag-out .6s ease 8s forwards; }
+/* it fades after a few seconds so it does not sit over the page (on a phone especially); pressing the locked button shows it again (a different animation name restarts it) */
+.moon.locked.reshow .moon-tag { animation-name: moon-tag-in-b, moon-tag-out-b; animation-delay: 0s, 8s; }
+.moon.locked.rattle { animation: moon-rattle .45s linear; }
+@keyframes moon-lock-in { from { translate: -50% -190%; opacity: 0; scale: 1.5; } to { translate: -50% -50%; opacity: 1; scale: 1; } }
+@keyframes moon-tag-in { from { opacity: 0; translate: -8px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes moon-tag-out { to { opacity: 0; } }
+@keyframes moon-tag-in-b { from { opacity: 0; translate: -8px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes moon-tag-out-b { to { opacity: 0; } }
+@keyframes moon-rattle { 0%, 100% { translate: 0 0; } 15% { translate: -6px 0; } 35% { translate: 6px 0; } 55% { translate: -4px 0; } 75% { translate: 4px 0; } }
+@media (prefers-reduced-motion: reduce) { .moon-lock, .moon-tag, .moon.locked.rattle { animation: none; } }
+
+/* achievements on larger screens: the button stays put (it used to jump up when the list opened) and the list opens above it, capped in height so it never takes the whole left side */
+@media (min-width: 701px) {
+  .ach { display: flex; flex-direction: column-reverse; align-items: flex-start; }
+  .ach ul { margin: 0 0 6px; max-height: min(46vh, 380px); overflow-y: auto; overscroll-behavior: contain; }
+}

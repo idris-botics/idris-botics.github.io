@@ -81,7 +81,7 @@ function GalleryVideo({ m, lang, morph }: { m: Media; lang: 'en' | 'ja'; morph: 
 }
 
 /** Spotlight gallery: one large picture or video, dots below. Clicking a thumbnail promotes it; it rotates by itself until the reader takes over. */
-export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 'en' | 'ja'; morph?: boolean }) {
+export function Gallery({ items, lang, morph = false, label }: { items: Media[]; lang: 'en' | 'ja'; morph?: boolean; label?: { en: string; ja: string } }) {
   const [i, setI] = useState(0)
   const swipe = useRef<{ x: number; y: number } | null>(null)
   const [zoom, setZoom] = useState(false)
@@ -92,7 +92,7 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
   const w = m.widths ?? [640, 1280]
   const t = (l: { en: string; ja: string }) => l[lang]
   return (
-    <div className={n === 1 ? 'gallery single' : 'gallery'} ref={host} role="group" aria-roledescription="carousel" aria-label={lang === 'en' ? 'Project pictures and videos' : 'プロジェクトの画像と動画'}
+    <div className={n === 1 ? 'gallery single' : 'gallery'} ref={host} role="group" aria-roledescription="carousel" aria-label={label ? label[lang] : lang === 'en' ? 'Project pictures and videos' : 'プロジェクトの画像と動画'}
       onKeyDown={(e) => { if (e.key === 'ArrowRight') go(i + 1); else if (e.key === 'ArrowLeft') go(i - 1) }}>
       <figure className="spot" aria-live="polite">
         <div className="spot-img" style={m.w >= m.h ? undefined : { width: 'fit-content', maxWidth: '100%', margin: '0 auto' }}

@@ -14,7 +14,7 @@ import Work from './Work'
 import { Gallery } from './Gallery'
 import { VideoCard } from './VideoPlayer'
 import { Reveal, Tick } from './Reveal'
-import { hero, aboutText, pathRows, learning, fieldEvents, strip, projects, habits, links, type L } from './content'
+import { hero, aboutText, pathRows, learning, fieldEvents, fieldPhotos, strip, projects, habits, links, type L } from './content'
 import { personal } from './personal'
 import { restoreHome, useRoute } from './route'
 import { preShell } from './preShell'
@@ -196,6 +196,21 @@ export default function App() {
   useEffect(() => { document.title = lang === 'ja' ? 'Idris Sadiq | ポートフォリオ' : 'Idris Sadiq | Portfolio' }, [lang])
 
   const openGate = () => { setEvicted(false); setGate(true) }
+  // the hidden word "chaos", typed anywhere on the Calm side (not in a text field, not during the warning): straight into Chaos, no warning and no questions
+  useEffect(() => {
+    if (mode !== 'calm' || gate) return
+    let buf = ''
+    const k = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) return
+      if ((e.target as HTMLElement).closest?.('input, textarea, select, [contenteditable]')) return
+      buf = (buf + e.key.toLowerCase()).slice(-5)
+      if (buf !== 'chaos') return
+      buf = ''
+      setEvicted(false); scrollTo({ top: 0, behavior: 'instant' }); toggleMode()
+    }
+    addEventListener('keydown', k)
+    return () => removeEventListener('keydown', k)
+  }, [mode, gate, setEvicted, toggleMode])
   const warm = () => { void import('./chaos/Chaos') }
 
   return (
@@ -288,6 +303,7 @@ export default function App() {
                 <div>
                   <h3>{lang === 'en' ? 'Out in the field' : '現場での学び'}</h3>
                   <ul>{fieldEvents.map((l) => <li key={l.en}>{t(l)}</li>)}</ul>
+                  <Gallery items={fieldPhotos} lang={lang} label={{ en: 'Photos from the field events', ja: '現場での学びの写真' }} />
                 </div>
               </div>
             </details>
@@ -302,7 +318,7 @@ export default function App() {
                 <li key={s.media.src}>
                   {s.video ? (
                     <VideoCard clip={s.video} lang={lang} />
-                  ) : <Gallery items={[s.media]} lang={lang} />}
+                  ) : <Gallery items={[s.media, ...(s.more ?? [])]} lang={lang} />}
                   <p>{s.link ? <a href={s.link.href} target="_blank" rel="noopener noreferrer" aria-label={t(s.link.label)}>{t(s.caption)} <ExternalLink size={12} aria-hidden="true" /></a> : t(s.caption)}</p>
                 </li>
               ))}

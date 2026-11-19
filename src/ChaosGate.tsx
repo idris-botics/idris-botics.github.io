@@ -80,17 +80,6 @@ export default function ChaosGate({ lang, onConfirm, onCancel }: { lang: Lang; o
     const skip = window.setTimeout(() => setCanSkip(true), crawlMs.current * 0.65) // Proceed appears about two thirds of the way through the crawl
     return () => { stop(); clearTimeout(fallback); clearTimeout(skip) }
   }, [step])
-  // shortcut: typing "idris" skips the crawl and every question
-  useEffect(() => {
-    let buf = ''
-    const k = (e: KeyboardEvent) => {
-      if (e.key.length !== 1) return
-      buf = (buf + e.key.toLowerCase()).slice(-5)
-      if (buf === 'idris') { sfx('fanfare'); onConfirm() }
-    }
-    addEventListener('keydown', k)
-    return () => removeEventListener('keydown', k)
-  }, [onConfirm])
   useEffect(() => {
     const k = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel() }
     addEventListener('keydown', k)

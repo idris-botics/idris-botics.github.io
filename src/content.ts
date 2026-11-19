@@ -499,6 +499,17 @@ export const honours: Honour[] = [
   { group: 'award', year: '2026', title: { en: 'India Innovates 2026', ja: 'India Innovates 2026' }, line: { en: 'National finalist.', ja: '全国ファイナリスト。' } },
 ]
 
+/** Photos from those field events (shown with the list). The expo captions say "an expo" because the file does not say which one each is from. */
+export const fieldPhotos: Media[] = [
+  IMG('li-iisc-me', 480, 228, { en: 'The author standing beside the banner of the EE Summer School, in front of the Electrical Engineering building at IISc.', ja: 'IIScの電気工学棟の前で、EEサマースクールの横断幕の横に立つ本人。' }, { widths: [640], caption: { en: 'At the IISc EE Summer School', ja: 'IISc EEサマースクールにて' } }),
+  IMG('iisc-hall', 640, 662, { en: 'A tall laboratory hall with large black cylindrical columns and steel scaffolding.', ja: '大きな黒い円筒形の柱と鉄骨の足場がある、天井の高い実験ホール。' }, { widths: [640], caption: { en: 'The laboratory hall, IISc', ja: 'IIScの実験ホール' } }),
+  IMG('iisc-lab', 480, 640, { en: 'An open electrical cabinet full of contactors, terminal blocks and wiring.', ja: '接触器、端子台、配線がぎっしり詰まった、開いた電気盤。' }, { widths: [640], caption: { en: 'An electrical cabinet on the lab tour', ja: '研究室見学で見た電気盤' } }),
+  IMG('expo-robots', 640, 288, { en: 'Several white robot arms working on a stand at an automation expo, with visitors in the background.', ja: '展示会のブースで動く複数の白いロボットアームと、背景の来場者。' }, { widths: [640], caption: { en: 'Robot arms at Automation Expo South 2025', ja: 'Automation Expo South 2025のロボットアーム' } }),
+  IMG('expo-spring', 480, 853, { en: 'A blue CNC spring-coiling machine on an expo stand, with a wooden box below it.', ja: '展示会のブースにある青いCNCばね成形機。足元に木箱がある。' }, { widths: [640], caption: { en: 'A spring-coiling machine at an expo', ja: '展示会のばね成形機' } }),
+  IMG('expo-cutter', 480, 270, { en: 'A long flat-bed cutting machine under an orange hood on an expo stand.', ja: '展示会のブースにある、オレンジ色のフードの下の長いフラットベッド式切断機。' }, { widths: [640], caption: { en: 'A flat-bed cutter at an expo', ja: '展示会のフラットベッド切断機' } }),
+  IMG('expo-dino', 480, 270, { en: 'A dinosaur skeleton made of metal, standing on a machine at an expo stand.', ja: '展示会のブースで、機械の上に立つ金属製の恐竜の骨格。' }, { widths: [640], caption: { en: 'A metal dinosaur at an expo', ja: '展示会で見た金属製の恐竜' } }),
+]
+
 /** Learning out in the field, one event per line. */
 export const fieldEvents: L[] = [
   { en: 'IISc EE Summer School 2025 (IEEE Bangalore Section)', ja: 'IISc EEサマースクール2025（IEEE Bangalore Section）' },
@@ -574,10 +585,16 @@ export const pathRows: { when: string; text: L }[] = [
 ]
 
 /** Beyond the lab: a photo strip with short captions. Only photos already published on the site. */
-export const strip: { media: Media; caption: L; link?: { href: string; label: L }; video?: { src: string; poster: string; label: L; w: number; h: number; length: string } }[] = [
+export const strip: { media: Media; more?: Media[]; caption: L; link?: { href: string; label: L }; video?: { src: string; poster: string; label: L; w: number; h: number; length: string } }[] = [
   { media: IMG('li-emcee', 624, 360, { en: 'The author on stage at the lectern during the First-Year Inauguration of Easwari Engineering College.', ja: 'Easwari Engineering Collegeの新入生歓迎式典で、演台に立つ本人。' }, { widths: [640] }), caption: { en: 'Emcee, first-year inauguration', ja: '新入生歓迎式典の司会' }, link: { href: 'https://www.youtube.com/watch?v=mXb8H1wp9NQ', label: { en: 'Watch the recording on YouTube', ja: 'YouTubeで録画を見る' } } },
   { media: IMG('li-podcast-logo', 1280, 720, { en: 'The Elite Encounters set: the author and a guest at the desk, with the show logo on the screen behind them.', ja: 'Elite Encountersの収録風景：机を挟んで座る本人とゲスト、背後のスクリーンに番組ロゴ。' }, { widths: [640, 1280] }), caption: { en: 'Hosting a college podcast', ja: '大学のポッドキャスト司会' }, link: { href: 'https://youtu.be/Q-IukgMDHOI', label: { en: 'Watch the episode on YouTube', ja: 'YouTubeでエピソードを見る' } } },
-  { media: IMG('li-print-result', 480, 640, { en: 'The printed dragon keychain in orange and blue on a tiled table.', ja: 'オレンジと青で印刷されたドラゴンのキーホルダー。' }, { widths: [640] }), caption: { en: 'My first 3D print', ja: '初めての3Dプリント' } },
+  { media: IMG('li-print-result', 480, 640, { en: 'The printed dragon keychain in orange and blue on a tiled table.', ja: 'オレンジと青で印刷されたドラゴンのキーホルダー。' }, { widths: [640] }),
+    // the model it was printed from, and the finished keychain on a bag
+    more: [
+      IMG('li-print-model', 480, 269, { en: 'The dragon keychain as a flat model in a CAD program on a laptop screen.', ja: 'ノートPCの画面に表示された、CADソフト上のドラゴンのキーホルダーの平面モデル。' }, { widths: [640] }),
+      IMG('li-print-bag', 640, 853, { en: 'The printed dragon keychain hanging from the zip of a black bag.', ja: '黒いバッグのファスナーに下げた、印刷したドラゴンのキーホルダー。' }, { widths: [640] }),
+    ],
+    caption: { en: 'My first 3D print', ja: '初めての3Dプリント' } },
   { media: IMG('li-soccer', 1534, 700, { en: 'The author’s small two-wheeled robot with a castor wheel pushing a ball across a black pitch with white markings, with a person holding its control cable.', ja: '白いラインの入った黒いピッチ上でボールを押す、本人の、キャスター付き二輪の小型ロボットと、その操作ケーブルを持つ人。' }, { widths: [640, 1280] }), caption: { en: 'Robo Soccer: a hard loss', ja: 'ロボサッカー：大敗' },
     // the full run; the label is the honest version of the story. TODO(idris): the year, the event and what failed on the bot (hidden until given).
     video: { src: 'soccer-run', poster: 'soccer-run-poster', w: 720, h: 406, length: '1:18', label: { en: 'The full Robo Soccer run. I lost badly, and the people there were kind and took pity on my bot.', ja: 'ロボサッカーの試合の全記録。大敗でした。会場の皆さんは親切で、私のロボットを気の毒に思ってくれました。' } } },

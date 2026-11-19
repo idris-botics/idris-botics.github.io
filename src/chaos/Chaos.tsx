@@ -20,7 +20,7 @@ import { tidyThen } from '../lib/tidy'
 import Ending from './Ending'
 import { isHelped } from './hintsStore'
 import { achievementsTaken, keepAchievementsForNextVisit, setCurrentAchievements, takeInitialAchievements } from './achievementsStore'
-import { X } from 'lucide-react'
+import { X, Lock } from 'lucide-react'
 import { angerBeep, fall, impact, isMuted, onMuteChange, setVoiceMood, sfx, startConstruction, talk } from './sfx'
 import { resumeCaffeine, useCaffeine } from './caffeine'
 import cafLines from '../content/jokes/caffeine.json'
@@ -156,6 +156,15 @@ export default function Chaos() {
   // the count starts again on a refresh or a normal exit; it is kept only after an eviction or a Chaos crash (see achievementsStore)
   const [ach, setAch] = useState<string[]>(() => takeInitialAchievements().filter((a) => a in ACH))
   const [achOpen, setAchOpen] = useState(false)
+  // the achievements list also closes when the reader presses anywhere else on the screen (the button itself still toggles it)
+  useEffect(() => {
+    if (!achOpen) return
+    const away = (e: PointerEvent) => { if (!(e.target as HTMLElement).closest?.('.ach')) setAchOpen(false) }
+    document.addEventListener('pointerdown', away, true)
+    return () => document.removeEventListener('pointerdown', away, true)
+  }, [achOpen])
+  const [rattle, setRattle] = useState(false) // the locked Moon button shakes when it is pressed
+  const [reshow, setReshow] = useState(false) // and its tag shows again for a while (it fades by itself)
   // Remix (remix.ts): after every achievement, the hidden words and the random interruptions are shuffled. It is dealt again each Chaos visit.
   const [remix, setRemixState] = useState(() => remixEnabled())
   const remixRef = useRef(remix)
@@ -1246,6 +1255,16 @@ export default function Chaos() {
       {on('moon') && !pile && !restoring && moonCount < 3 && (
         <button className="moon" onClick={press} aria-label={lang === 'en' ? 'Do not press (moon)' : '押さないで（月）'}>
           🌙 <span>{lang === 'en' ? 'Do not press' : '押さないで'}</span>
+        </button>
+      )}
+      {/* after the third press the button stays, locked: the padlock and a tag saying why */}
+      {on('moon') && !pile && !restoring && moonCount >= 3 && (
+        <button className={`moon locked${rattle ? ' rattle' : ''}${reshow ? ' reshow' : ''}`} aria-disabled="true"
+          aria-label={lang === 'en' ? 'Locked. Your button privileges have been revoked.' : 'ロック中。ボタンの使用権限は取り消されました。'}
+          onClick={() => { sfx('error'); setRattle(true); window.setTimeout(() => setRattle(false), 450); if (!reshow) { setReshow(true); window.setTimeout(() => setReshow(false), 9000) } }}>
+          <span aria-hidden="true">🌙</span>
+          <Lock className="moon-lock" size={46} strokeWidth={2.6} aria-hidden="true" />
+          <b className="moon-tag">{lang === 'en' ? 'Your button privileges have been revoked' : 'ボタンの使用権限は取り消されました'}</b>
         </button>
       )}
       {restoring && <div className="blank-site" aria-hidden="true" />}
