@@ -29,6 +29,7 @@ import { useStore } from '../store'
 import { breakName, isBroken, reassembleName } from './nameBreak'
 import { MAX_EVENTS, newInterval, repeatDue, watchPage, type ActiveClock } from './activeTime'
 import Scout, { type Pose } from '../Scout'
+import Bugs from './Bugs'
 import Conjure from './Conjure'
 import Clip from './Clip'
 import { Countdown } from './Countdown'
@@ -765,7 +766,7 @@ export default function Chaos() {
       if (!w) return
       buf = ''
       e.stopImmediatePropagation(); e.preventDefault()
-      if (!told) { told = true; sayText(langRef.current === 'en' ? 'Remix is on. The words do not do what they say any more.' : 'リミックス中。もう、言葉どおりには動きません。', 3500) }
+      if (!told) { told = true; sayText(langRef.current === 'en' ? 'Remix is on.' : 'リミックス ON。', 2500) }
       fireWord(remixMap.current[w])
     }
     addEventListener('keydown', k, true)
@@ -1004,6 +1005,30 @@ export default function Chaos() {
     return () => { removeEventListener('portfolio:scout', f); clearTimeout(flashT.current) }
   }, [react])
   useEffect(() => { if (caf === 'wired') react('sip', 1700) }, [caf, react]) // a sip of coffee first, then the shakes
+  // bugs (A): a few tiny bugs wander in now and then (Bugs.tsx), at most three visits in a session, never over a popup or during another gag
+  const [bugs, setBugs] = useState(false)
+  useEffect(() => {
+    if (!on('bugs')) return
+    let t = 0, visits = 0
+    const calm = () => !document.hidden && !quietRef.current && !feastRef.current && !stuffedRef.current && !flushingRef.current
+      && !document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site, .remix-flush, .cookie-pile, .bugs')
+    const attempt = () => {
+      const started = calm() && run('bugs', 'A', false, 60000)
+      if (started) { visits++; setBugs(true) }
+      if (visits < 3) t = window.setTimeout(attempt, started ? 70000 + Math.random() * 60000 : 20000)
+    }
+    t = window.setTimeout(attempt, 35000 + Math.random() * 30000)
+    const forced = () => { if (!document.querySelector('.bugs')) { run('bugs', 'A', false, 0); setBugs(true) } } // lets a test (or the owner) see it at once
+    // for the owner only: type bugtest to see the bugs at once. Not a secret: not in the hints, the command box or the achievements, and it unlocks nothing.
+    let buf = ''
+    const k = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest?.('input, textarea, select') || e.key.length !== 1) return
+      buf = (buf + e.key.toLowerCase()).slice(-7)
+      if (buf === 'bugtest') { buf = ''; forced() }
+    }
+    addEventListener('portfolio:bugs', forced); addEventListener('keydown', k)
+    return () => { clearTimeout(t); removeEventListener('portfolio:bugs', forced); removeEventListener('keydown', k) }
+  }, [run])
   const [watching, setWatching] = useState('') // which full-screen thing is up (a clip or the portrait), so the robot can react to it
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -1028,15 +1053,30 @@ export default function Chaos() {
     next()
     return () => { clearTimeout(t); clearTimeout(back) }
   }, [])
+  // The popups (Cena, Omae, the cat clip, the portrait, tell-me) cover the whole screen, so the robot would act out its reaction where nobody can see it.
+  // It waits, and reacts when the popup has gone. The Rick roll is the exception: its backdrop is see-through, so the dance stays.
+  const scare = cena > 0 ? 'cena' : omae > 0 || omaeClip || watching === 'omae' ? 'omae' : watching === 'cat' || watching === 'summon' ? 'cat' : watching === 'tell-me' ? 'tell' : ''
+  const lastScare = useRef('')
+  useEffect(() => {
+    const was = lastScare.current
+    lastScare.current = scare
+    if (!was || scare) return
+    const timers: number[] = []
+    const after = (ms: number, f: () => void) => { timers.push(window.setTimeout(f, ms)) }
+    // a short wait first: the popups hand over to each other (Omae's text, then its clip) and that must not count as the end
+    after(450, () => {
+      if (was === 'cena') { react('shock', 1500); after(1500, () => react('salute', 2600)) }
+      else if (was === 'omae') { react('shock', 1500); after(1500, () => react('dizzy', 1900)) }
+      else if (was === 'cat') react('love', 3200)
+      else react('annoyed', 2800)
+    })
+    return () => timers.forEach(clearTimeout)
+  }, [scare, react])
   const pose: Pose =
     stuffed || feast ? 'idle'
     : caf !== 'off' ? (flash === 'sip' ? 'sip' : 'idle')
     : flushing ? 'panic'
     : rick ? 'dance'
-    : cena > 0 ? (cena < 3 ? 'shock' : 'salute')
-    : omae > 0 || omaeClip || watching === 'omae' ? 'shock'
-    : watching === 'cat' || watching === 'summon' ? 'love'
-    : watching === 'tell-me' ? 'annoyed'
     : flash ?? (nap ? 'sleepy' : anger > 4 ? 'annoyed' : idlePose)
 
   const poke = () => {
@@ -1158,6 +1198,7 @@ export default function Chaos() {
         </div>
       )}
       {taunt && <span key={taunt.id} className={taunt.x > 220 ? 'x-taunt left' : 'x-taunt'} style={{ left: taunt.x + (taunt.x > 220 ? -12 : 60), top: taunt.y + 6 }} aria-hidden="true">{taunt.text}</span>}
+      {bugs && <Bugs lang={lang} say={sayText} onDone={() => { setBugs(false); sched.current?.end('bugs') }} />}
       {on('coffee') && <Coffee lang={lang} fire={coffee} say={sayText} award={award} start={() => run('coffee', 'C', true)} end={() => sched.current?.end('coffee')} />}
       <HintBot lang={lang} found={ach} say={sayText} fire={fireWord} award={award} remixMap={remix ? remixMap.current : null} />
       <CornerMenu lang={lang} />

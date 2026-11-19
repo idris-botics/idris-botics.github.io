@@ -61,10 +61,10 @@ export default function RemixFlush({ lang, total, run, onDone }: Props) {
       removeEventListener('wheel', stop); removeEventListener('touchmove', stop)
     }
     addEventListener('wheel', stop, { passive: false }); addEventListener('touchmove', stop, { passive: false })
-    sfx('fanfare'); at(STATEMENT_MS - 1500, () => sfx('shake'))
+    sfx('toll'); at(STATEMENT_MS - 1500, () => sfx('shake'))
 
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      at(STATEMENT_MS - 600, () => { setStage('banner'); sfx('fanfare') })
+      at(STATEMENT_MS - 600, () => { setStage('banner'); sfx('remix') })
       at(STATEMENT_MS + 4000, () => { finish(); onDone() })
       return () => { timers.forEach(clearTimeout); finish() }
     }
@@ -106,7 +106,7 @@ export default function RemixFlush({ lang, total, run, onDone }: Props) {
       at(BACK + 250, () => { white?.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 900, delay: 200, fill: 'forwards' }) })
       at(BACK + 500, () => { if (holeIn) { holeIn.playbackRate = -2; holeIn.play() } })
       // all back: put every piece exactly as it was, and show the banner
-      at(BACK + 2600, () => { finish(); setStage('banner'); sfx('fanfare') })
+      at(BACK + 2600, () => { finish(); setStage('banner'); sfx('remix') })
       at(BACK + 2600 + 4000, onDone)
     }
     at(STATEMENT_MS, startFlush)
@@ -123,13 +123,12 @@ export default function RemixFlush({ lang, total, run, onDone }: Props) {
           <p className="rs-a">{run <= 1 ? L(`ALL ${total} ACHIEVEMENTS COMPLETE`, `実績${total}個、すべて達成`) : L(`ALL ${total} COMPLETE. AGAIN.`, `実績${total}個、もう一度すべて達成`)}</p>
           <p className="rs-b">{run <= 1 ? L('Nobody has ever made it this far.', 'ここまで来た人は、これまで誰もいません。') : L('Run number ' + run + '. Nobody else is here.', run + '周目です。ほかには誰もいません。')}</p>
           <p className="rs-c">{L('So the whole site is about to be taken apart.', 'なので、サイトをまるごと分解します。')}</p>
-          <p className="rs-d">{L('Your count goes back to zero. The words will not mean what they used to.', 'カウントはゼロに戻ります。言葉は、もう元の意味ではなくなります。')}</p>
+          <p className="rs-d">{L('Your count goes back to zero.', 'カウントはゼロに戻ります。')}</p>
         </div>
       )}
       {stage === 'banner' && (
         <div className="remix-banner" role="status">
           <b>{L('REMIX IS ON', 'リミックス ON')}</b>
-          <span>{L('The words no longer do what they say.', 'もう、言葉どおりには動きません。')}</span>
         </div>
       )}
     </div>

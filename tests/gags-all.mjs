@@ -110,7 +110,7 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
   await sleep(4000)
   const cls = await p.evaluate(() => document.querySelector('.cookie-pic')?.className ?? '')
   out(/bites-[2-9]/.test(cls), 'the cookie is being eaten (' + cls + ')')
-  await sleep(6500)
+  await sleep(9500) // ten bites, then the banner closes by itself
   out((await p.locator('.cookie').count()) === 0, 'the banner leaves once the cookie is gone')
   await p.context().close()
 }
@@ -130,10 +130,12 @@ const scrollToId = (p, id, off = 60) => p.evaluate(([i, o]) => { const e = docum
     await p.keyboard.press('Escape'); await sleep(300)
     out((await p.locator('.clip').count()) === 1, `Escape does nothing in the first 20 s (time ${n})`)
     await p.evaluate(() => { performance.now = ((o) => () => o() + 21000)(performance.now.bind(performance)) })
-    await p.keyboard.press('Escape'); await sleep(500)
-    out((await p.locator('.clip').count()) === 0, `after 20 s Escape closes the omae video (time ${n})`)
+    await sleep(700) // the close button is polled
+    await p.evaluate(() => document.querySelector('.clip-x')?.click()); await sleep(500)
+    out((await p.locator('.clip').count()) === 0, `after 20 s the X closes the omae video (time ${n})`)
   }
   for (let n = 1; n <= 2; n++) {
+    if (n > 1) { await p.waitForSelector('.scout-dock.stuffed', { timeout: 15000 }).catch(() => {}); await p.waitForSelector('.scout-dock.stuffed', { state: 'detached', timeout: 25000 }).catch(() => {}) } // after a feast the robot is stuffed for 10 to 20 s and refuses more
     await p.keyboard.type('cookie'); await sleep(500)
     out((await p.locator('.cookie').count()) === 1, `typing cookie brings the cookie banner (time ${n})`)
     await p.getByRole('button', { name: 'Eat it' }).click(); await sleep(4800)

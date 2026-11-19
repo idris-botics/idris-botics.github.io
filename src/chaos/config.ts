@@ -15,6 +15,7 @@ export const chaosConfig = {
     cookieBanner: true, // G14 edible-cookie banner
     finale: true, // G15 thank-you finale
     flyby: true, // ambient fly-by
+    bugs: true, // a few tiny bugs wander across the screen now and then; the pet robot notices (Bugs.tsx)
     dodge: true, // buttons in the page body step away from the cursor (a couple of times each)
     cena: true, // random jumpscare: giant text and a brass sting (original, not the real theme), once per visit
     coffee: true, // type "coffee": a brewing bar, a coffee flood, stains and a vending-machine can

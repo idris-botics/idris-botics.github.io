@@ -12,6 +12,7 @@ import { Documents } from './Extras'
 import { tidyThen } from './lib/tidy'
 import Work from './Work'
 import { Gallery } from './Gallery'
+import { VideoCard } from './VideoPlayer'
 import { Reveal, Tick } from './Reveal'
 import { hero, aboutText, pathRows, learning, fieldEvents, strip, projects, habits, links, type L } from './content'
 import { personal } from './personal'
@@ -300,9 +301,7 @@ export default function App() {
               {strip.map((s) => (
                 <li key={s.media.src}>
                   {s.video ? (
-                    <video className="strip-video" controls playsInline preload="none" width={1280} height={600} poster={`${import.meta.env.BASE_URL}media/img/${s.video.poster}-640.webp`} aria-label={t(s.video.label)}>
-                      <source src={`${import.meta.env.BASE_URL}media/vid/${s.video.src}.mp4`} type="video/mp4" />
-                    </video>
+                    <VideoCard clip={s.video} lang={lang} />
                   ) : <Gallery items={[s.media]} lang={lang} />}
                   <p>{s.link ? <a href={s.link.href} target="_blank" rel="noopener noreferrer" aria-label={t(s.link.label)}>{t(s.caption)} <ExternalLink size={12} aria-hidden="true" /></a> : t(s.caption)}</p>
                 </li>

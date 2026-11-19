@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import type { Project } from './content'
+import { QuietVideo } from './VideoPlayer'
 
 export type Media = NonNullable<Project['media']>[number]
 export const mediaBase = () => import.meta.env.BASE_URL + 'media/img/'
 const src = (m: Media, i: number) => `${mediaBase()}${m.src}-${(m.widths ?? [640, 1280])[i]}.webp`
 
-/** Full-window view of a gallery image: scrim, large image, caption, previous and next, Escape or the X to close. */
+/** Full-window view of a gallery picture or video: scrim, large picture (a video plays, muted, with its controls), caption, previous and next, Escape or the X to close. */
 function Lightbox({ items, i, go, onClose, lang }: { items: Media[]; i: number; go: (k: number) => void; onClose: () => void; lang: 'en' | 'ja' }) {
   const box = useRef<HTMLDivElement>(null)
   const m = items[i]
@@ -34,14 +35,16 @@ function Lightbox({ items, i, go, onClose, lang }: { items: Media[]; i: number; 
   }, [i, n])
   const label = (en: string, ja: string) => (lang === 'en' ? en : ja)
   return createPortal(
-    <div className="lightbox" role="dialog" aria-modal="true" aria-label={label('Image viewer', '画像ビューア')} ref={box} onClick={(e) => { if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('lb-stage')) onClose() }}>
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={label('Picture and video viewer', '画像・動画ビューア')} ref={box} onClick={(e) => { if (e.target === e.currentTarget || (e.target as HTMLElement).classList.contains('lb-stage')) onClose() }}>
       <button className="lb-close" onClick={onClose} aria-label={label('Close image', '画像を閉じる')}><X size={22} aria-hidden="true" /></button>
       <div className="lb-stage">
-        <img key={m.src} src={`${mediaBase()}${m.src}-${big}.webp`} width={m.w} height={m.h} style={{ width: `min(100%, calc((100svh - 150px) * ${m.w / m.h}))` }} alt={m.alt[lang]} decoding="async" />
+        {m.video
+          ? <LightboxVideo key={m.src} m={m} lang={lang} />
+          : <img key={m.src} src={`${mediaBase()}${m.src}-${big}.webp`} width={m.w} height={m.h} style={{ width: `min(100%, calc((100svh - 150px) * ${m.w / m.h}))` }} alt={m.alt[lang]} decoding="async" />}
         {n > 1 && (
           <>
-            <button className="spot-nav prev" onClick={() => go(i - 1)} aria-label={label('Previous image', '前の画像')}><ChevronLeft size={22} aria-hidden="true" /></button>
-            <button className="spot-nav next" onClick={() => go(i + 1)} aria-label={label('Next image', '次の画像')}><ChevronRight size={22} aria-hidden="true" /></button>
+            <button className="spot-nav prev" onClick={() => go(i - 1)} aria-label={label(m.video ? 'Previous' : 'Previous image', m.video ? '前へ' : '前の画像')}><ChevronLeft size={22} aria-hidden="true" /></button>
+            <button className="spot-nav next" onClick={() => go(i + 1)} aria-label={label(m.video ? 'Next' : 'Next image', m.video ? '次へ' : '次の画像')}><ChevronRight size={22} aria-hidden="true" /></button>
           </>
         )}
       </div>
@@ -51,16 +54,29 @@ function Lightbox({ items, i, go, onClose, lang }: { items: Media[]; i: number; 
   )
 }
 
+/** A video in the enlarged view: it starts by itself (muted, no sound track anyway), has its controls, and stops when the viewer moves on or closes. */
+function LightboxVideo({ m, lang }: { m: Media; lang: 'en' | 'ja' }) {
+  const base = import.meta.env.BASE_URL
+  return (
+    <QuietVideo className="lb-video" autoPlay muted loop controls playsInline preload="auto" width={m.w} height={m.h} poster={`${mediaBase()}${m.src}-640.webp`}
+      aria-label={`${m.alt[lang]} (${lang === 'en' ? 'no sound' : '音声なし'})`}
+      style={{ width: `min(100%, calc((100svh - 150px) * ${m.w / m.h}))` }}>
+      <source src={`${base}media/vid/${m.video}.mp4`} type="video/mp4" />
+      <source src={`${base}media/vid/${m.video}.webm`} type="video/webm" />
+    </QuietVideo>
+  )
+}
+
 /** The same box for a video: poster, play controls, muted, no sound track. It stops when the reader moves to another item. */
 function GalleryVideo({ m, lang, morph }: { m: Media; lang: 'en' | 'ja'; morph: boolean }) {
   const base = import.meta.env.BASE_URL
   const label = `${m.caption ? m.caption[lang] : m.alt[lang]} (${lang === 'en' ? 'no sound' : '音声なし'})`
   return (
-    <video className="spot-video" muted playsInline controls loop preload="none" width={m.w} height={m.h} poster={`${mediaBase()}${m.src}-640.webp`} aria-label={label}
+    <QuietVideo className="spot-video" muted playsInline controls loop preload="none" width={m.w} height={m.h} poster={`${mediaBase()}${m.src}-640.webp`} aria-label={label}
       style={{ ...(m.w >= m.h ? { width: '100%', height: 'auto' } : { height: 'min(62vh, 560px)', width: 'auto', maxWidth: '100%' }), aspectRatio: `${m.w} / ${m.h}`, ...(morph ? { viewTransitionName: 'proj' } : {}) }}>
       <source src={`${base}media/vid/${m.video}.mp4`} type="video/mp4" />
       <source src={`${base}media/vid/${m.video}.webm`} type="video/webm" />
-    </video>
+    </QuietVideo>
   )
 }
 
@@ -73,10 +89,6 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
   const n = items.length
   const go = (k: number) => setI(((k % n) + n) % n)
   const m = items[i]
-  // the enlarged view steps through the pictures only (a video has its own full-screen button)
-  const pics = items.filter((x) => !x.video)
-  const pi = pics.indexOf(m)
-  const goPic = (k: number) => setI(items.indexOf(pics[((k % pics.length) + pics.length) % pics.length]))
   const w = m.widths ?? [640, 1280]
   const t = (l: { en: string; ja: string }) => l[lang]
   return (
@@ -105,7 +117,7 @@ export function Gallery({ items, lang, morph = false }: { items: Media[]; lang: 
         </div>
         {(m.caption || m.label) && <figcaption>{m.label && <span className="lab">{t(m.label)}</span>}{m.caption && t(m.caption)}</figcaption>}
       </figure>
-      {zoom && !m.video && <Lightbox items={pics} i={pi} go={goPic} onClose={() => setZoom(false)} lang={lang} />}
+      {zoom && <Lightbox items={items} i={i} go={go} onClose={() => setZoom(false)} lang={lang} />}
       {n > 1 && (
         <div className="dots" role="tablist" aria-label={lang === 'en' ? 'Choose an image' : '画像を選ぶ'}>
           {items.map((x, k) => (

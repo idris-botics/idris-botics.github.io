@@ -21,10 +21,16 @@ const escIgnored = (await p.locator('.cena-video').count()) === 1
 const before = (await p.locator('.cena .vid-count').count()) === 0
 await p.evaluate(() => { performance.now = ((o) => () => o() + 5000)(performance.now.bind(performance)) }); await p.waitForTimeout(700) // the countdown appears 4 s in, so the video gets its surprise first
 const counting = before && (await p.locator('.cena .vid-count .vc-clock').count()) === 1
+const dock = () => p.evaluate(() => document.querySelector('.scout-dock')?.className ?? '')
+const quietWhileUp = !/pose-(shock|salute)/.test(await dock()) // the popup covers the robot, so it holds its reaction
 await p.evaluate(() => document.querySelector('.cena-x')?.click())
 await p.waitForTimeout(200)
 const closed = (await p.locator('.cena').count()) === 0
-const ok = shown === 1 && name === 1 && video === 1 && escIgnored && counting && closed && !errs.length
-console.log(ok ? 'ok  ' : 'FAIL', JSON.stringify({ shown, name, video, escIgnored, counting, closed }), errs.join('|'))
+await p.waitForTimeout(900)
+const shocked = /pose-shock/.test(await dock()) // after the scare, the robot reacts
+await p.waitForTimeout(1500)
+const saluted = /pose-salute/.test(await dock())
+const ok = shown === 1 && name === 1 && video === 1 && escIgnored && counting && closed && quietWhileUp && shocked && saluted && !errs.length
+console.log(ok ? 'ok  ' : 'FAIL', JSON.stringify({ shown, name, video, escIgnored, counting, closed, quietWhileUp, shocked, saluted }), errs.join('|'))
 await b.close()
 process.exit(ok ? 0 : 1)

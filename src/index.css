@@ -883,7 +883,6 @@ h2 { font-size: clamp(1.7rem, 3.4vw, 2.25rem); }
   .site-header nav a { font-family: var(--font-body); text-transform: none; letter-spacing: 0; font-weight: 600; font-size: 14px; padding: 0 4px; min-width: 44px; }
   .site-header nav { gap: 2px; }
 }
-.strip-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius); border: 2px solid var(--outline); background: #000; }
 .gate-actions .btn, .gate-actions .gate-back { font-size: 16px; min-height: 48px; }
 
 /* phones: the email button is the longest label on the page; it scales with the screen and may wrap, so it never leaves its card */
@@ -1027,3 +1026,16 @@ html[data-pre] .ltr { animation: none; }
 /* a video in the project gallery looks like a picture there (same frame, same corners); its dot is a little square so it can be told apart */
 .spot-video { display: block; margin: 0 auto; border-radius: 12px; border: 1.5px solid var(--line); background: var(--panel); object-fit: contain; }
 .dot.vid span { border-radius: 2px; }
+
+/* the Robo Soccer video in "Beyond robotics": a picture with a play button, same height as the other pictures in the strip; it opens large (VideoPlayer.tsx) */
+.video-card { position: relative; display: block; width: 100%; padding: 0; border: 0; background: #000; border-radius: 12px; border: 1.5px solid var(--line); overflow: hidden; cursor: pointer; touch-action: manipulation; }
+.video-card img { display: block; width: 100%; height: 190px; object-fit: cover; transition: scale .3s var(--ease-out); }
+.vc-play { position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 999px; background: rgba(12, 14, 20, .82); color: #fff; font: 600 14px/1 var(--font-mono, ui-monospace, monospace); }
+.video-card:focus-visible { outline: 3px solid var(--focus, currentColor); outline-offset: 2px; }
+.video-card:active .vc-play { scale: .96; }
+@media (hover: hover) and (pointer: fine) { .video-card:hover img { scale: 1.03; } .video-card:hover .vc-play { background: rgba(12, 14, 20, .95); } }
+@media (max-width: 800px) { .video-card img { height: 140px; } }
+.lb-video { display: block; max-width: 100%; max-height: calc(100svh - 150px); border-radius: 10px; background: #000; }
+@media (prefers-reduced-motion: reduce) { .video-card img { transition: none; } }
+
+.lb-cap .lb-hint { display: block; margin-top: 4px; opacity: .7; font-size: 14px; }
