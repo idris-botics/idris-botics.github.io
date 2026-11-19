@@ -166,6 +166,7 @@ let code = ''
 // 6. storage blocked: the site still works --------------------------------------------------------------------------------------------------------
 {
   const ctx = await newCtx()
+  await ctx.route(/googletagmanager\.com|google-analytics\.com/, (r) => r.abort()) // Google's own script reads document.cookie and would log its own error; this test is about our code
   await ctx.addInitScript(() => {
     const boom = () => { throw new DOMException('blocked', 'SecurityError') }
     for (const k of ['localStorage', 'indexedDB']) Object.defineProperty(window, k, { get: boom, configurable: true })
@@ -192,8 +193,12 @@ let code = ''
 
 // 7. nothing is sent anywhere --------------------------------------------------------------------------------------------------------------------
 {
-  const leaks = requests.filter((r) => r.method !== 'GET' || r.url.includes('chaos_progress') || r.url.includes(code) || /moon\.coffee|chaos_progress/.test(r.post))
-  check(leaks.length === 0, `no request carries progress or the save code, and none is a POST (${requests.length} requests seen)`)
+  // the live site has its own Google Analytics page views: those POSTs are allowed, but nothing may carry progress or the code
+  const isGa = (r) => /^https:\/\/(www\.google-analytics\.com|www\.googletagmanager\.com|[a-z-]+\.analytics\.google\.com)\//.test(r.url)
+  const carries = (r) => /chaos_progress|moon\.coffee/i.test(decodeURIComponent(r.url) + r.post) || r.url.includes(code) || r.post.includes(code) // the save code itself (IDRIS-XXXX-XXX, upper case)
+  const leaks = requests.filter((r) => carries(r) || (r.method !== 'GET' && !isGa(r)))
+  for (const r of leaks.slice(0, 5)) console.log(`  leak? ${r.method} ${r.url.slice(0, 140)}`)
+  check(leaks.length === 0, `no request carries progress or the save code, and none but the site's analytics is a POST (${requests.length} requests seen, ${requests.filter(isGa).length} analytics)`)
 }
 
 check(errors.length === 0, `no page errors in the whole run (${errors.join(' | ')})`)

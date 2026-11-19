@@ -4,7 +4,6 @@ import { chromium } from '@playwright/test'
 import { enterChaos } from './enter-chaos.mjs'
 
 const url = process.argv[2] ?? 'http://localhost:5199/'
-const OLD = ['moon', 'roll', 'letters', 'sim', 'finale', 'rick', 'moonup', 'crash', 'moon3', 'evicted']
 const b = await chromium.launch({ executablePath: process.env.CHROME || undefined })
 let bad = 0
 const check = (ok, msg) => { console.log(ok ? 'PASS' : 'FAIL', msg); if (!ok) bad++ }
