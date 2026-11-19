@@ -1005,17 +1005,19 @@ export default function Chaos() {
     return () => { removeEventListener('portfolio:scout', f); clearTimeout(flashT.current) }
   }, [react])
   useEffect(() => { if (caf === 'wired') react('sip', 1700) }, [caf, react]) // a sip of coffee first, then the shakes
-  // bugs (A): a few tiny bugs wander in now and then (Bugs.tsx), at most three visits in a session, never over a popup or during another gag
+  // bugs (A): a few tiny bugs wander in (Bugs.tsx), once per session (remembered in sessionStorage), never over a popup or during another gag
   const [bugs, setBugs] = useState(false)
   useEffect(() => {
     if (!on('bugs')) return
-    let t = 0, visits = 0
+    let t = 0
+    const seen = () => { try { return sessionStorage.getItem('bugs') === '1' } catch { return false } }
     const calm = () => !document.hidden && !quietRef.current && !feastRef.current && !stuffedRef.current && !flushingRef.current
       && !document.querySelector('.page, .rick, .cena, .omae, .coffee-flood, .coffee-brew, .clip, .cookie, .summon, .pile-note, .wait-note, .blank-site, .remix-flush, .cookie-pile, .bugs')
     const attempt = () => {
+      if (seen()) return
       const started = calm() && run('bugs', 'A', false, 60000)
-      if (started) { visits++; setBugs(true) }
-      if (visits < 3) t = window.setTimeout(attempt, started ? 70000 + Math.random() * 60000 : 20000)
+      if (started) { try { sessionStorage.setItem('bugs', '1') } catch { /* ignore */ } setBugs(true); return }
+      t = window.setTimeout(attempt, 20000)
     }
     t = window.setTimeout(attempt, 35000 + Math.random() * 30000)
     const forced = () => { if (!document.querySelector('.bugs')) { run('bugs', 'A', false, 0); setBugs(true) } } // lets a test (or the owner) see it at once

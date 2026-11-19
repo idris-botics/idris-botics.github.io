@@ -66,5 +66,27 @@ for (const [name, opts] of [['desktop', { viewport: { width: 1280, height: 800 }
   check(a.length > 0 && JSON.stringify(a) === JSON.stringify(c), 'reduced motion: they sit still')
   await ctx.close()
 }
+// once per session: they come by themselves after a while, one time only (the clock is fast-forwarded instead of waiting minutes)
+for (const preset of [false, true]) {
+  const ctx = await b.newContext({ viewport: { width: 1280, height: 800 } })
+  await ctx.addInitScript((v) => { try { sessionStorage.setItem('rolled', '1'); sessionStorage.setItem('cena', '1'); sessionStorage.setItem('cookie', '1'); if (v) sessionStorage.setItem('bugs', '1') } catch { /* ignore */ } }, preset)
+  const p = await ctx.newPage()
+  await p.clock.install()
+  await p.goto(url + '?e2e=1', { waitUntil: 'load' })
+  await p.clock.resume()
+  await enterChaos(p); await p.waitForTimeout(500)
+  let came = false
+  for (let k = 0; k < 12 && !came; k++) { await p.clock.fastForward(20000); await p.waitForTimeout(150); came = (await p.locator('.bugs').count()) > 0 }
+  check(came === !preset, preset ? 'once per session: not again when this session already had them' : 'once per session: they come by themselves after a while')
+  if (!preset && came) {
+    check(await p.evaluate(() => sessionStorage.getItem('bugs')) === '1', 'once per session: it is remembered')
+    await p.evaluate(() => document.querySelectorAll('.bug').forEach((e) => e.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))))
+    await p.waitForTimeout(500)
+    let again = false
+    for (let k = 0; k < 15 && !again; k++) { await p.clock.fastForward(20000); await p.waitForTimeout(100); again = (await p.locator('.bugs').count()) > 0 }
+    check(!again, 'once per session: they do not come a second time')
+  }
+  await ctx.close()
+}
 await b.close()
 console.log(bad ? `${bad} FAILED` : 'all passed'); process.exit(bad ? 1 : 0)
