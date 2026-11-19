@@ -1039,3 +1039,11 @@ html[data-pre] .ltr { animation: none; }
 @media (prefers-reduced-motion: reduce) { .video-card img { transition: none; } }
 
 .lb-cap .lb-hint { display: block; margin-top: 4px; opacity: .7; font-size: 14px; }
+
+/* Calm: the unfilled ovals and buttons (Figure / Simulation tabs, thumbnails, outline buttons) nearly vanished on the sky background: the border was the pale
+   sand hairline. A firmer border (the sticker outline at about 60%, 4.5:1 on the sky) and a slightly heavier font; still no fill, so the filled ones stay the only coloured buttons.
+   Filled and pressed ones keep their own border colour (their rules are more specific). Chaos already has dark borders and is left alone. */
+:root:not([data-mode='chaos']) :is(.chip, .btn) { border-width: 2px; border-color: color-mix(in srgb, var(--outline) 62%, transparent); font-weight: 600; }
+:root:not([data-mode='chaos']) .chip[aria-pressed='true'] { border-color: var(--accent); }
+:root:not([data-mode='chaos']) .btn.primary { border-color: var(--outline); }
+@media (hover: hover) and (pointer: fine) { :root:not([data-mode='chaos']) .btn:not(.primary):hover { border-color: var(--accent); } }
